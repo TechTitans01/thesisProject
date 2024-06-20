@@ -68,13 +68,8 @@ sequelize.authenticate().then(()=>{
   console.log("good")
 }).catch((err)=>{console.log(err,"Unable to connected")})
 
-//  create your table using sequilize
-// const TableName = sequelize.define("phrases", {
- 
-// });
 
-// this call, Sequelize will automatically perform an SQL query to the database and create a table, printing the message phrase table created successfully!.
-// please run this below *****one time***** after creating your sequelize
+
 
 // sequelize
 //   .sync({ force: true })
@@ -85,6 +80,6 @@ sequelize.authenticate().then(()=>{
 //     console.error("Unable to create table : ", error);
 //   });
 
-// export your Model Phrase below
+
 
 module.exports=db
