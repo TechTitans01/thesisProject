@@ -1,0 +1,6 @@
+--------------------user----------------
+--http://localhost:8080/api/user/adduser::(add user POST)
+--http://localhost:8080/api/user/getall::(get all user GET)
+--http://localhost:8080/api/user/getone/1::(get one user by (ID) GET)
+--http://localhost:8080/api/user/remove/7::(delete user by (ID) DELETE)
+--

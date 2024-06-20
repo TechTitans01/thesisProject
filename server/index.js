@@ -8,6 +8,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use("/api/user",routeruser)
+
 app.get("/", (req, res) => {
   res.send("Hello from the server!");
 });
