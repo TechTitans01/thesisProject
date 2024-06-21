@@ -3,7 +3,7 @@
 --http://localhost:8080/api/user/getall::(get all user GET)
 --http://localhost:8080/api/user/getone/1::(get one user by (ID) GET)
 --http://localhost:8080/api/user/remove/7::(delete user by (ID) DELETE)
---
+--http://localhost:8080/api/user/updateUser::(update user Put)
 -------------------hotel----------------
 --http://localhost:8080/api/hotels/addHotel::(add hotel)
 --http://localhost:8080/api/hotels/getall::(get all hotel)
