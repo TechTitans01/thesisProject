@@ -4,7 +4,8 @@
     align-items: center;
     padding: 20px;
   }
-  
+ 
+
   .contentWrapper {
     display: flex;
     padding: 20px;
@@ -13,9 +14,26 @@
     background: #ffff;
     position: relative;
     z-index: 1;
-    margin-top: 230px;
-  }
+    margin-top: 18%;
+   
+   
   
+    
+  }
+.fas{
+  font-size:24px
+}
+.imgicon{ 
+right: 50%;
+} 
+
+  h2{
+    color: #262626;
+  font-size: 1.5em;
+  line-height: normal;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  }
   .contactDetails {
     flex: 1;
     padding: 20px;
@@ -36,7 +54,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 250px;
+    height: 280px;
     overflow: hidden;
     z-index: 0;
   }
@@ -48,19 +66,9 @@
   }
   
   .contactDetails h2, .formContainer h2 {
+    width: 95%;
     color: #2d2d2d;
   } 
-  .contactDetails h2{
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 2px;
-    height: 1px;
-    width: 95%;
-    max-width: 255px;
-    background-color: #333;
-  }
-  
   .contactForm {
     display: flex;
     flex-direction: column;
@@ -96,3 +104,43 @@
     background: #4a148c;
   }
   
+  .inputGroup {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 1em 0 1em 0;
+    max-width: 100%;
+    position: relative;
+  }
+  
+  .inputGroup input {
+    font-size: 100%;
+    padding: 0.8em;
+    outline: none;
+    border: 2px solid rgb(200, 200, 200);
+    background-color: transparent;
+    border-radius: 20px;
+    width: 100%;
+  }
+  
+  .inputGroup label {
+    font-size: 100%;
+    position: absolute;
+    left: 0;
+    padding: 0.8em;
+    margin-left: 0.5em;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    color: rgb(100, 100, 100);
+  }
+  
+  .inputGroup :is(input:focus, input:valid)~label {
+    transform: translateY(-50%) scale(.9);
+    margin: 0em;
+    margin-left: 1.3em;
+    padding: 0.4em;
+    background-color: #e8e8e8;
+  }
+  
+  .inputGroup :is(input:focus, input:valid) {
+    border-color: rgb(150, 150, 200);
+  }
+

@@ -13,3 +13,8 @@
                  ---------------auth------------------------------------
 http://localhost:8080/api/auth/signup
 http://localhost:8080/api/auth/login
+                 -----------------bookings---------------------------
+--http://localhost:8080/bookings::(add booking POST)
+--http://localhost:8080/bookings::(get all bookings GET)
+--http://localhost:8080/bookings/2::(remove booking by (ID) DELETE)
+--http://localhost:8080/bookings/2::(update booking by (ID) PUT)
