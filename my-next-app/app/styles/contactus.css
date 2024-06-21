@@ -1,0 +1,88 @@
+.contactContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .contentWrapper {
+    display: flex;
+    padding: 20px;
+    width: 100%;
+    justify-content: space-between;
+    background: #ffff;
+    position: relative;
+    z-index: 1;
+    margin-top: 230px;
+  }
+  
+  .contactDetails {
+    flex: 1;
+    padding: 20px;
+    
+  }
+  
+  .formContainer {
+    flex: 1;
+    padding: 20px;
+    box-shadow: 2.5px 5px #888888;
+    border: #696565 solid;
+    box-shadow: #aca7a7;
+    border-radius: 20px;
+  }
+  
+  .videoContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    z-index: 0;
+  }
+  
+  .backgroundVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .contactDetails h2, .formContainer h2 {
+    color: #2d2d2d;
+  }
+  
+  .contactForm {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .inputGroup {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .inputGroup input {
+    flex: 1;
+  }
+  
+  input, textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .submitButton {
+    background: #6a1b9a;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .submitButton:hover {
+    background: #4a148c;
+  }
+  

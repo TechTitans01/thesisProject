@@ -1,4 +1,4 @@
---------------------user----------------
+                --------------------user----------------
 --http://localhost:8080/api/user/adduser::(add user POST)
 --http://localhost:8080/api/user/getall::(get all user GET)
 --http://localhost:8080/api/user/getone/1::(get one user by (ID) GET)
@@ -10,3 +10,6 @@
 --http://localhost:8080/api/hotels/getone/1::(get one hotel by (ID))
 --http://localhost:8080/api/hotels/remove/7::(delete hotel by (ID))
 --http://localhost:8080/api/hotels/updateHotel::(update hotel )
+                 ---------------auth------------------------------------
+http://localhost:8080/api/auth/signup
+http://localhost:8080/api/auth/login

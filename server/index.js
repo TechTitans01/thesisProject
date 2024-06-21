@@ -3,6 +3,7 @@ const cors = require("cors");
 require("../server/database/sequelize/index.js")
 const routeruser=require("./database/routes/userRoutes.js")
 const routerhotel = require("./database/routes/hotelsRoutes.js")
+const authRoutes=require("./database/routes/authRout.js")
 const PORT = 8080;
 const app = express();
 
@@ -13,6 +14,7 @@ app.use("/api/user",routeruser)
 
 app.use("/api/hotels",routerhotel)
 
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello from the server!");
