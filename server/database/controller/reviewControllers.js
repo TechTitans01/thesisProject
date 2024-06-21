@@ -24,7 +24,7 @@ module.exports = {
       const newReview = await commentaire.create({
         ...req.body,
         roomId: req.params.roomId,
-        userId: req.user.id 
+        userId: req.params.userId
       });
       res.status(201).json(newReview);
     } catch (error) {
