@@ -10,31 +10,8 @@ updateUser:(req,res)=>{
       bcrypt.compare(req.body.password, user.dataValues.password)
         .then((samepassword) => {
           if (samepassword) {
-            
-            if (req.body.newPassword) {
-             const db = require("../sequelize/index");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 
-module.exports = {
-    signin: async (req, res) => {
-        const { fullname, email, password, username } = req.body;
-        try {
-            // Hashing the password
-            const hashedPassword = await bcrypt.hash(password, 10);
-            // Storing the hashed password in the database
-            const newUser = await db.user.create({
-                fullname,
-                email,
-                password: hashedPassword,
-                username
-            });
-            res.status(201).json(newUser);
-        } catch (err) {
-            res.status(500).json({ err: err.message });
-        }
-    }
-};
+            if (req.body.newPassword) {
 
               bcrypt.hash(req.body.newPassword, 10)
                 .then((hashedNewPassword) => {
@@ -57,7 +34,7 @@ module.exports = {
                   res.status(500).send(hashError);
                 });
             } else {
-             
+
               db.user.update({
                 fullname: req.body.fullname,
                 address: req.body.adress,
@@ -127,8 +104,8 @@ getOneUser:(req, res) => {
         res.status(500).send(err);
       });
   },
- 
 
 
-// method
+
+
 }
