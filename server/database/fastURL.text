@@ -1,8 +1,12 @@
---------------------user----------------
+                --------------------user----------------
 --http://localhost:8080/api/user/adduser::(add user POST)
 --http://localhost:8080/api/user/getall::(get all user GET)
 --http://localhost:8080/api/user/getone/1::(get one user by (ID) GET)
 --http://localhost:8080/api/user/remove/7::(delete user by (ID) DELETE)
+                 ---------------auth------------------------------------
+http://localhost:8080/api/auth/signup
+http://localhost:8080/api/auth/login
+                 -----------------bookings---------------------------
 --http://localhost:8080/bookings::(add booking POST)
 --http://localhost:8080/bookings::(get all bookings GET)
 --http://localhost:8080/bookings/2::(remove booking by (ID) DELETE)

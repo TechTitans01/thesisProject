@@ -10,9 +10,9 @@ updateUser:(req,res)=>{
       bcrypt.compare(req.body.password, user.dataValues.password)
         .then((samepassword) => {
           if (samepassword) {
-            
+
             if (req.body.newPassword) {
-             
+
               bcrypt.hash(req.body.newPassword, 10)
                 .then((hashedNewPassword) => {
                   db.user.update({
@@ -34,7 +34,7 @@ updateUser:(req,res)=>{
                   res.status(500).send(hashError);
                 });
             } else {
-             
+
               db.user.update({
                 fullname: req.body.fullname,
                 address: req.body.adress,
@@ -104,8 +104,8 @@ getOneUser:(req, res) => {
         res.status(500).send(err);
       });
   },
- 
 
 
-// method
+
+
 }

@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 require("../server/database/sequelize/index.js")
 const routeruser=require("./database/routes/userRoutes.js")
+const authRoutes=require("./database/routes/authRout.js")
 const bookingRoutes = require('./database/routes/bookingRoutes.js');
 const reviewRoutes = require('./database/routes/reviewRoutes.js');
 const roomRoutes = require('./database/routes/roomRoutes.js')
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/user",routeruser)
+app.use("/api/auth", authRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/commentaires', reviewRoutes);
 app.use('/rooms', roomRoutes);
