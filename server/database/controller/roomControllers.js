@@ -1,74 +1,66 @@
-const db = require('../models');
-const db = require('../models/')
-const Room = db.room;
+const {room} = require('../sequelize/index');
 
-module.exports={
-getAllRoomsForHotel:async (req, res) => {
-  try {
-    const rooms = await Room.findAll({ where: { hotels_Id: req.params.hotelId } });
-    res.status(200).json(rooms);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-},
-
-getRoomByIdForHotel:async (req, res) => {
-  try {
-    const room = await Room.findOne({
-      where: { id: req.params.roomId, hotel_Id: req.params.hotelId }
-    });
-    if (!room) {
-      return res.status(404).json({ error: 'Room not found' });
+module.exports = {
+  getAllRoomsForHotel: async (req, res) => {
+    try {
+      const rooms = await room.findAll({ where: { hotelId: req.params.hotelId } });
+      res.status(200).json(rooms);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-    res.status(200).json(room);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-},
+  },
 
-createRoomForHotel:async (req, res) => {
-  try {
-    const hotel = await Hotel.findByPk(req.params.hotelId);
-    if (!hotel) {
-      return res.status(404).json({ error: 'Hotel not found' });
-    }
-    const newRoom = await Room.create({
-      ...req.body,
-      hotelId: req.params.hotelId
-    });
-    res.status(201).json(newRoom);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-},
+  getRoomById: async (req, res) =>{
+    room.findOne({ where: { id: req.params.id } })
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      });
+  },
 
-updateRoomForHotel:async (req, res) => {
-  try {
-    const room = await Room.findOne({
-      where: { id: req.params.roomId, hotelsId: req.params.hotelId }
-    });
-    if (!room) {
-      return res.status(404).json({ error: 'Room not found' });
+  createRoom: async (req, res) => {
+    try {
+      const newRoom = await room.create({
+        ...req.body,
+        hotelId: req.params.hotelId
+      });
+      res.status(201).json(newRoom);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-    await room.update(req.body);
-    res.status(200).json(room);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-},
+  },
 
-deleteRoomForHotel:async (req, res) => {
-  try {
-    const room = await Room.findOne({
-      where: { id: req.params.roomId, hotelId: req.params.hotelId }
-    });
-    if (!room) {
-      return res.status(404).json({ error: 'Room not found' });
-    }
-    await room.destroy();
-    res.status(204).json();
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  updateRoom: async (req, res) => {
+    room.findOne({ where: { id: req.params.id } })
+      .then(room => {
+        if (!room) {
+          return res.status(404).json({ error: 'Room not found' });
+        }
+        return room.update(req.body)
+          .then(updatedRoom => {
+            res.status(200).json(updatedRoom);
+          });
+      })
+      .catch(error => {
+        res.status(500).json({ error: error.message });
+      })
+  },
+
+  deleteRoom: async (req, res) => {
+    room.findOne({ where: { id: req.params.id } })
+      .then(room => {
+        if (!room) {
+          return res.status(404).json({ error: 'Room not found' });
+        }
+        return room.destroy()
+          .then(() => {
+            res.status(204).json();
+          });
+      })
+      .catch(error => {
+        res.status(500).json({ error: error.message });
+      })
   }
-},
 }
