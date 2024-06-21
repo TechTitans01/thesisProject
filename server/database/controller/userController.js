@@ -1,4 +1,5 @@
 const db=require("../sequelize/index.js")
+const bcrypt = require("bcrypt");
 module.exports={
 updateUser:(req,res)=>{
     db.user.findOne({ where: { email: req.body.email } })
