@@ -1,5 +1,3 @@
-
-
 module.exports=(sequelize,DataTypes)=>{
     const booking=sequelize.define("booking",{
         start: {
@@ -17,10 +15,7 @@ module.exports=(sequelize,DataTypes)=>{
           status: {
             type: DataTypes.ENUM('pending', 'confirmed', 'canceled'),
             allowNull: false,
-          },
-     
-
-
-    })
+          },             
+    })          
  return  booking
 }
