@@ -10,7 +10,7 @@ module.exports = {
             const hashedPassword = await bcrypt.hash(password, 10);
             // storing the hashed password in the database
             const newUser = await db.user.create({
-                
+                //LOL
                 email,
                 password: hashedPassword,
                 username
