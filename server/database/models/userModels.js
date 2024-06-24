@@ -9,7 +9,7 @@ module.exports=(sequelize,DataTypes)=>{
           address: {
             type: DataTypes.STRING,
             allowNull: true,
-            unique: true,
+           
           },
           phoneNumber: {
             type: DataTypes.STRING,
@@ -23,6 +23,10 @@ module.exports=(sequelize,DataTypes)=>{
             validate: {
               isEmail: true,
             },
+          },
+          image: {
+            type: DataTypes.STRING,
+            allowNull: true,
           },
           password: {
             type: DataTypes.STRING,
@@ -43,6 +47,14 @@ module.exports=(sequelize,DataTypes)=>{
             allowNull: true,
             unique: true,
           },
+          birthday:{
+            type: DataTypes.STRING,
+            allowNull: true,
+          },
+          gender:{
+            type: DataTypes.STRING,
+            allowNull: true,
+          }
 
 
 

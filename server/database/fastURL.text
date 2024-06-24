@@ -28,3 +28,8 @@ http://localhost:8080/api/auth/login
 --http://localhost:8080/commentaires/2/1::(create review in a room by user POST)
 --http://localhost:8080/commentaires/room/2::(get one review GET)
 --http://localhost:8080/commentaires/2::(remove review DELETE)
+
+----------------------------reclamation------------------------
+--http://localhost:8080/api/reclamation/send::(send reclamation POST)
+--http://localhost:8080/api/reclamation/getone::(getOne by (req.body.email)GET)
+--http://localhost:8080/api/reclamation/getall::(get all GET )
