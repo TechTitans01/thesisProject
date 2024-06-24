@@ -1,9 +1,10 @@
-"use client"
-import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebookF, faGooglePlusG, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
+"use client";
 
-const Login: React.FC = () => {
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useAuth } from '../../context/authcontex/Authcontex';
+
+const LoginPage: React.FC = () => {
+  const { loginAction } = useAuth();
   const [state, setState] = useState({
     email: '',
     password: ''
@@ -17,22 +18,27 @@ const Login: React.FC = () => {
     }));
   };
 
-  const handleOnSubmit = (evt: FormEvent) => {
+  const handleOnSubmit = async (evt: FormEvent) => {
     evt.preventDefault();
     const { email, password } = state;
-    alert(`You are logged in with email: ${email} and password: ${password}`);
 
-    setState({
-      email: '',
-      password: ''
-    });
+    try {
+      await loginAction({ email, password }, 'login');
+      alert('Login successful');
+      setState({
+        email: '',
+        password: ''
+      });
+    } catch (error) {
+      alert('Login failed');
+      console.error('Error:', error);
+    }
   };
 
   return (
     <div className="form-container sign-in-container">
       <form onSubmit={handleOnSubmit}>
         <h1>Sign in</h1>
-       
         <span>or use your account</span>
         <input
           type="email"
@@ -40,6 +46,7 @@ const Login: React.FC = () => {
           name="email"
           value={state.email}
           onChange={handleChange}
+          required
         />
         <input
           type="password"
@@ -47,23 +54,13 @@ const Login: React.FC = () => {
           placeholder="Password"
           value={state.password}
           onChange={handleChange}
+          required
         />
         <a href="#">Forgot your password?</a>
         <button type="submit">Sign In</button>
-        <div className="social-container">
-          <a href="#" className="social" style={{ color: '#3b5998' }}>
-            <FontAwesomeIcon icon={faFacebookF} />
-          </a>
-          <a href="#" className="social" style={{ color: '#db4437' }}>
-            <FontAwesomeIcon icon={faGooglePlusG} />
-          </a>
-          <a href="#" className="social" style={{ color: '#0e76a8' }}>
-            <FontAwesomeIcon icon={faLinkedinIn} />
-          </a>
-        </div>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default LoginPage;

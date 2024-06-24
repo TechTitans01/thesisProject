@@ -1,11 +1,12 @@
-"use client"
-import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebookF, faGooglePlusG, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
+"use client";
 
-const Signup: React.FC = () => {
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useAuth } from '../../context/authcontex/Authcontex';
+
+const SignupPage: React.FC = () => {
+  const { signupAction } = useAuth();
   const [state, setState] = useState({
-    name: '',
+    username: '',
     email: '',
     password: ''
   });
@@ -18,30 +19,35 @@ const Signup: React.FC = () => {
     }));
   };
 
-  const handleOnSubmit = (evt: FormEvent) => {
+  const handleOnSubmit = async (evt: FormEvent) => {
     evt.preventDefault();
-    const { name, email, password } = state;
-    alert(`You are signed up with name: ${name}, email: ${email}, and password: ${password}`);
+    const { username, email, password } = state;
 
-    setState({
-      name: '',
-      email: '',
-      password: ''
-    });
+    try {
+      await signupAction({ username, email, password });
+      alert('Signup successful');
+      setState({
+        username: '',
+        email: '',
+        password: ''
+      });
+    } catch (error) {
+      alert('Signup failed');
+      console.error('Error:', error);
+    }
   };
 
   return (
     <div className="form-container sign-up-container">
       <form onSubmit={handleOnSubmit}>
         <h1>Create Account</h1>
-
-        
+        <span>or use your email for registration</span>
         <input
           type="text"
-          name="name"
-          value={state.name}
+          name="username"
+          value={state.username}
           onChange={handleChange}
-          placeholder="Name"
+          placeholder="Username"
         />
         <input
           type="email"
@@ -58,20 +64,9 @@ const Signup: React.FC = () => {
           placeholder="Password"
         />
         <button type="submit">Sign Up</button>
-        <div className="social-container">
-          <a href="#" className="social" style={{ color: '#3b5998' }}>
-            <FontAwesomeIcon icon={faFacebookF} />
-          </a>
-          <a href="#" className="social" style={{ color: '#db4437' }}>
-            <FontAwesomeIcon icon={faGooglePlusG} />
-          </a>
-          <a href="#" className="social" style={{ color: '#0e76a8' }}>
-            <FontAwesomeIcon icon={faLinkedinIn} />
-          </a>
-        </div>
       </form>
     </div>
   );
 };
 
-export default Signup;
+export default SignupPage;
