@@ -1,90 +1,114 @@
-
-
 import React from 'react';
-import { Box, Typography, Card, CardContent, CardMedia, Button } from '@mui/material';
-import { FavoriteBorder as FavoriteBorderIcon } from '@mui/icons-material';
+import { Container, Grid, Box, Typography, Card, CardContent, CardMedia, Chip, Button, IconButton } from '@mui/material';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
-const RoomList: React.FC = () => {
-  const rooms = [
-    {
-      id: 1,
-      description: 'Bordeaux Getaway',
-      guests: 4,
-      nightPrice: 325,
-      bedroom: 5,
-      baths: 3,
-      beds: 5,
-      status: 1,
-      image1: '/path/to/image1.jpg',
-      image2: '/path/to/image2.jpg',
-      image3: '/path/to/image3.jpg',
-      image4: '/path/to/image4.jpg',
-      image5: '/path/to/image5.jpg',
-    },
-    {
-      id: 2,
-      description: 'Charming Waterfront Condo',
-      guests: 4,
-      nightPrice: 200,
-      bedroom: 5,
-      baths: 3,
-      beds: 5,
-      status: 1,
-      image1: '/path/to/image2.jpg',
-      image2: '/path/to/image3.jpg',
-      image3: '/path/to/image4.jpg',
-      image4: '/path/to/image5.jpg',
-      image5: '/path/to/image1.jpg',
-    },
-    {
-      id: 3,
-      description: 'Historic City Center Home',
-      guests: 4,
-      nightPrice: 125,
-      bedroom: 5,
-      baths: 3,
-      beds: 5,
-      status: 1,
-      image1: '/path/to/image3.jpg',
-      image2: '/path/to/image4.jpg',
-      image3: '/path/to/image5.jpg',
-      image4: '/path/to/image1.jpg',
-      image5: '/path/to/image2.jpg',
-    },
-  ];
+const properties = [
+  {
+    title: 'Bordeaux Getaway',
+    image: 'https://via.placeholder.com/400x200', // Replace with actual image URL
+    guests: '4-6 guests',
+    type: 'Entire Home',
+    beds: '5 Beds',
+    baths: '3 Baths',
+    amenities: ['Wifi', 'Kitchen', 'Free Parking'],
+    price: '$325 /night',
+    reviews: '318 reviews',
+    rating: 5.0
+  },
+  {
+    title: 'Charming Waterfront Condo',
+    image: 'https://via.placeholder.com/400x200', // Replace with actual image URL
+    guests: '4-6 guests',
+    type: 'Entire Home',
+    beds: '5 Beds',
+    baths: '3 Baths',
+    amenities: ['Wifi', 'Kitchen', 'Free Parking'],
+    price: '$200 /night',
+    reviews: '318 reviews',
+    rating: 5.0
+  },
+  {
+    title: 'Historic City Center Home',
+    image: 'https://via.placeholder.com/400x200', // Replace with actual image URL
+    guests: '4-6 guests',
+    type: 'Entire Home',
+    beds: '5 Beds',
+    baths: '3 Baths',
+    amenities: ['Wifi', 'Kitchen', 'Free Parking'],
+    price: '$125 /night',
+    reviews: '318 reviews',
+    rating: 5.0
+  }
+];
 
+const Page: React.FC = () => {
   return (
-    <Box>
-      {rooms.map(room => (
-        <Card key={room.id} sx={{ display: 'flex', mb: 2 }}>
-          <CardMedia
-            component="img"
-            sx={{ width: 200 }}
-            image={room.image1}
-            alt={room.description}
-          />
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <CardContent sx={{ flex: '1 0 auto' }}>
-              <Typography component="div" variant="h5">
-                {room.description}
-              </Typography>
-              <Typography variant="subtitle1" color="text.secondary" component="div">
-                {room.guests} guests - {room.beds} beds - {room.baths} baths
-              </Typography>
-              <Typography variant="subtitle1" color="text.primary" component="div">
-                ${room.nightPrice} / night
-              </Typography>
-            </CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-              <Button variant="outlined" startIcon={<FavoriteBorderIcon />}>
-                Save
-              </Button>
-            </Box>
-          </Box>
-        </Card>
-      ))}
-    </Box>
+    <Container>
+      <Box my={4}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={8}>
+            <Typography variant="h4">Rooms List</Typography>
+          </Grid>
+          <Grid item xs={12} md={4} display="flex" justifyContent="flex-end">
+            <Button variant="outlined">Free cancellation</Button>
+            <Button variant="outlined">Type of place</Button>
+            <Button variant="outlined">Price</Button>
+            <Button variant="outlined">Instant Book</Button>
+            <Button variant="outlined">More filters</Button>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Grid container spacing={4}>
+        {properties.map((property, index) => (
+          <Grid item xs={12} key={index}>
+            <Card>
+              <Grid container>
+                <Grid item xs={12} md={4}>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={property.image}
+                    alt={property.title}
+                  />
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <CardContent>
+                    <Grid container>
+                      <Grid item xs={10}>
+                        <Typography variant="h6">{property.title}</Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          {property.guests} • {property.type} • {property.beds} • {property.baths}
+                        </Typography>
+                        <Box mt={2}>
+                          {property.amenities.map((amenity, index) => (
+                            <Chip key={index} label={amenity} size="small" />
+                          ))}
+                        </Box>
+                        <Typography variant="body2" color="textSecondary" mt={2}>
+                          ⭐ {property.rating} • {property.reviews}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={2} display="flex" justifyContent="flex-end">
+                        <IconButton>
+                          <FavoriteBorderIcon />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                    <Box mt={2}>
+                      <Typography variant="h6" color="primary">
+                        {property.price}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Grid>
+              </Grid>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   );
 };
 
-export default RoomList;
+export default Page;
