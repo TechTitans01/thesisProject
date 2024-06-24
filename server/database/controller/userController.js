@@ -18,9 +18,12 @@ updateUser:(req,res)=>{
                 .then((hashedNewPassword) => {
                   db.user.update({
                     fullname: req.body.fullname,
-                    address: req.body.adress,
+                    address: req.body.address,
                     password: hashedNewPassword,
-                    phoneNumber:req.body.phoneNumber
+                    phoneNumber:req.body.phoneNumber,
+                    birthday: req.body.birthday,
+                    gender: req.body.gender,
+                    image:req.body.image
                   }, { where: { email: req.body.email } })
                     .then((result) => {
                       res.send(result);
@@ -38,8 +41,11 @@ updateUser:(req,res)=>{
 
               db.user.update({
                 fullname: req.body.fullname,
-                address: req.body.adress,
-                phoneNumber:req.body.phoneNumber
+                address: req.body.address,
+                phoneNumber:req.body.phoneNumber,
+                birthday: req.body.birthday,
+                gender: req.body.gender,
+                image:req.body.image
               }, { where: { email: req.body.email } })
                 .then((result) => {
                   res.send(result);
