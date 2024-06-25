@@ -18,3 +18,18 @@ http://localhost:8080/api/auth/login
 --http://localhost:8080/bookings::(get all bookings GET)
 --http://localhost:8080/bookings/2::(remove booking by (ID) DELETE)
 --http://localhost:8080/bookings/2::(update booking by (ID) PUT)
+                 ---------------rooms-------------------------
+--http://localhost:8080/rooms/hotel/1::(add room POST)
+--http://localhost:8080/rooms/hotel/1::(get rooms GET)
+--http://localhost:8080/rooms/1::(get one room GET)
+--http://localhost:8080/rooms/1::(update room PUT)
+--http://localhost:8080/rooms/1::(remove room DELETE)
+              ---------------reviews-------------------
+--http://localhost:8080/commentaires/2/1::(create review in a room by user POST)
+--http://localhost:8080/commentaires/room/2::(get one review GET)
+--http://localhost:8080/commentaires/2::(remove review DELETE)
+
+----------------------------reclamation------------------------
+--http://localhost:8080/api/reclamation/send::(send reclamation POST)
+--http://localhost:8080/api/reclamation/getone::(getOne by (req.body.email)GET)
+--http://localhost:8080/api/reclamation/getall::(get all GET )

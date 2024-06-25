@@ -91,7 +91,7 @@ right: 50%;
   }
   
   .submitButton {
-    background: #6a1b9a;
+    background: #2a7fce;
     color: #fff;
     padding: 10px;
     border: none;
@@ -101,46 +101,49 @@ right: 50%;
   }
   
   .submitButton:hover {
-    background: #4a148c;
+    background: #1f2eb4;
   }
-  
-  .inputGroup {
-    font-family: 'Segoe UI', sans-serif;
-    margin: 1em 0 1em 0;
-    max-width: 100%;
-    position: relative;
+  .videoTextOverlay h3 {
+    font-size: 4rem;
+    margin: 0;
   }
-  
-  .inputGroup input {
-    font-size: 100%;
-    padding: 0.8em;
-    outline: none;
-    border: 2px solid rgb(200, 200, 200);
-    background-color: transparent;
-    border-radius: 20px;
-    width: 100%;
-  }
-  
-  .inputGroup label {
-    font-size: 100%;
+  .videoTextOverlay {
     position: absolute;
-    left: 0;
-    padding: 0.8em;
-    margin-left: 0.5em;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    color: rgb(100, 100, 100);
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    color: rgb(255, 255, 255);
+    text-align: center;
+  
   }
   
-  .inputGroup :is(input:focus, input:valid)~label {
-    transform: translateY(-50%) scale(.9);
-    margin: 0em;
-    margin-left: 1.3em;
-    padding: 0.4em;
-    background-color: #e8e8e8;
+  h1{
+    color: #262626;
+  font-size: 2em;
+  line-height: normal;
+  font-weight: 700;
+  margin-bottom: 0.5em;
   }
-  
-  .inputGroup :is(input:focus, input:valid) {
-    border-color: rgb(150, 150, 200);
+  h2{
+    color: #262626;
+ 
+  line-height: normal;
+  font-weight: 700;
+  margin-bottom: 0.5em;
   }
 
+ 
+  .card-logos img {
+    width: 32px;
+    height: 20px;
+  }
+  .addressItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .addressItem .imgicon {
+    margin-right: 10px;
+  }
