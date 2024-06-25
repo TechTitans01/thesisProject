@@ -73,7 +73,7 @@
   }
   
   .submitButton {
-    background: #6a1b9a;
+    background: #2a7fce;
     color: #fff;
     padding: 10px;
     border: none;
@@ -83,6 +83,49 @@
   }
   
   .submitButton:hover {
-    background: #4a148c;
+    background: #1f2eb4;
+  }
+  .videoTextOverlay h3 {
+    font-size: 4rem;
+    margin: 0;
+  }
+  .videoTextOverlay {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    color: rgb(255, 255, 255);
+    text-align: center;
+  
   }
   
+  h1{
+    color: #262626;
+  font-size: 2em;
+  line-height: normal;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  }
+  h2{
+    color: #262626;
+ 
+  line-height: normal;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  }
+
+ 
+  .card-logos img {
+    width: 32px;
+    height: 20px;
+  }
+  .addressItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .addressItem .imgicon {
+    margin-right: 10px;
+  }
