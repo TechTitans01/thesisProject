@@ -1,10 +1,9 @@
-
-
 import React from 'react';
+import '../styles/rooms.css';
 import { Box, Typography, Card, CardContent, CardMedia, Button } from '@mui/material';
 import { FavoriteBorder as FavoriteBorderIcon } from '@mui/icons-material';
 
-const RoomList: React.FC = () => {
+const RoomList = () => {
   const rooms = [
     {
       id: 1,
@@ -52,9 +51,24 @@ const RoomList: React.FC = () => {
       image5: '/path/to/image2.jpg',
     },
   ];
-
   return (
     <Box>
+      <div className="search-container">
+        <div className="search-div">
+          <div>Bordeaux</div>
+          <div>Feb 19-26</div>
+          <div>2 guests</div>
+          <div className="search-icon">🔍</div>
+        </div>
+        <div className="toggle-container">
+          <div className="toggle-option active">
+            <img src="https://img.icons8.com/ios-glyphs/30/000000/globe--v1.png" alt="Globe" />
+          </div>
+          <div className="toggle-option">
+            <img src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png" alt="User" />
+          </div>
+        </div>
+      </div>
       {rooms.map(room => (
         <Card key={room.id} sx={{ display: 'flex', mb: 2 }}>
           <CardMedia
@@ -85,6 +99,6 @@ const RoomList: React.FC = () => {
       ))}
     </Box>
   );
-};
-
+}
+  
 export default RoomList;
