@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from 'next/image';
 import "../styles/editprofile.css";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
