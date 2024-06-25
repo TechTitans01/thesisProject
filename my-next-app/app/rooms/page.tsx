@@ -1,9 +1,14 @@
-import React from 'react';
+"use client"
+
+
+import React, { useState } from 'react';
 import '../styles/rooms.css';
-import { Box, Typography, Card, CardContent, CardMedia, Button } from '@mui/material';
+import { Box, Typography, Card, CardContent, CardMedia, IconButton, Rating } from '@mui/material';
 import { FavoriteBorder as FavoriteBorderIcon } from '@mui/icons-material';
 
 const RoomList = () => {
+  const [ratings, setRatings] = useState<any>({});
+
   const rooms = [
     {
       id: 1,
@@ -51,6 +56,14 @@ const RoomList = () => {
       image5: '/path/to/image2.jpg',
     },
   ];
+
+  const handleRatingChange = (roomId:number, newValue:any) => {
+    setRatings((prevRatings:any) => ({
+      ...prevRatings,
+      [roomId]: newValue,
+    }));
+  };
+
   return (
     <Box>
       <div className="search-container">
@@ -70,35 +83,47 @@ const RoomList = () => {
         </div>
       </div>
       {rooms.map(room => (
-        <Card key={room.id} sx={{ display: 'flex', mb: 2 }}>
+        <Card key={room.id} sx={{ display: 'flex', mb: 4, boxShadow: 3, borderRadius: 2, height: 250 }}>
           <CardMedia
             component="img"
-            sx={{ width: 200 }}
-            image={room.image1}
+            sx={{ width: 280, height: 200, objectFit: 'cover', borderRadius: 4, mt: 3, ml: 2 }}
+            image={"https://th.bing.com/th/id/OIP._Bg178FEGizmjHvZvMKGvgHaE8?rs=1&pid=ImgDetMain"}
             alt={room.description}
           />
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <CardContent sx={{ flex: '1 0 auto' }}>
-              <Typography component="div" variant="h5">
+          <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto', p: 2 }}>
+            <CardContent sx={{ flex: '1 0 auto', pb: 0 }}>
+              <p style={{ color: "#6c757d" }}>entire home in Bordeaux</p>
+              <Typography component="div" variant="h5" sx={{ fontWeight: 'bold' }}>
                 {room.description}
               </Typography>
-              <Typography variant="subtitle1" color="text.secondary" component="div">
-                {room.guests} guests - {room.beds} beds - {room.baths} baths
-              </Typography>
-              <Typography variant="subtitle1" color="text.primary" component="div">
-                ${room.nightPrice} / night
+              <Typography variant="body2" color="text.secondary" component="div" sx={{ fontSize: 17, mt: 4, mb: 2 }}>
+                {room.guests} guests · {room.beds} beds · {room.baths} baths
               </Typography>
             </CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-              <Button variant="outlined" startIcon={<FavoriteBorderIcon />}>
-                Save
-              </Button>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
+              <Rating
+                name={`rating-${room.id}`}
+                value={ratings[room.id] || 0}
+                onChange={(event, newValue) => {
+                  handleRatingChange(room.id, newValue);
+                }}
+              />
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', position: 'absolute', right: 0 }}>
+                <Typography variant="body1" color="text.primary" sx={{ mb: 1 }}>
+                  ${room.nightPrice} / night
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', position: 'absolute', right: 0 }}>
+                <IconButton sx={{ mb: 45 }}>
+                  <FavoriteBorderIcon />
+                </IconButton>
+              </Box>
             </Box>
           </Box>
         </Card>
       ))}
     </Box>
   );
-}
-  
+};
+
 export default RoomList;
