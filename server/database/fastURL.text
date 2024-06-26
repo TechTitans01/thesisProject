@@ -33,3 +33,6 @@ http://localhost:8080/api/auth/login
 --http://localhost:8080/api/reclamation/send::(send reclamation POST)
 --http://localhost:8080/api/reclamation/getone::(getOne by (req.body.email)GET)
 --http://localhost:8080/api/reclamation/getall::(get all GET )
+
+------------------------payment-----------
+--http://localhost:8080/api/payments/create::(payment POST)
