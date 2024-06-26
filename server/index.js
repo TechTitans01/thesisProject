@@ -9,7 +9,7 @@ const reviewRoutes = require('./database/routes/reviewRoutes.js');
 const roomRoutes = require('./database/routes/roomRoutes.js')
 const reclamationRoutes = require('./database/routes/reclamtion.js')
 const paymentRouter=require('./database/routes/paymentRoute.js')
-// const smsRouter=require("./database/routes/smsRouter.js")
+
 const {sendSMS} = require('./database/controller/sms.js');
 const PORT = 8080;
 const app = express();
