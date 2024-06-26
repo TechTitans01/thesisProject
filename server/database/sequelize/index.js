@@ -22,6 +22,7 @@ db.messages=require("../models/messagesModel.js")(sequelize,DataTypes)
 db.destination=require("../models/destinationModel.js")(sequelize,DataTypes)
 db.admin=require("../models/adminModel.js")(sequelize,DataTypes)
 db.commentaire=require("../models/commentaireModel.js")(sequelize,DataTypes)
+db.reclamation=require("../models/reclamation.js")(sequelize,DataTypes)
 
 
 db.notification.belongsTo(db.user);
