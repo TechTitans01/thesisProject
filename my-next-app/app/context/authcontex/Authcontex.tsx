@@ -31,7 +31,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw  Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -91,9 +91,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signupAction = async (data: SignupData) => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/signup', data);
-      const userData = response.data.data;
+     
+      const userData = response.data.newUser.id
 
-      setUser(userData);
+      setUser(response.data.username);
       localStorage.setItem("user", JSON.stringify(userData));
       setToken(response.data.token);
       localStorage.setItem("token", response.data.token);
@@ -121,3 +122,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+//all done
