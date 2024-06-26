@@ -8,6 +8,7 @@ const bookingRoutes = require('./database/routes/bookingRoutes.js');
 const reviewRoutes = require('./database/routes/reviewRoutes.js');
 const roomRoutes = require('./database/routes/roomRoutes.js')
 const reclamationRoutes = require('./database/routes/reclamtion.js')
+const destinationRoutes = require('./database/routes/destinationRoutes.js')
 const PORT = 8080;
 const app = express();
 
@@ -22,6 +23,8 @@ app.use("/api/auth", authRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/commentaires', reviewRoutes);
 app.use('/rooms', roomRoutes);
+ 
+app.use('/api/destination', destinationRoutes);
 app.use('/api/reclamation', reclamationRoutes);
 
 app.get("/", (req, res) => {

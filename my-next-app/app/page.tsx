@@ -6,6 +6,7 @@ import axios from "axios";
 
 export default function Home() {
   const [hotel, sethotel] = useState<any[]>([])
+  const [destination, setdestination] = useState<any[]>([])
   useEffect(() =>{
     axios.get("http://localhost:3000/hotels").then((res) => {
       console.log(res.data)
@@ -17,9 +18,15 @@ export default function Home() {
   .catch((err) => {
     console.log(err)
   })
- 
+  axios.get("http://localhost:3000/api/destination/getall").then((res)=> {
+    console.log(res.data)
+    setdestination(res.data)
+    console.log(destination)
+  }
+).catch((err) => {
+  console.log(err)
+})
   })
-
 
   return (
     
@@ -49,11 +56,16 @@ export default function Home() {
         <section className="inspiration">
           <h2>Inspiration for your next trip</h2>
           <div className="cards">
-            <div className="card">Paris</div>
-            <div className="card">Rome</div>
-            <div className="card">London</div>
-            <div className="card">Barcelona</div>
+            <div className="card">
+              <img src="https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcTLB9B0j50rJbcSbdja9_hySHS6_KATbhTK_iCeWeNKtA92hTmTX5nTW3udjjovZrnU1JxqAjMS_VqHnMwHGhTs35-sU-7B29_X_T3uLV8" alt="" /></div>
+            <div className="card">
+            <img src="https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcTLB9B0j50rJbcSbdja9_hySHS6_KATbhTK_iCeWeNKtA92hTmTX5nTW3udjjovZrnU1JxqAjMS_VqHnMwHGhTs35-sU-7B29_X_T3uLV8" alt="" /></div>
+            <div className="card">
+            <img src="https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcTLB9B0j50rJbcSbdja9_hySHS6_KATbhTK_iCeWeNKtA92hTmTX5nTW3udjjovZrnU1JxqAjMS_VqHnMwHGhTs35-sU-7B29_X_T3uLV8" alt="" /></div>
+            <div className="card">
+            <img src="https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcTLB9B0j50rJbcSbdja9_hySHS6_KATbhTK_iCeWeNKtA92hTmTX5nTW3udjjovZrnU1JxqAjMS_VqHnMwHGhTs35-sU-7B29_X_T3uLV8" alt="" /></div>
           </div>
+
         </section>
         <section className="partners">
           <h2>Our Partners</h2>
