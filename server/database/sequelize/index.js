@@ -1,7 +1,7 @@
 // const config = require("./config.js");
 const { Sequelize, DataTypes } = require("sequelize");
 
-// create a database sequelize in your application using a Sequelize instance and the config file
+
 const sequelize = new Sequelize(
   "travell",
   "root",
@@ -37,8 +37,10 @@ db.payment.belongsTo(db.booking);
 db.booking.hasMany(db.payment);
 
 
-db.messages.belongsTo(db.user);
-db.user.hasMany(db.messages);
+db.user.hasMany(db.messages, { foreignKey: 'senderId', as: 'sentMessages' });
+db.user.hasMany(db.messages, { foreignKey: 'receiverId', as: 'receivedMessages' });
+db.messages.belongsTo(db.user, { foreignKey: 'senderId', as: 'sender' });
+db.messages.belongsTo(db.user, { foreignKey: 'receiverId', as: 'receiver' });
 
 db.booking.belongsTo(db.user);
 db.user.hasMany(db.booking);
@@ -64,7 +66,7 @@ db.destination.hasMany(db.hotel);
 
 
 db.Sequelize=sequelize
-//verify your sequelize here !
+
 sequelize.authenticate().then(()=>{
   console.log("good")
 }).catch((err)=>{console.log(err,"Unable to connected")})
