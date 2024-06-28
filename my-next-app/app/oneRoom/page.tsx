@@ -1,12 +1,12 @@
 "use client"
 import React, { useState } from "react";
+import axios from 'axios';
 import {
   Container,
   Grid,
   Box,
   Typography,
   CardMedia,
-  Chip,
   Divider,
   Avatar,
   Button,
@@ -16,15 +16,12 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import WifiIcon from "@mui/icons-material/Wifi";
 import KitchenIcon from "@mui/icons-material/Kitchen";
 import LocalParkingIcon from "@mui/icons-material/LocalParking";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import StarIcon from "@mui/icons-material/Star";
-import DateRangePicker from "@mui/lab/DateRangePicker";
-import Map from "./map";
-import Weather from "./weather";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
+import Map from "./map";
+import Weather from "./weather";
 
 const property = {
   title: "Bordeaux Getaway",
@@ -61,17 +58,38 @@ const property = {
 
 const Page: React.FC = () => {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+  const [comments, setComments] = useState(property.reviews);
+  const [newComment, setNewComment] = useState('');
 
   const handleDateChange = (newDateRange: [Date | null, Date | null]) => {
     setDateRange(newDateRange);
   };
 
-  // Static review for demonstration
-  const staticReview = {
-    user: "Jack Black",
-    date: "May 2023",
-    comment: "Awesome location and very comfortable stay! 🌟🌟🌟🌟🌟",
-    avatar: "https://via.placeholder.com/40",
+  const handleCommentSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const newReview = {
+      user: "Anonymous",
+      date: new Date().toLocaleDateString(),
+      comment: newComment,
+      avatar: "https://via.placeholder.com/40", 
+    };
+
+    try {
+ 
+      const postResponse = await axios.post(`http://localhost:8080/commentaires/${roomId}/${userId}`, newReview);
+      
+      if (postResponse.status === 200) {
+     
+        const getResponse = await axios.get(`http://localhost:8080/commentaires/room/${roomId}`);
+        if (getResponse.status === 200) {
+          setComments(getResponse.data);
+          setNewComment('');
+        }
+      }
+    } catch (error) {
+      console.error("There was an error submitting the comment:", error);
+    }
   };
 
   return (
@@ -102,10 +120,7 @@ const Page: React.FC = () => {
           <Grid item xs={12} md={8}>
             <Box my={2}>
               <Typography variant="h6" gutterBottom>
-                Entire rental unit hosted by Super Host
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <Chip label="Super Host" color="primary" />
+                Entire rental unit
               </Typography>
               <Typography variant="body1" gutterBottom>
                 {property.details.guests} · {property.details.beds} · {property.details.baths}
@@ -184,9 +199,7 @@ const Page: React.FC = () => {
                 Date Range
               </Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DateRangeCalendar"]}>
-                  <DateRangeCalendar />
-                </DemoContainer>
+                <DateRangeCalendar value={dateRange} onChange={handleDateChange} />
               </LocalizationProvider>
             </Box>
 
@@ -194,7 +207,7 @@ const Page: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 5.0 <StarIcon fontSize="small" style={{ color: "#FFC107" }} /> • 7 reviews
               </Typography>
-              {property.reviews.map((review, index) => (
+              {comments.map((review, index) => (
                 <Box key={index} my={2}>
                   <Grid container alignItems="center">
                     <Grid item>
@@ -215,23 +228,22 @@ const Page: React.FC = () => {
 
             <Box my={2}>
               <Typography variant="h6" gutterBottom>
-                Additional Comments
+                Add a Comment
               </Typography>
-              <Box key={staticReview.user} my={2}>
-                <Grid container alignItems="center">
-                  <Grid item>
-                    <Avatar src={staticReview.avatar} />
-                  </Grid>
-                  <Grid item xs>
-                    <Typography variant="subtitle2">{staticReview.user}</Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {staticReview.date}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Typography gutterBottom>{staticReview.comment}</Typography>
-                <Divider />
-              </Box>
+              <form onSubmit={handleCommentSubmit}>
+                <TextField
+                  fullWidth
+                  label="Comment"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  margin="normal"
+                  multiline
+                  rows={4}
+                />
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </form>
             </Box>
           </Grid>
 
