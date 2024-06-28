@@ -1,3 +1,4 @@
+
 const db=require("../sequelize/index.js")
 const bcrypt = require("bcrypt");
 module.exports={
@@ -116,3 +117,4 @@ getOneUser:(req, res) => {
 
 
 }
+

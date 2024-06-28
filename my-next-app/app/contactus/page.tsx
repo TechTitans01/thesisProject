@@ -29,13 +29,7 @@ const sendReclamation=()=>{
     console.log(err)
   })
 
-
-
 }
-
-
-
-
 
     return (
         <div className="contactContainer">
