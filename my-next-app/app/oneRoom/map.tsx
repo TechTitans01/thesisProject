@@ -1,7 +1,9 @@
 import React from 'react';
 import { Box } from '@mui/material';
-
-const Map = ({ location }) => {
+interface mapProps {
+  location: string;
+}
+const Map = ({ location }:mapProps) => {
   const mapUrl = `https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(location)}`;
 
   return (
