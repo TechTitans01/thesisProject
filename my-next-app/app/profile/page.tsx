@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import "../styles/profile.css";
-
+import { useAuth } from "../context/authcontex/Authcontex";
 export default function Profile() {
   const [data, setData] = useState<any>({});
-
+  const { user } = useAuth();
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/user/getone/1`)
+    axios.get(`http://localhost:8080/api/user/getone/${user.id}`)
       .then((resp) => {
         console.log(resp.data);
         setData(resp.data);
@@ -54,6 +54,8 @@ export default function Profile() {
           </div>
         </div>
       </div>
+      
     </div>
+    
   );
 }

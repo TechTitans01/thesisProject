@@ -18,10 +18,10 @@
     "@mui/icons-material": "^5.15.20",
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.20",
-    "@stripe/react-stripe-js": "^2.7.1",
-    "@stripe/stripe-js": "^4.0.0",
     "@mui/x-date-pickers": "^7.7.1",
     "@mui/x-date-pickers-pro": "^7.7.1",
+    "@stripe/react-stripe-js": "^2.7.1",
+    "@stripe/stripe-js": "^4.0.0",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
     "dotenv": "^16.4.5",
@@ -32,6 +32,7 @@
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",
     "react-toastify": "^10.0.5",
+    "socket.io-client": "^4.7.5",
     "stripe": "^16.0.0"
   },
   "devDependencies": {
