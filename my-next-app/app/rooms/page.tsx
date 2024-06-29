@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 
 export default function house() {
 
+ 
+
   const [data,setData] = useState<any>([])
   useEffect(()=>{
     axios.get(`http://localhost:8080/rooms/hotel/1`).then((res)=>{

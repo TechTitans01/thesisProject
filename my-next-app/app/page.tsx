@@ -5,24 +5,68 @@ import React, { useState } from "react";
 import "./styles/home.css"
 import axios from "axios";
 import Image from 'next/image';
-
+import { useAuth } from "./context/authcontex/Authcontex";
 
 export default function home (){
-    return (
-            <body>
+  const { logOut } = useAuth();
+    const { user } = useAuth();
+    const token = localStorage.getItem('token');
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
+
+
+    return (<body>
 
      <div className="header">
 
-<nav>
-<Image className="logo" src="/img/logo.png" width={140} height={40} alt="dtg" />
-<ul className="nav-links">
-    <li><a href="#">popular Places</a></li>
-    <li><a href="#">Travel outside</a></li>
-    <li><a href="#">Online packages</a></li>
-</ul>
-<a href="#" className="register-btn"> Register Now</a>
-
-</nav>
+     <nav id="navBar" className='navbar-white'>
+    <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false}/>
+    <ul className='nav-links'>
+        <li><a href="/" className="active">Home</a></li>
+        <li><a href="/contactus" className="active">Contact Us</a></li>
+      
+    </ul>
+    {!token ? (
+            <a href="/auth" className="register-btn">
+             
+              Register Now
+            </a>
+          ) : (
+            <div className="toggle-container">
+              <div className="toggle-option active">
+                <img
+                  className="noti"
+                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                  alt="notification"
+                />
+              </div>
+              <div className="toggle-option" onClick={toggleDropdown}>
+                <img
+                  className="usee"
+                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                  alt="User"
+                />
+              </div>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <ul>
+                    <li>
+                      <a href="/editprofile">Edit Profile</a>
+                    </li>
+                   
+                    <li>
+                      <a href="/auth" onClick={()=>{logOut()}}>Logout</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+    </nav>
 <div className="container">
 <h1>Find Your Next Stay</h1>
 <div className="search-bar">

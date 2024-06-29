@@ -11,20 +11,129 @@ background-image: linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.3)),url("/img/ban
     background-size: cover;
     background-position: center;
   }
+ .logo{
+    cursor: pointer;
+  }
 
-  nav{
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 7%;
+   
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    
+    
+  }
+  
+  
+  .nav-links li a{
+     text-decoration: none;
+     color: #ffffff;
+     font-size: 22px;
+     font-style:inherit;     
+   
+    
+     
+  }
+  
+  .register-btn{
+      background: #fff;
+      color:#000;
+      padding: 8px 20px;
+  
+      border-radius:20px ;
+      text-decoration: none;
+      font-size: 14px;
+  }
+  nav .fa-bars{
+    display: none;
+     
+  }
+  .nav-links li{
+    list-style: none;
+    display: inline;
+    margin: 10px 30px;
+    
+  }
+  
+  .toggle-container {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 20px;
+    padding: 5px;
+    width: 150px;
+    margin-left: 25%;
+    height: 45px;
+    
+  }
+  
+  .toggle-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 20px;
+  }
+  
+  .toggle-option.active {
+    background-color: #ffffff;
+  }
+  
+  .toggle-option img {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    margin-top: 5%; /* Position it below the toggle */
+    right: 8%; /* Align it to the right of the toggle */
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1000; /* Ensure it's above other elements */
+  }
+  
+  .dropdown-menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .dropdown-menu ul li {
+    margin-bottom: 5px;
+  }
+  
+  .dropdown-menu ul li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 8px 12px;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dropdown-menu ul li a:hover {
+    background-color: #f0f0f0;
+  }
+  /* nav{
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 7%;
 
 
-  }
-  .logo{
-    cursor: pointer;
-  }
+  } */
+ 
 
-  .nav-links li{
+  /* .nav-links li{
     list-style:none ;
 
     display: inline-block;
@@ -44,7 +153,7 @@ background-image: linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.3)),url("/img/ban
  text-decoration: none;
  font-size: 14px;
 
-  }
+  } */
 
   .container{
     padding: 0 7%;
@@ -234,4 +343,68 @@ color: #fff;
     margin-bottom: 30px;
     font-weight: 500;
 
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  padding: 5px;
+  width: 150px;
+  margin-left: 25%;
+  height: 45px;
+  
+}
+
+.toggle-option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 20px;
+}
+
+.toggle-option.active {
+  background-color: #ffffff;
+}
+
+.toggle-option img {
+  width: 25px;
+  height: 25px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 10%; /* Position it below the toggle */
+  right: 8%; /* Align it to the right of the toggle */
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 10px;
+  z-index: 1000; /* Ensure it's above other elements */
+}
+
+.dropdown-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.dropdown-menu ul li {
+  margin-bottom: 5px;
+}
+
+.dropdown-menu ul li a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+  padding: 8px 12px;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-menu ul li a:hover {
+  background-color: #f0f0f0;
 }

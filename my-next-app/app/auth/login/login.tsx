@@ -2,9 +2,10 @@
 
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useAuth } from '../../context/authcontex/Authcontex';
-
+import { useRouter } from "next/navigation";
 const LoginPage: React.FC = () => {
   const { loginAction } = useAuth();
+  const router = useRouter();
   const [state, setState] = useState({
     email: '',
     password: ''
@@ -29,6 +30,7 @@ const LoginPage: React.FC = () => {
         email: '',
         password: ''
       });
+      router.push("/")
     } catch (error) {
       alert('Login failed');
       console.error('Error:', error);
