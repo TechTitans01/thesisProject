@@ -2,14 +2,24 @@
 
 
 import React, { useState } from "react";
+import Image from 'next/image';
 import "../styles/contactus.css"
 import axios from "axios";
-import Image from 'next/image';
+
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/authcontex/Authcontex";
 
 
 export default function ContactForm  (){
+
+
+  const token = localStorage.getItem('token');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  
+  const toggleDropdown = () => {
+      setDropdownOpen(!dropdownOpen);
+  };
 const[first,setfirst]=useState<string>("")
 const[last,setlast]=useState<string>("")
 const[phone,setphone]=useState<string>("")
@@ -40,30 +50,54 @@ const sendReclamation=()=>{
 
 
     return (<>
-    <nav className="navbar">
-        <ul className="navbar-list">
-          <li className="navbar-item">
-            <a href="/" className="navbar-link">
-              Home
+   <nav id="navBar" className='navbar-white'>
+    {/* <Image className="logo" src="/img/travel.jpg" width={100} height={100} alt="dtg" quality={75} priority={false}/> */}
+    <ul className='nav-links'>
+        <li><a href="/" className="active">Home</a></li>
+        
+      
+    </ul>
+    {!token ? (
+            <a href="/auth" className="register-btn">
+              {" "}
+              Register Now
             </a>
-          </li>
-          <li className="navbar-item">
-            <a href="/editprofile" className="navbar-link">
-              Edit Profile
-            </a>
-          </li>
-          <li className="navbar-item">
-            <a onClick={()=>{logOut()}} className="navbar-link">
-              Logout
-            </a>
-          </li>
-        </ul>
-      </nav>
+          ) : (
+            <div className="toggle-container">
+              <div className="toggle-option active">
+                <img
+                  className="noti"
+                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                  alt="notification"
+                />
+              </div>
+              <div className="toggle-option" onClick={toggleDropdown}>
+                <img
+                  className="usee"
+                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                  alt="User"
+                />
+              </div>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <ul>
+                    <li>
+                      <a href="/editprofile">Edit Profile</a>
+                    </li>
+                   
+                    <li>
+                      <a href="/auth" onClick={()=>{logOut()}}>Logout</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+    </nav>
         <div className="contactContainer">
               <div className="videoContainer">
             <video className="backgroundVideo" autoPlay muted loop>
-              <source src="https://cdn.pixabay.com/video/2019/04/23/23011-332483109_large.mp4" type="video/mp4" />
-              Contact Us
+              <source src="https://cdn.pixabay.com/video/2019/04/23/23011-332483109_large.mp4" type="video/mp4" title="Contact Us" />
             </video>
             <div className="videoTextOverlay">
           <h3>Conatct Us </h3>
@@ -103,6 +137,7 @@ const sendReclamation=()=>{
                 <button type="submit" className="submitButton" onClick={()=>{sendReclamation()}}>Send Message</button>
               </div>
             </div>
+           
           </div>
         
         </div>

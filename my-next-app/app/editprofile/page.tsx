@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { useAuth } from "../context/authcontex/Authcontex";
 export default function EditProfile() {
+
   const [fullname, setFullname] = useState<string>("");
   const [file, setFile] = useState<File | any>(null);
   const [username, setUsername] = useState<string>("");
@@ -33,6 +34,14 @@ export default function EditProfile() {
     return `${day} ${month} ${year}`;
   };
 
+  
+  const token = localStorage.getItem('token');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  
+  const toggleDropdown = () => {
+      setDropdownOpen(!dropdownOpen);
+  };
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/user/getone/${user.id}`)
@@ -90,25 +99,50 @@ export default function EditProfile() {
 
   return (
     <>
-      <nav className="navbar">
-        <ul className="navbar-list">
-          <li className="navbar-item">
-            <a href="/" className="navbar-link">
-              Home
+     <nav id="navBar" className='navbar-white'>
+    {/* <Image className="logo" src="/img/travel.jpg" width={100} height={100} alt="dtg" quality={75} priority={false}/> */}
+    <ul className='nav-links'>
+        <li><a href="/" className="active">Home</a></li>
+        <li><a href="/contactus" className="active">Contact Us</a></li>
+      
+    </ul>
+    {!token ? (
+            <a href="/auth" className="register-btn">
+             
+              Register Now
             </a>
-          </li>
-          <li className="navbar-item">
-            <a href="/contactus" className="navbar-link">
-              Contact Us
-            </a>
-          </li>
-          <li className="navbar-item">
-            <a onClick={()=>{logOut()}} className="navbar-link">
-              Logout
-            </a>
-          </li>
-        </ul>
-      </nav>
+          ) : (
+            <div className="toggle-container">
+              <div className="toggle-option active">
+                <img
+                  className="noti"
+                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                  alt="notification"
+                />
+              </div>
+              <div className="toggle-option" onClick={toggleDropdown}>
+                <img
+                  className="usee"
+                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                  alt="User"
+                />
+              </div>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <ul>
+                    <li>
+                      <a href="/editprofile">Edit Profile</a>
+                    </li>
+                   
+                    <li>
+                      <a href="/auth" onClick={()=>{logOut()}}>Logout</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+    </nav>
       <div className="container">
       <video autoPlay muted loop className="video-background">
         <source src="https://cdn.pixabay.com/video/2019/04/23/23011-332483109_large.mp4" type="video/mp4" />

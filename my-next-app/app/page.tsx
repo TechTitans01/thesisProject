@@ -1,107 +1,246 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            atoui's proj{" "}
-           
-          </a>
+
+import React, { useState } from "react";
+import "./styles/home.css"
+import axios from "axios";
+import Image from 'next/image';
+import { useAuth } from "./context/authcontex/Authcontex";
+
+export default function home (){
+  const { logOut } = useAuth();
+    const { user } = useAuth();
+    const token = localStorage.getItem('token');
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
+
+
+    return (<body>
+
+     <div className="header">
+
+     <nav id="navBar" className='navbar-white'>
+    <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false}/>
+    <ul className='nav-links'>
+        <li><a href="/" className="active">Home</a></li>
+        <li><a href="/contactus" className="active">Contact Us</a></li>
+      
+    </ul>
+    {!token ? (
+            <a href="/auth" className="register-btn">
+             
+              Register Now
+            </a>
+          ) : (
+            <div className="toggle-container">
+              <div className="toggle-option active">
+                <img
+                  className="noti"
+                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                  alt="notification"
+                />
+              </div>
+              <div className="toggle-option" onClick={toggleDropdown}>
+                <img
+                  className="usee"
+                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                  alt="User"
+                />
+              </div>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <ul>
+                    <li>
+                      <a href="/editprofile">Edit Profile</a>
+                    </li>
+                   
+                    <li>
+                      <a href="/auth" onClick={()=>{logOut()}}>Logout</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+    </nav>
+<div className="container">
+<h1>Find Your Next Stay</h1>
+<div className="search-bar">
+    <div id="for">
+        <div className="location-input">
+            <label >Location</label>
+            <input type="text" placeholder="Where are you going?" />
         </div>
-      </div>
+        <div>
+            <label >Check in</label>
+            <input type="text" placeholder="Add date" />
+        </div>
+        <div>
+            <label >Check out</label>
+            <input type="text" placeholder="Add date" />
+        </div>
+        <div>
+            <label >Guest</label>
+            <input type="text" placeholder=" Add Guest" />
+        </div>
+        <button> <Image  src="/img/search.png" width={20} height={20} alt="dtg" style={{marginTop:5 , marginLeft:7}} /></button>
+    </div>
+</div>
+</div>
+  </div>
+  <div className="container">
+<h2 className="sub-title">Exclusives</h2>
+<div className="exclusives">
+    <div>
+    <Image  src="/img/image-1.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
+    <span>
+        <h3>London</h3>
+        <p>starts @ $250</p>
+    </span>
+    </div>
+    <div>
+    <Image  src="/img/image-2.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
+    <span>
+        <h3>Switzerland</h3>
+        <p>starts @ $250</p>
+    </span>
+    </div>
+    <div>
+    <Image  src="/img/image-3.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
+    <span>
+        <h3>Australia</h3>
+        <p>starts @ $250</p>
+    </span>
+    </div>
+    <div>
+    <Image  src="/img/image-4.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
+    <span>
+        <h3>France</h3>
+        <p>starts @ $250</p>
+    </span>
+    </div>
+    <div>
+    <Image  src="/img/image-5.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
+    <span>
+        <h3>Amesterdam</h3>
+        <p>starts @ $250</p>
+    </span>
+    </div>
+    <div>
+    <Image  src="/img/image-6.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
+    <span>
+        <h3>Netherlands</h3>
+        <p>starts @ $250</p>
+    </span>
+    </div>
+    <div>
+    <Image  src="/img/image-7.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
+    <span>
+        <h3>New York</h3>
+        <p>starts @ $250</p>
+    </span>
+    </div>
+    <div>
+    <Image  src="/img/image-8.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
+    <span>
+        <h3>Chicago</h3>
+        <p>starts @ $250</p>
+    </span>
+    </div>
+    <div>
+    <Image  src="/img/image-9.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
+    <span>
+        <h3>San Francisco</h3>
+        <p>starts @ $250</p>
+    </span>
+    </div>
+    <div>
+    <Image  src="/img/image-10.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
+    <span>
+        <h3>shanghai</h3>
+        <p>starts @ $250</p>
+    </span>
+    </div>
+    
+</div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+<h2 className="sub-title">Trending Places</h2>
+<div className="tranding">
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+    <div>
+    <Image  src="/img/dubai.png" width={230} height={280}style={{borderRadius:10}}  alt="dtg"  />
+    <h3>Dubai</h3>
+    </div>
+    <div>
+    <Image  src="/img/new-york.png" width={230} height={280}style={{borderRadius:10}}  alt="dtg"  />
+    <h3>New York</h3>
+    </div>
+    <div>
+    <Image  src="/img/paris.png" width={230} height={280}style={{borderRadius:10}}  alt="dtg"  />
+    <h3>Paris</h3>
+    </div>
+    <div>
+    <Image  src="/img/new-delhi.png" width={230} height={280}style={{borderRadius:10}}  alt="dtg"  />
+    <h3>New Delhi</h3>
+    </div>
+    <div>
+    <Image  src="/img/new-delhi.png" width={230} height={280}style={{borderRadius:10}}  alt="dtg"  />
+    <h3>New Delhi</h3>
+    </div>
+    
+</div>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+<div className="cta">
+    <h3> Sharing <br /> is Earning Now</h3>
+    <p>Great opportunity to make money by <br /> sharing your extra space.</p>
+    <a href="" className="cta-btn">know More</a>
+</div>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+<h2 className="sub-title">Travellers Stories</h2>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+<div className="stories">
+    <div>
+    <Image  src="/img/story-1.png" width={350} height={400}style={{borderRadius:10}}  alt="dtg"  />
+    <p>Popular European countries with  a budget of just $10,000</p>
+    </div>
+    <div>
+    <Image  src="/img/story-2.png" width={350} height={400}style={{borderRadius:10}}  alt="dtg"  />
+    <p>Popular European countries with  a budget of just $10,000</p>
+    </div>
+    <div>
+    <Image  src="/img/story-3.png" width={350} height={400}style={{borderRadius:10}}  alt="dtg"  />
+    <p>Popular European countries with  a budget of just $10,000</p>
+    </div>
+    
+</div>
 
+<a href="#" className="start-btn"> Start making money</a>
+ 
+ <div className="about-msg">
+    <h2>About my website</h2>
+    <p>
+    we believe that travel is more than just visiting new places—it's 
+    about creating unforgettable memories,
+     experiencing diverse cultures,
+     and discovering the beauty of our world. 
+     Whether you're seeking a serene beach escape,
+      an adventurous mountain trek,
+     or an immersive cultural journey, we're here to help you plan the perfect trip.
+    </p>
+ </div>
+  </div>
+
+
+
+
+
+
+            </body>
+      );
+    
+    
 }
