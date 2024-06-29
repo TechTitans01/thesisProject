@@ -1,10 +1,44 @@
+
 .contactContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
   }
+ 
+  .navbar {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
   
+  .navbar-list {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar-item {
+    margin: 0 20px;
+  }
+  
+  .navbar-link {
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .navbar-link:hover {
+    color: #007bff;
+  }
+
   .contentWrapper {
     display: flex;
     padding: 20px;

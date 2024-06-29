@@ -2,9 +2,10 @@
 
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useAuth } from '../../context/authcontex/Authcontex';
-
+import { useRouter } from "next/navigation";
 const SignupPage: React.FC = () => {
   const { signupAction } = useAuth();
+  const router = useRouter();
   const [state, setState] = useState({
     username: '',
     email: '',
@@ -31,6 +32,7 @@ const SignupPage: React.FC = () => {
         email: '',
         password: ''
       });
+      router.push("/editprofile")
     } catch (error) {
       alert('Signup failed');
       console.error('Error:', error);

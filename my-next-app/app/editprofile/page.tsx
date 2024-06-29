@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Image from 'next/image';
 import "../styles/editprofile.css";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -22,6 +23,8 @@ export default function EditProfile() {
   const [birthday, setBirthday] = useState<string>("");
   const [gender, setGender] = useState<string>("");
   const { user } = useAuth();
+  const { logOut } = useAuth();
+  const router = useRouter();
   const formatDateString = (isoString: string) => {
     const date = new Date(isoString);
     const day = date.getUTCDate();
@@ -100,7 +103,7 @@ export default function EditProfile() {
             </a>
           </li>
           <li className="navbar-item">
-            <a href="/logout" className="navbar-link">
+            <a onClick={()=>{logOut()}} className="navbar-link">
               Logout
             </a>
           </li>
@@ -142,7 +145,7 @@ export default function EditProfile() {
             <p>Member Since: {created}</p>
           </div>
           <div>
-            <h3>Your Profile</h3>
+            <h2 onClick={()=>{router.push("/profile")}}><big><b>Your Profile</b></big></h2>
           </div>
         </div>
         <div className="profile-edit">
@@ -239,7 +242,7 @@ export default function EditProfile() {
               />
             </div>
             <button type="submit" onClick={() => confirmPass()}>
-              Update Info
+              save
             </button>
           </div>
         </div>

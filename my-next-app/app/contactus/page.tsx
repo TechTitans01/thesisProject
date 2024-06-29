@@ -5,6 +5,8 @@ import React, { useState } from "react";
 import "../styles/contactus.css"
 import axios from "axios";
 import Image from 'next/image';
+import { useRouter } from "next/navigation";
+import { useAuth } from "../context/authcontex/Authcontex";
 
 
 export default function ContactForm  (){
@@ -13,7 +15,8 @@ const[last,setlast]=useState<string>("")
 const[phone,setphone]=useState<string>("")
 const[text,settext]=useState<string>("")
 const[email,setemail]=useState<string>("")
-
+const { logOut } = useAuth();
+const router = useRouter();
 
 const sendReclamation=()=>{
   axios.post(`http://localhost:8080/api/reclamation/send`,{
@@ -36,7 +39,26 @@ const sendReclamation=()=>{
 
 
 
-    return (
+    return (<>
+    <nav className="navbar">
+        <ul className="navbar-list">
+          <li className="navbar-item">
+            <a href="/" className="navbar-link">
+              Home
+            </a>
+          </li>
+          <li className="navbar-item">
+            <a href="/editprofile" className="navbar-link">
+              Edit Profile
+            </a>
+          </li>
+          <li className="navbar-item">
+            <a onClick={()=>{logOut()}} className="navbar-link">
+              Logout
+            </a>
+          </li>
+        </ul>
+      </nav>
         <div className="contactContainer">
               <div className="videoContainer">
             <video className="backgroundVideo" autoPlay muted loop>
@@ -56,15 +78,15 @@ const sendReclamation=()=>{
               <address>
             <div className="addressItem">
               <Image className="imgicon" src="/img/map.png" width={20} height={20} alt="dtg" />
-              <b>1055 Arthur ave Elk Groot, 67, New Palmas South Carolina.</b>
+              <b>5020 Monastir Rue Basatin, 67, sousse Kantaoui.</b>
             </div>
             <div className="addressItem">
               <Image className="imgicon" src="/img/phone.png" width={20} height={20} alt="dtg" />
-              <b>+1 234 678 9108 99</b>
+              <b>+216 55 600 939</b>
             </div>
             <div className="addressItem">
               <Image className="imgicon" src="/img/email.png" width={20} height={20} alt="dtg" />
-              <b>Contact@moralizer.com</b>
+              <b>Contact.travel@agency.com</b>
             </div>
           </address>
             </div>
@@ -84,6 +106,7 @@ const sendReclamation=()=>{
           </div>
         
         </div>
+        </>
       );
     }
     
