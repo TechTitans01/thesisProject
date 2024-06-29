@@ -5,13 +5,14 @@ module.exports={
         try {
           const { amount, userId, bookingId,email,country,nameCard } = req.body;
       
-          // Create a new payment intent with the specified amount and currency
+         
+          
           const paymentIntent = await stripe.paymentIntents.create({
             amount,
             currency: 'usd',
           });
       
-          // Save the payment intent ID in your database (optional)
+         
           const payment = await db.payment.create({
             amount,
             stripePaymentIntentId: paymentIntent.id,
@@ -22,7 +23,7 @@ module.exports={
             nameCard,
           });
       
-          // Send the client secret to the client
+        
           res.send({
             clientSecret: paymentIntent.client_secret,
           });

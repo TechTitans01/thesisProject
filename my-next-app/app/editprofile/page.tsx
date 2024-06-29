@@ -5,7 +5,7 @@ import "../styles/editprofile.css";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
-
+import { useAuth } from "../context/authcontex/Authcontex";
 export default function EditProfile() {
   const [fullname, setFullname] = useState<string>("");
   const [file, setFile] = useState<File | any>(null);
@@ -21,7 +21,7 @@ export default function EditProfile() {
   const [formattedDate, setFormattedDate] = useState<string>("");
   const [birthday, setBirthday] = useState<string>("");
   const [gender, setGender] = useState<string>("");
-
+  const { user } = useAuth();
   const formatDateString = (isoString: string) => {
     const date = new Date(isoString);
     const day = date.getUTCDate();
@@ -32,7 +32,7 @@ export default function EditProfile() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/user/getone/1`)
+      .get(`http://localhost:8080/api/user/getone/${user.id}`)
       .then((resp) => {
         setUsername(resp.data.username);
         setCreated(formatDateString(resp.data.createdAt));
