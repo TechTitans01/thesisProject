@@ -2,9 +2,10 @@
 
 
 import React, { useState } from "react";
+import Image from 'next/image';
 import "../styles/contactus.css"
 import axios from "axios";
-import Image from 'next/image';
+
 
 
 export default function ContactForm  (){
@@ -28,20 +29,13 @@ const sendReclamation=()=>{
     console.log(err)
   })
 
-
-
 }
-
-
-
-
 
     return (
         <div className="contactContainer">
               <div className="videoContainer">
             <video className="backgroundVideo" autoPlay muted loop>
-              <source src="https://cdn.pixabay.com/video/2019/04/23/23011-332483109_large.mp4" type="video/mp4" />
-              Contact Us
+              <source src="https://cdn.pixabay.com/video/2019/04/23/23011-332483109_large.mp4" type="video/mp4" title="Contact Us" />
             </video>
             <div className="videoTextOverlay">
           <h3>Conatct Us </h3>
@@ -81,6 +75,7 @@ const sendReclamation=()=>{
                 <button type="submit" className="submitButton" onClick={()=>{sendReclamation()}}>Send Message</button>
               </div>
             </div>
+           
           </div>
         
         </div>

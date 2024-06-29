@@ -9,13 +9,17 @@ const bookingRoutes = require('./database/routes/bookingRoutes.js')
 const reviewRoutes = require('./database/routes/reviewRoutes.js')
 const roomRoutes = require('./database/routes/roomRoutes.js')
 const reclamationRoutes = require('./database/routes/reclamtion.js')
-const paymentRouter = require('./database/routes/paymentRoute.js')
+
 const messagesRouter=require("./database/routes/messageRoute.js")
-const { sendSMS } = require('./database/controller/sms.js')
 
-const PORT = 8080
-const app = express()
+const destinationRoutes = require('./database/routes/destinationRoutes.js')
 
+const paymentRouter=require('./database/routes/paymentRoute.js')
+
+const {sendSMS} = require('./database/controller/sms.js');
+
+const PORT = 8080;
+const app = express();
 
 const server = require('http').createServer(app)
 
@@ -24,6 +28,10 @@ const io = require('socket.io')(server, {
     origin: '*',
   }
 });
+
+
+
+
 
 
 app.use(express.json());
@@ -36,6 +44,8 @@ app.use("/api/auth", authRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/commentaires', reviewRoutes);
 app.use('/rooms', roomRoutes);
+ 
+app.use('/api/destination', destinationRoutes);
 app.use('/api/reclamation', reclamationRoutes);
 app.use('/api/payments', paymentRouter);
 app.use('/api/chat',messagesRouter)

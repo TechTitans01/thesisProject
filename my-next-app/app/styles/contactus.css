@@ -4,7 +4,8 @@
     align-items: center;
     padding: 20px;
   }
-  
+ 
+
   .contentWrapper {
     display: flex;
     padding: 20px;
@@ -13,9 +14,26 @@
     background: #ffff;
     position: relative;
     z-index: 1;
-    margin-top: 230px;
-  }
+    margin-top: 18%;
+   
+   
   
+    
+  }
+.fas{
+  font-size:24px
+}
+.imgicon{ 
+right: 50%;
+} 
+
+  h2{
+    color: #262626;
+  font-size: 1.5em;
+  line-height: normal;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  }
   .contactDetails {
     flex: 1;
     padding: 20px;
@@ -36,7 +54,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 250px;
+    height: 280px;
     overflow: hidden;
     z-index: 0;
   }
@@ -48,9 +66,9 @@
   }
   
   .contactDetails h2, .formContainer h2 {
+    width: 95%;
     color: #2d2d2d;
-  }
-  
+  } 
   .contactForm {
     display: flex;
     flex-direction: column;
