@@ -11,6 +11,8 @@ import {
   Avatar,
   Button,
   TextField,
+  Menu,
+  MenuItem
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import WifiIcon from "@mui/icons-material/Wifi";
@@ -21,11 +23,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers-pro/LocalizationProvid
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
 import Map from "../map";
+import "../../styles/oneroom.css";
 import Weather from "../weather";
 import { usePathname } from "next/navigation";
-import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
 import { useAuth } from "@/app/context/authcontex/Authcontex";
-
+import { useRouter } from 'next/navigation';
 const property = {
   title: "Bordeaux Getaway",
   location: "Bordeaux, France",
@@ -63,38 +65,62 @@ const Page: React.FC = () => {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [comments, setComments] = useState<any>([]);
   const [newComment, setNewComment] = useState('');
-  const [data,setData] = useState<any>({})
-  const [array,setArray] = useState<any>([])
-const {user} = useAuth()
+  const [data, setData] = useState<any>({});
+  const [array, setArray] = useState<any>([]);
+  const { user } = useAuth();
 
-    const pathname = usePathname()
-    const id = pathname.slice(pathname.length-1)
+  const router = useRouter();
+  
+  const toChat = (id:number)=>{
+    router.push(`/chatroom/${id}`)
+  }
+
+  const seeprofile = (id:number)=>{
+    router.push(`/profilefreind/${id}`)
+  }
+
+
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const pathname = usePathname();
+  const id = pathname.slice(pathname.length - 1);
+
   const handleDateChange = (newDateRange: [Date | null, Date | null]) => {
     setDateRange(newDateRange);
   };
 
+  useEffect(() => {
+    axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
+      setData(res.data);
+      array.push(res.data.image1, res.data.image2, res.data.image3);
+      console.log(array, "image1");
+    }).catch(err => { console.log(err) });
+  }, []);
 
-  useEffect(()=>{
-    axios.get(`http://localhost:8080/rooms/${id}`).then((res)=>{
-      setData(res.data)
-      array.push(res.data.image1,res.data.image2,res.data.image3)
-      console.log(array,"image1");
-      
-    }).catch(err=>{console.log(err)})
-  },[])
-  useEffect (()=>{
-    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res)=>{
-      setComments(res.data)
-    }).catch(err=>{console.log(err)})
-  })
-  const commenti =()=>{
-    axios.post(`http://localhost:8080/commentaires/${id}/${user.id}`,{
+  useEffect(() => {
+    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
+      setComments(res.data);
+    }).catch(err => { console.log(err) });
+  }, []);
+
+  const commenti = () => {
+    axios.post(`http://localhost:8080/commentaires/${id}/${user.id}`, {
       text: newComment,
       date: "12/10/2024"
-    }).then((res)=>{
-      console.log(res)
-    }).catch((error)=>{console.log(error)})
-  }
+    }).then((res) => {
+      console.log(res);
+    }).catch((error) => { console.log(error) });
+  };
+
   return (
     <Container>
       <Box my={4}>
@@ -112,23 +138,21 @@ const {user} = useAuth()
         </Typography>
 
         <Grid container spacing={2} my={2}>
-        
-            <Grid item xs={12} md={4}>
-              <CardMedia component="img" height="200" image={data.image1} alt="image" />
-            </Grid>
-         <Grid item xs={12} md={4}>
-              <CardMedia component="img" height="200" image={data.image2} alt="image" />
-            </Grid>
-         <Grid item xs={12} md={4}>
-              <CardMedia component="img" height="200" image={data.image3} alt="image" />
-            </Grid>
-         <Grid item xs={12} md={4}>
-              <CardMedia component="img" height="200" image={data.image4} alt="image" />
-            </Grid>
-         <Grid item xs={12} md={4}>
-              <CardMedia component="img" height="200" image={data.image5} alt="image" />
-            </Grid>
-        
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image1} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image2} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image3} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image4} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image5} alt="image" />
+          </Grid>
         </Grid>
 
         <Grid container spacing={2} my={2}>
@@ -138,7 +162,7 @@ const {user} = useAuth()
                 Entire rental unit
               </Typography>
               <Typography variant="body1" gutterBottom>
-                {property.details.guests} · {property.details.beds} · {property.details.baths}
+                {data.guests} Guest · {data.beds} Beds · {data.baths} Baths
               </Typography>
             </Box>
 
@@ -214,7 +238,7 @@ const {user} = useAuth()
                 Date Range
               </Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateRangeCalendar value={dateRange} onChange={handleDateChange} />
+                <DateRangeCalendar onChange={handleDateChange} />
               </LocalizationProvider>
             </Box>
 
@@ -222,12 +246,22 @@ const {user} = useAuth()
               <Typography variant="h6" gutterBottom>
                 5.0 <StarIcon fontSize="small" style={{ color: "#FFC107" }} /> • 7 reviews
               </Typography>
-              {comments.map((review, index) => (
+
+              {comments.map((review: any, index: any) => (
                 <Box key={index} my={2}>
                   <Grid container alignItems="center">
                     <Grid item>
-                      <Avatar src="" />
+                      <Avatar src="" onClick={handleClick} style={{ cursor: 'pointer' }} />
+                      <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                      >
+                        <MenuItem onClick={() => { handleClose(); seeprofile(review.userId); }}>Profile</MenuItem>
+                        <MenuItem onClick={() => { handleClose(); toChat(review.userId); }}>Send message</MenuItem>
+                      </Menu>
                     </Grid>
+
                     <Grid item xs>
                       <Typography variant="subtitle2">guest</Typography>
                       <Typography variant="caption" color="textSecondary">
@@ -239,6 +273,7 @@ const {user} = useAuth()
                   <Divider />
                 </Box>
               ))}
+
             </Box>
 
             <Box my={2}>
@@ -255,7 +290,7 @@ const {user} = useAuth()
                   multiline
                   rows={4}
                 />
-                <Button onClick={()=>commenti()} variant="contained" color="primary" type="submit">
+                <Button onClick={() => commenti()} variant="contained" color="primary" type="submit">
                   Submit
                 </Button>
               </div>
@@ -278,7 +313,7 @@ const {user} = useAuth()
                 Rent
               </Button>
               <Box my={2}>
-                <Typography variant="body1">Price: ${property.price} per night</Typography>
+                <Typography variant="body1">Price: ${data.nightPrice} per night</Typography>
                 <Typography variant="body2" color="textSecondary">
                   Taxes and fees are included
                 </Typography>

@@ -1,19 +1,25 @@
 "use client"
 import Image from 'next/image';
 import axios from 'axios';
-import "../styles/rooms.css";
+import "../../styles/rooms.css";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export default function House() {
   const [data, setData] = useState<any>([]);
   const router = useRouter();
+  const pathname = usePathname()
+  const id = pathname.slice(pathname.length-1)
+
+
+
   
   const toOneRoom = (id:number)=>{
     router.push(`/oneRoom/${id}`)
   }
   useEffect(() => {
-    axios.get(`http://localhost:8080/rooms/hotel/1`)
+    axios.get(`http://localhost:8080/rooms/hotel/${id}`)
       .then((res) => {
         setData(res.data);
       })

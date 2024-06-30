@@ -6,14 +6,18 @@ import "./styles/home.css"
 import axios from "axios";
 import Image from 'next/image';
 import { useAuth } from "./context/authcontex/Authcontex";
-
+import { useRouter } from 'next/navigation';
 export default function home (){
   const { logOut } = useAuth();
     const { user } = useAuth();
     const {token}=useAuth()
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
     const[destination,setdestination]=useState<any>([])
+    const router = useRouter();
 
+    const toHotel = (id:number)=>{
+      router.push(`/hotel/${id}`)
+    }
     
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -110,9 +114,9 @@ export default function home (){
 return(
 <div>
 {/* <Image  src="/img/image-1.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  /> */}
-<img src={el.image}  width={220} height={120} style={{borderRadius:10}} alt="place" />
+<img src={el.image}  width={220} height={120} style={{borderRadius:10}} alt="place"  />
 <span>
-    <h3>{el.name}</h3>
+    <h3 onClick={()=>{toHotel(el.id)}}>{el.name}</h3>
     <p>{el.flag} $250</p>
 </span>
 </div>
