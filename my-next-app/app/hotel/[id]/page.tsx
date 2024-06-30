@@ -78,7 +78,7 @@ export default function hotel() {
   <p>200+ Options</p>
   <h1>Recomended PlacesIn San Francisco</h1>
   {data.map((el: any) => (
-              <div onClick={()=>{toHotelrooms(el.id)}} className='house' key={el.id}>
+              <div onClick={()=>{toHotelrooms(el.id)}} className='house' key={el.id} style={{cursor:"pointer"}}>
                 <div className="house-img" >
                   <img src={el.image}  width={330} height={200} alt="" />
                 </div>

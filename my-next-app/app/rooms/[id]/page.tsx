@@ -77,9 +77,9 @@ export default function House() {
             <p>200+ Options</p>
             <h1>Recommended Places in San Francisco</h1>
             {data.map((el: any) => (
-              <div className='house' key={el.id}>
+              <div className='house' key={el.id} onClick={()=>{toOneRoom(el.id)}} style={{cursor:"pointer"}}>
                 <div className="house-img" onClick={() => handleImageClick(el.id)}>
-                  <img src={el.image2} onClick={()=>{toOneRoom(el.id)}} width={330} height={200} alt="" />
+                  <img src={el.image2}  width={330} height={200} alt="" />
                 </div>
                 <div className="house-info">
                   <p>{el.name}</p>
