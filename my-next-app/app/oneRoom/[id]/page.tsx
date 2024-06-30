@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import {
   Container,
@@ -20,8 +20,11 @@ import StarIcon from "@mui/icons-material/Star";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
-import Map from "./map";
-import Weather from "./weather";
+import Map from "../map";
+import Weather from "../weather";
+import { usePathname } from "next/navigation";
+import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
+import { useAuth } from "@/app/context/authcontex/Authcontex";
 
 const property = {
   title: "Bordeaux Getaway",
@@ -58,45 +61,45 @@ const property = {
 
 const Page: React.FC = () => {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
-  const [comments, setComments] = useState(property.reviews);
+  const [comments, setComments] = useState<any>([]);
   const [newComment, setNewComment] = useState('');
+  const [data,setData] = useState<any>({})
+  const [array,setArray] = useState<any>([])
+const {user} = useAuth()
 
+    const pathname = usePathname()
+    const id = pathname.slice(pathname.length-1)
   const handleDateChange = (newDateRange: [Date | null, Date | null]) => {
     setDateRange(newDateRange);
   };
 
-  const handleCommentSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
 
-    const newReview = {
-      user: "Anonymous",
-      date: new Date().toLocaleDateString(),
-      comment: newComment,
-      avatar: "https://via.placeholder.com/40", 
-    };
-
-    try {
- 
-      const postResponse = await axios.post(`http://localhost:8080/commentaires/${roomId}/${userId}`, newReview);
+  useEffect(()=>{
+    axios.get(`http://localhost:8080/rooms/${id}`).then((res)=>{
+      setData(res.data)
+      array.push(res.data.image1,res.data.image2,res.data.image3)
+      console.log(array,"image1");
       
-      if (postResponse.status === 200) {
-     
-        const getResponse = await axios.get(`http://localhost:8080/commentaires/room/${roomId}`);
-        if (getResponse.status === 200) {
-          setComments(getResponse.data);
-          setNewComment('');
-        }
-      }
-    } catch (error) {
-      console.error("There was an error submitting the comment:", error);
-    }
-  };
-
+    }).catch(err=>{console.log(err)})
+  },[])
+  useEffect (()=>{
+    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res)=>{
+      setComments(res.data)
+    }).catch(err=>{console.log(err)})
+  })
+  const commenti =()=>{
+    axios.post(`http://localhost:8080/commentaires/${id}/${user.id}`,{
+      text: newComment,
+      date: "12/10/2024"
+    }).then((res)=>{
+      console.log(res)
+    }).catch((error)=>{console.log(error)})
+  }
   return (
     <Container>
       <Box my={4}>
         <Typography variant="h4" gutterBottom>
-          {property.title}
+          {data.name}
         </Typography>
         <Typography
           variant="subtitle1"
@@ -109,11 +112,23 @@ const Page: React.FC = () => {
         </Typography>
 
         <Grid container spacing={2} my={2}>
-          {property.images.map((image, index) => (
-            <Grid item xs={12} md={4} key={index}>
-              <CardMedia component="img" height="200" image={image} alt={`Image ${index + 1}`} />
+        
+            <Grid item xs={12} md={4}>
+              <CardMedia component="img" height="200" image={data.image1} alt="image" />
             </Grid>
-          ))}
+         <Grid item xs={12} md={4}>
+              <CardMedia component="img" height="200" image={data.image2} alt="image" />
+            </Grid>
+         <Grid item xs={12} md={4}>
+              <CardMedia component="img" height="200" image={data.image3} alt="image" />
+            </Grid>
+         <Grid item xs={12} md={4}>
+              <CardMedia component="img" height="200" image={data.image4} alt="image" />
+            </Grid>
+         <Grid item xs={12} md={4}>
+              <CardMedia component="img" height="200" image={data.image5} alt="image" />
+            </Grid>
+        
         </Grid>
 
         <Grid container spacing={2} my={2}>
@@ -211,16 +226,16 @@ const Page: React.FC = () => {
                 <Box key={index} my={2}>
                   <Grid container alignItems="center">
                     <Grid item>
-                      <Avatar src={review.avatar} />
+                      <Avatar src="" />
                     </Grid>
                     <Grid item xs>
-                      <Typography variant="subtitle2">{review.user}</Typography>
+                      <Typography variant="subtitle2">guest</Typography>
                       <Typography variant="caption" color="textSecondary">
                         {review.date}
                       </Typography>
                     </Grid>
                   </Grid>
-                  <Typography gutterBottom>{review.comment}</Typography>
+                  <Typography gutterBottom>{review.text}</Typography>
                   <Divider />
                 </Box>
               ))}
@@ -230,7 +245,7 @@ const Page: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 Add a Comment
               </Typography>
-              <form onSubmit={handleCommentSubmit}>
+              <div>
                 <TextField
                   fullWidth
                   label="Comment"
@@ -240,10 +255,10 @@ const Page: React.FC = () => {
                   multiline
                   rows={4}
                 />
-                <Button variant="contained" color="primary" type="submit">
+                <Button onClick={()=>commenti()} variant="contained" color="primary" type="submit">
                   Submit
                 </Button>
-              </form>
+              </div>
             </Box>
           </Grid>
 
