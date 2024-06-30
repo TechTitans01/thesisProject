@@ -112,11 +112,11 @@ export default function home (){
 <div className="exclusives">
 {destination.map((el:any,index:number)=>{
 return(
-<div>
+<div onClick={()=>{toHotel(el.id)}}>
 {/* <Image  src="/img/image-1.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  /> */}
 <img src={el.image}  width={220} height={120} style={{borderRadius:10}} alt="place"  />
 <span>
-    <h3 onClick={()=>{toHotel(el.id)}}>{el.name}</h3>
+    <h3 >{el.name}</h3>
     <p>{el.flag} $250</p>
 </span>
 </div>
@@ -124,71 +124,6 @@ return(
 
 )})}
    
-
-
-    {/* <div>
-    <Image  src="/img/image-2.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
-    <span>
-        <h3>Switzerland</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-3.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
-    <span>
-        <h3>Australia</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-4.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
-    <span>
-        <h3>France</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-5.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>Amesterdam</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-6.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>Netherlands</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-7.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>New York</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-8.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>Chicago</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-9.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>San Francisco</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-10.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>shanghai</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div> */}
     
 </div>
 
