@@ -35,7 +35,7 @@ export default function EditProfile() {
   };
 
   
-  const token = localStorage.getItem('token');
+  const {token}=useAuth()
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   
