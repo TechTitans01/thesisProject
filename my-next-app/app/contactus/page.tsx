@@ -13,7 +13,7 @@ import { useAuth } from "../context/authcontex/Authcontex";
 export default function ContactForm  (){
 
 
-  const token = localStorage.getItem('token');
+  const {token}=useAuth()
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   

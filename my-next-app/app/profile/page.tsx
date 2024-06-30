@@ -6,7 +6,7 @@ import { useAuth } from "../context/authcontex/Authcontex";
 export default function Profile() {
 
 
-  const token = localStorage.getItem('token');
+  const {token}=useAuth()
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   
