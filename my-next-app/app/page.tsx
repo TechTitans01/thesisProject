@@ -1,23 +1,38 @@
 "use client"
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/home.css"
 import axios from "axios";
 import Image from 'next/image';
 import { useAuth } from "./context/authcontex/Authcontex";
-
+import { useRouter } from 'next/navigation';
 export default function home (){
   const { logOut } = useAuth();
     const { user } = useAuth();
     const {token}=useAuth()
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+    const[destination,setdestination]=useState<any>([])
+    const router = useRouter();
 
+    const toHotel = (id:number)=>{
+      router.push(`/hotel/${id}`)
+    }
     
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
 
+
+
+    useEffect(()=>{
+      axios.get("http://localhost:8080/api/destination/getall").then((resp)=>{
+        setdestination(resp.data)
+      }).catch((err)=>{
+        console.log(err)
+      }) 
+    
+    },[])
 
     return (<body>
 
@@ -95,76 +110,20 @@ export default function home (){
   <div className="container">
 <h2 className="sub-title">Exclusives</h2>
 <div className="exclusives">
-    <div>
-    <Image  src="/img/image-1.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
-    <span>
-        <h3>London</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-2.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
-    <span>
-        <h3>Switzerland</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-3.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
-    <span>
-        <h3>Australia</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-4.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  />
-    <span>
-        <h3>France</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-5.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>Amesterdam</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-6.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>Netherlands</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-7.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>New York</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-8.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>Chicago</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-9.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>San Francisco</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
-    <div>
-    <Image  src="/img/image-10.png" width={220} height={120}style={{borderRadius:10}}  alt="dtg"  />
-    <span>
-        <h3>shanghai</h3>
-        <p>starts @ $250</p>
-    </span>
-    </div>
+{destination.map((el:any,index:number)=>{
+return(
+<div onClick={()=>{toHotel(el.id)}}>
+{/* <Image  src="/img/image-1.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  /> */}
+<img src={el.image}  width={220} height={120} style={{borderRadius:10}} alt="place"  />
+<span>
+    <h3 >{el.name}</h3>
+    <p>{el.flag} $250</p>
+</span>
+</div>
+
+
+)})}
+   
     
 </div>
 
