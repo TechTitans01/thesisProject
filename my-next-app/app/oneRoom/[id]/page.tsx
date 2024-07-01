@@ -23,8 +23,8 @@ import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
 import Map from "../map";
 import Weather from "../weather";
 import { usePathname } from "next/navigation";
-import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
 import { useAuth } from "@/app/context/authcontex/Authcontex";
+import Swal from 'sweetalert2';
 
 const property = {
   title: "Bordeaux Getaway",
@@ -63,38 +63,95 @@ const Page: React.FC = () => {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [comments, setComments] = useState<any>([]);
   const [newComment, setNewComment] = useState('');
-  const [data,setData] = useState<any>({})
-  const [array,setArray] = useState<any>([])
-const {user} = useAuth()
+  const [data, setData] = useState<any>({});
+  const [array, setArray] = useState<any>([]);
+  const [guests, setGuests] = useState('');
+  const { user } = useAuth();
 
-    const pathname = usePathname()
-    const id = pathname.slice(pathname.length-1)
+  const pathname = usePathname();
+  const id = pathname.slice(pathname.length - 1);
+  const roomid = pathname.slice(pathname.lastIndexOf('/') + 1);
   const handleDateChange = (newDateRange: [Date | null, Date | null]) => {
     setDateRange(newDateRange);
   };
 
+  useEffect(() => {
+    axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
+      setData(res.data);
+      setArray([res.data.image1, res.data.image2, res.data.image3, res.data.image4, res.data.image5]);
+      console.log(array, "image1");
+    }).catch(err => { console.log(err) });
+  }, []);
 
-  useEffect(()=>{
-    axios.get(`http://localhost:8080/rooms/${id}`).then((res)=>{
-      setData(res.data)
-      array.push(res.data.image1,res.data.image2,res.data.image3)
-      console.log(array,"image1");
-      
-    }).catch(err=>{console.log(err)})
-  },[])
-  useEffect (()=>{
-    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res)=>{
-      setComments(res.data)
-    }).catch(err=>{console.log(err)})
-  })
-  const commenti =()=>{
-    axios.post(`http://localhost:8080/commentaires/${id}/${user.id}`,{
-      text: newComment,
-      date: "12/10/2024"
-    }).then((res)=>{
-      console.log(res)
-    }).catch((error)=>{console.log(error)})
-  }
+  useEffect(() => {
+    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
+      setComments(res.data);
+    }).catch(err => { console.log(err) });
+  }, []);
+
+  const addBooking = async () => {
+    if (!dateRange[0] || !dateRange[1] || !guests) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Missing Information',
+        text: 'Please provide start date, end date, and number of guests.',
+      });
+      return;
+    }
+
+    const bookingDetails = {
+      start: dateRange[0].toISOString().split('T')[0],
+      end: dateRange[1].toISOString().split('T')[0],
+      guests: parseInt(guests, 10),
+      status: 'pending',
+      userId: user.id,
+      roomId:roomid
+    };
+
+    try {
+      const response = await axios.post('http://localhost:8080/bookings', bookingDetails);
+      Swal.fire({
+        icon: 'success',
+        title: 'Booking Created',
+        text: 'Your booking is created and awaiting confirmation.',
+      });
+      console.log('Booking added successfully:', response.data);
+      setDateRange([null, null]);
+      setGuests('');
+    } catch (error) {
+      console.error('Error adding booking:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'There was an error creating your booking. Please try again.',
+      });
+    }
+  };
+
+  const commenti = async () => {
+    try {
+      const response = await axios.post(`http://localhost:8080/commentaires/${id}/${user.id}`, {
+        text: newComment,
+        date: "12/10/2024"
+      });
+      const newCommentData = {
+        user: user.name, // Assuming user.name is available
+        date: "12/10/2024",
+        text: newComment,
+        avatar: user.avatar // Assuming user.avatar is available
+      };
+      setComments([...comments, newCommentData]);
+      setNewComment('');
+    } catch (error) {
+      console.log('Error adding comment:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'There was an error adding your comment. Please try again.',
+      });
+    }
+  };
+
   return (
     <Container>
       <Box my={4}>
@@ -112,23 +169,11 @@ const {user} = useAuth()
         </Typography>
 
         <Grid container spacing={2} my={2}>
-        
-            <Grid item xs={12} md={4}>
-              <CardMedia component="img" height="200" image={data.image1} alt="image" />
+          {array.map((image: string, index: number) => (
+            <Grid item xs={12} md={4} key={index}>
+              <CardMedia component="img" height="200" image={image} alt="image" />
             </Grid>
-         <Grid item xs={12} md={4}>
-              <CardMedia component="img" height="200" image={data.image2} alt="image" />
-            </Grid>
-         <Grid item xs={12} md={4}>
-              <CardMedia component="img" height="200" image={data.image3} alt="image" />
-            </Grid>
-         <Grid item xs={12} md={4}>
-              <CardMedia component="img" height="200" image={data.image4} alt="image" />
-            </Grid>
-         <Grid item xs={12} md={4}>
-              <CardMedia component="img" height="200" image={data.image5} alt="image" />
-            </Grid>
-        
+          ))}
         </Grid>
 
         <Grid container spacing={2} my={2}>
@@ -226,10 +271,10 @@ const {user} = useAuth()
                 <Box key={index} my={2}>
                   <Grid container alignItems="center">
                     <Grid item>
-                      <Avatar src="" />
+                      <Avatar src={review.avatar} />
                     </Grid>
                     <Grid item xs>
-                      <Typography variant="subtitle2">guest</Typography>
+                      <Typography variant="subtitle2">{review.user}</Typography>
                       <Typography variant="caption" color="textSecondary">
                         {review.date}
                       </Typography>
@@ -255,7 +300,7 @@ const {user} = useAuth()
                   multiline
                   rows={4}
                 />
-                <Button onClick={()=>commenti()} variant="contained" color="primary" type="submit">
+                <Button onClick={commenti} variant="contained" color="primary" type="submit">
                   Submit
                 </Button>
               </div>
@@ -272,9 +317,11 @@ const {user} = useAuth()
                 label="Guests"
                 margin="normal"
                 type="number"
+                value={guests}
+                onChange={(e) => setGuests(e.target.value)}
                 InputLabelProps={{ shrink: true }}
               />
-              <Button variant="contained" color="primary" fullWidth>
+              <Button onClick={addBooking} variant="contained" color="primary" fullWidth>
                 Rent
               </Button>
               <Box my={2}>
