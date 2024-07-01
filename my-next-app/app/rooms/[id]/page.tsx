@@ -1,19 +1,25 @@
 "use client"
 import Image from 'next/image';
 import axios from 'axios';
-import "../styles/rooms.css";
+import "../../styles/rooms.css";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export default function House() {
   const [data, setData] = useState<any>([]);
   const router = useRouter();
+  const pathname = usePathname()
+  const id = pathname.slice(pathname.length-1)
+
+
+
   
   const toOneRoom = (id:number)=>{
     router.push(`/oneRoom/${id}`)
   }
   useEffect(() => {
-    axios.get(`http://localhost:8080/rooms/hotel/1`)
+    axios.get(`http://localhost:8080/rooms/hotel/${id}`)
       .then((res) => {
         setData(res.data);
       })
@@ -71,9 +77,9 @@ export default function House() {
             <p>200+ Options</p>
             <h1>Recommended Places in San Francisco</h1>
             {data.map((el: any) => (
-              <div className='house' key={el.id}>
+              <div className='house' key={el.id} onClick={()=>{toOneRoom(el.id)}} style={{cursor:"pointer"}}>
                 <div className="house-img" onClick={() => handleImageClick(el.id)}>
-                  <img src={el.image2} onClick={()=>{toOneRoom(el.id)}} width={330} height={200} alt="" />
+                  <img src={el.image2}  width={330} height={200} alt="" />
                 </div>
                 <div className="house-info">
                   <p>{el.name}</p>

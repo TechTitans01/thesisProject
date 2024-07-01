@@ -39,3 +39,8 @@ http://localhost:8080/api/auth/login
 
 ----------------------chat---------------
 --http://localhost:8080/api/chat/messages/:senderId/:receiverId :: (get message between two users GET)
+
+
+------------------------destination-------------------
+--http://localhost:8080/api/destination/adddestination::: (add destination POST)
+---http://localhost:8080/api/destination/getall:: (get all )

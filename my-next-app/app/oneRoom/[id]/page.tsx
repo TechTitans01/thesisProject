@@ -11,6 +11,8 @@ import {
   Avatar,
   Button,
   TextField,
+  Menu,
+  MenuItem
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import WifiIcon from "@mui/icons-material/Wifi";
@@ -21,9 +23,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers-pro/LocalizationProvid
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
 import Map from "../map";
+import "../../styles/oneroom.css";
 import Weather from "../weather";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/context/authcontex/Authcontex";
+import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 
 const property = {
@@ -65,11 +69,38 @@ const Page: React.FC = () => {
   const [newComment, setNewComment] = useState('');
   const [data, setData] = useState<any>({});
   const [array, setArray] = useState<any>([]);
-  const [guests, setGuests] = useState('');
   const { user } = useAuth();
+
+  const router = useRouter();
+  
+  const toChat = (id:number)=>{
+    router.push(`/chatroom/${id}`)
+  }
+
+  const seeprofile = (id:number)=>{
+    router.push(`/profilefreind/${id}`)
+  }
+
+
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const pathname = usePathname();
   const id = pathname.slice(pathname.length - 1);
+
+ 
+  const [guests, setGuests] = useState('');
+
+
+ 
   const roomid = pathname.slice(pathname.lastIndexOf('/') + 1);
   const handleDateChange = (newDateRange: [Date | null, Date | null]) => {
     setDateRange(newDateRange);
@@ -78,7 +109,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
       setData(res.data);
-      setArray([res.data.image1, res.data.image2, res.data.image3, res.data.image4, res.data.image5]);
+      array.push(res.data.image1, res.data.image2, res.data.image3);
       console.log(array, "image1");
     }).catch(err => { console.log(err) });
   }, []);
@@ -88,6 +119,23 @@ const Page: React.FC = () => {
       setComments(res.data);
     }).catch(err => { console.log(err) });
   }, []);
+
+  const commenti = () => {
+    axios.post(`http://localhost:8080/commentaires/${id}/${user.id}`, {
+      text: newComment,
+      date: "12/10/2024"
+    }).then((res) => {
+      console.log(res);
+    }).catch((error) => { console.log(error) });
+  };
+
+
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
+      setComments(res.data);
+    }).catch(err => { console.log(err) });
+  }, [comments]);
 
   const addBooking = async () => {
     if (!dateRange[0] || !dateRange[1] || !guests) {
@@ -128,29 +176,7 @@ const Page: React.FC = () => {
     }
   };
 
-  const commenti = async () => {
-    try {
-      const response = await axios.post(`http://localhost:8080/commentaires/${id}/${user.id}`, {
-        text: newComment,
-        date: "12/10/2024"
-      });
-      const newCommentData = {
-        user: user.name, // Assuming user.name is available
-        date: "12/10/2024",
-        text: newComment,
-        avatar: user.avatar // Assuming user.avatar is available
-      };
-      setComments([...comments, newCommentData]);
-      setNewComment('');
-    } catch (error) {
-      console.log('Error adding comment:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'There was an error adding your comment. Please try again.',
-      });
-    }
-  };
+ 
 
   return (
     <Container>
@@ -169,11 +195,22 @@ const Page: React.FC = () => {
         </Typography>
 
         <Grid container spacing={2} my={2}>
-          {array.map((image: string, index: number) => (
-            <Grid item xs={12} md={4} key={index}>
-              <CardMedia component="img" height="200" image={image} alt="image" />
-            </Grid>
-          ))}
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image1} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image2} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image3} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image4} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image5} alt="image" />
+          </Grid>
+       
         </Grid>
 
         <Grid container spacing={2} my={2}>
@@ -183,7 +220,7 @@ const Page: React.FC = () => {
                 Entire rental unit
               </Typography>
               <Typography variant="body1" gutterBottom>
-                {property.details.guests} · {property.details.beds} · {property.details.baths}
+                {data.guests} Guest · {data.beds} Beds · {data.baths} Baths
               </Typography>
             </Box>
 
@@ -259,7 +296,7 @@ const Page: React.FC = () => {
                 Date Range
               </Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateRangeCalendar value={dateRange} onChange={handleDateChange} />
+                <DateRangeCalendar onChange={handleDateChange} />
               </LocalizationProvider>
             </Box>
 
@@ -267,14 +304,24 @@ const Page: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 5.0 <StarIcon fontSize="small" style={{ color: "#FFC107" }} /> • 7 reviews
               </Typography>
-              {comments.map((review, index) => (
+
+              {comments.map((review: any, index: any) => (
                 <Box key={index} my={2}>
                   <Grid container alignItems="center">
                     <Grid item>
-                      <Avatar src={review.avatar} />
+                      <Avatar src="" onClick={handleClick} style={{ cursor: 'pointer' }} />
+                      <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                      >
+                        <MenuItem onClick={() => { handleClose(); seeprofile(review.userId); }}>Profile</MenuItem>
+                        <MenuItem onClick={() => { handleClose(); toChat(review.userId); }}>Send message</MenuItem>
+                      </Menu>
                     </Grid>
+
                     <Grid item xs>
-                      <Typography variant="subtitle2">{review.user}</Typography>
+                      <Typography variant="subtitle2">guest</Typography>
                       <Typography variant="caption" color="textSecondary">
                         {review.date}
                       </Typography>
@@ -284,7 +331,9 @@ const Page: React.FC = () => {
                   <Divider />
                 </Box>
               ))}
+
             </Box>
+
 
             <Box my={2}>
               <Typography variant="h6" gutterBottom>
@@ -300,7 +349,8 @@ const Page: React.FC = () => {
                   multiline
                   rows={4}
                 />
-                <Button onClick={commenti} variant="contained" color="primary" type="submit">
+                <Button onClick={() => commenti()} variant="contained" color="primary" type="submit">
+                
                   Submit
                 </Button>
               </div>
@@ -325,7 +375,7 @@ const Page: React.FC = () => {
                 Rent
               </Button>
               <Box my={2}>
-                <Typography variant="body1">Price: ${property.price} per night</Typography>
+                <Typography variant="body1">Price: ${data.nightPrice} per night</Typography>
                 <Typography variant="body2" color="textSecondary">
                   Taxes and fees are included
                 </Typography>
