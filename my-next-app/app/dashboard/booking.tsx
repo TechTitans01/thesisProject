@@ -52,7 +52,7 @@ const Booking: FC = () => {
         try {
           const response = await axios.put(`http://localhost:8080/bookings/${bookingId}/status`, { status });
           console.log(`Booking ${status}:`, response.data);
-          fetchBookings(); // Refresh bookings after update
+          fetchBookings(); 
           Swal.fire(
             `${action.charAt(0).toUpperCase() + action.slice(1)}d!`,
             `The booking has been ${actionPast}.`,
@@ -82,7 +82,7 @@ const Booking: FC = () => {
       if (result.isConfirmed) {
         try {
           await axios.delete(`http://localhost:8080/bookings/${bookingId}`);
-          fetchBookings(); // Refresh bookings after delete
+          fetchBookings();
           Swal.fire(
             'Deleted!',
             'The booking has been deleted.',

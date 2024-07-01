@@ -38,7 +38,7 @@ const styles = {
     height: '100%',
   },
   chart: {
-    height: '400px', // Increased height for larger charts
+    height: '400px', 
   },
 };
 

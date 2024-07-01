@@ -167,7 +167,6 @@ const Hotels: FC = () => {
       .then(() => {
         setSnackbarMessage('Room added successfully');
         setSnackbarOpen(true);
-        // Fetch updated rooms for the current hotel
         axios.get(`http://localhost:8080/rooms/hotel/${currentHotelId}`)
           .then(response => {
             setRooms(response.data);
