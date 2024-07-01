@@ -112,12 +112,13 @@ export default function home (){
 <div className="exclusives">
 {destination.map((el:any,index:number)=>{
 return(
-<div onClick={()=>{toHotel(el.id)}}>
+<div onClick={()=>{toHotel(el.id)}} style={{cursor:"pointer"}}>
+<img src={el.flag} width={25} height={25} alt="" />
 {/* <Image  src="/img/image-1.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  /> */}
 <img src={el.image}  width={220} height={120} style={{borderRadius:10}} alt="place"  />
 <span>
     <h3 >{el.name}</h3>
-    <p>{el.flag} $250</p>
+    <p>  $250</p>
 </span>
 </div>
 
@@ -156,7 +157,7 @@ return(
 <div className="cta">
     <h3> Sharing <br /> is Earning Now</h3>
     <p>Great opportunity to make money by <br /> sharing your extra space.</p>
-    <a href="" className="cta-btn">know More</a>
+    <a href="/contactus" className="cta-btn">Contatct Us</a>
 </div>
 
 <h2 className="sub-title">Travellers Stories</h2>
@@ -177,7 +178,7 @@ return(
     
 </div>
 
-<a href="#" className="start-btn"> Start making money</a>
+<a href="#" className="start-btn"> Start Now</a>
  
  <div className="about-msg">
     <h2>About my website</h2>
