@@ -1,0 +1,22 @@
+
+.booking {
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.card {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+.cancelledBooking {
+  color: #fb0000; 
+  border-left: 4px solid #ff8080;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.confirmedBooking {
+  color: #00ca4e; 
+  border-left: 4px solid #00ff1a;
+  padding: 10px;
+  margin-bottom: 10px;
+}
