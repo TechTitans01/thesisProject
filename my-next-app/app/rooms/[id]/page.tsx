@@ -35,7 +35,7 @@ export default function House() {
   return (
     <body>
       <nav id="navBar" className='navbar-white'>
-        <Image className="logo" src="/img/travel.jpg" width={100} height={100} alt="dtg" quality={75} priority={false} />
+        <Image className="logo" src="/img/logotr.png" width={100} height={100} alt="dtg" quality={75} priority={false} />
         <ul className='nav-links'>
           <li><a href="/" className="active">Home</a></li>
           <li><a href="/contactus" className="active">contact us</a></li>
