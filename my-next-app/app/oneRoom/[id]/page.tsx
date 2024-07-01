@@ -28,6 +28,8 @@ import Weather from "../weather";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/context/authcontex/Authcontex";
 import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
+
 const property = {
   title: "Bordeaux Getaway",
   location: "Bordeaux, France",
@@ -94,6 +96,12 @@ const Page: React.FC = () => {
   const pathname = usePathname();
   const id = pathname.slice(pathname.length - 1);
 
+ 
+  const [guests, setGuests] = useState('');
+
+
+ 
+  const roomid = pathname.slice(pathname.lastIndexOf('/') + 1);
   const handleDateChange = (newDateRange: [Date | null, Date | null]) => {
     setDateRange(newDateRange);
   };
@@ -120,6 +128,55 @@ const Page: React.FC = () => {
       console.log(res);
     }).catch((error) => { console.log(error) });
   };
+
+
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
+      setComments(res.data);
+    }).catch(err => { console.log(err) });
+  }, [comments]);
+
+  const addBooking = async () => {
+    if (!dateRange[0] || !dateRange[1] || !guests) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Missing Information',
+        text: 'Please provide start date, end date, and number of guests.',
+      });
+      return;
+    }
+
+    const bookingDetails = {
+      start: dateRange[0].toISOString().split('T')[0],
+      end: dateRange[1].toISOString().split('T')[0],
+      guests: parseInt(guests, 10),
+      status: 'pending',
+      userId: user.id,
+      roomId:roomid
+    };
+
+    try {
+      const response = await axios.post('http://localhost:8080/bookings', bookingDetails);
+      Swal.fire({
+        icon: 'success',
+        title: 'Booking Created',
+        text: 'Your booking is created and awaiting confirmation.',
+      });
+      console.log('Booking added successfully:', response.data);
+      setDateRange([null, null]);
+      setGuests('');
+    } catch (error) {
+      console.error('Error adding booking:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'There was an error creating your booking. Please try again.',
+      });
+    }
+  };
+
+ 
 
   return (
     <Container>
@@ -153,6 +210,7 @@ const Page: React.FC = () => {
           <Grid item xs={12} md={4}>
             <CardMedia component="img" height="200" image={data.image5} alt="image" />
           </Grid>
+       
         </Grid>
 
         <Grid container spacing={2} my={2}>
@@ -276,6 +334,7 @@ const Page: React.FC = () => {
 
             </Box>
 
+
             <Box my={2}>
               <Typography variant="h6" gutterBottom>
                 Add a Comment
@@ -291,6 +350,7 @@ const Page: React.FC = () => {
                   rows={4}
                 />
                 <Button onClick={() => commenti()} variant="contained" color="primary" type="submit">
+                
                   Submit
                 </Button>
               </div>
@@ -307,9 +367,11 @@ const Page: React.FC = () => {
                 label="Guests"
                 margin="normal"
                 type="number"
+                value={guests}
+                onChange={(e) => setGuests(e.target.value)}
                 InputLabelProps={{ shrink: true }}
               />
-              <Button onClick={()=>router.push("/payment")} variant="contained" color="primary" fullWidth>
+              <Button onClick={addBooking} variant="contained" color="primary" fullWidth>
                 Rent
               </Button>
               <Box my={2}>
