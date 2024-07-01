@@ -32,6 +32,7 @@ module.exports={
           res.status(500).send(err);
         }
       },
+      
       updateHotel: async (req, res) => {
         try {
           const data = await db.hotel.update(req.body, { where: { id: req.params.id } });
@@ -40,5 +41,6 @@ module.exports={
           res.status(500).send(err);
         }
       },
+      
 
 }
