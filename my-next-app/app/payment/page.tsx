@@ -1,31 +1,99 @@
+
 "use client";
 
 import React, { useState } from 'react';
 import '../styles/payment.css';
+import { loadStripe } from '@stripe/stripe-js';
+import axios from 'axios';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-export default function PaymentComponent() {
-  const [cardNumber, setCardNumber] = useState<string>('');
-  const [expirationDate, setExpirationDate] = useState<string>('');
-  const [cvv, setCvv] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [name, setName] = useState<string>('');
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Implement your payment logic here
-    console.log('Payment details:', {
-      cardNumber,
-      expirationDate,
-      cvv,
-      name,
-    });
+const PaymentForm = ( { userId, bookingId }:any) => {
+  const stripe :any= useStripe();
+  const elements = useElements();
+
+  const [cardNumber, setCardNumber] = useState('');
+  const [expirationDate, setExpirationDate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [country, setCountry] = useState('');
+
+
+  const handleSendSMS = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/send-sms', {
+        to: "+21655600939",
+        text: "congratulation your payment successfully"
+      });
+      alert('SMS sent successfully!');
+    } catch (error) {
+      console.error('Failed to send SMS:', error);
+      alert('Failed to send SMS');
+    }
   };
+  
 
+  const handleSubmit = () => {
+    setLoading(true);
+  
+    if (!stripe || !elements) {
+      setLoading(false);
+      return;
+    }
+  
+    axios
+      .post('http://localhost:8080/api/payments/create', {
+        amount: 1000,
+        currency: 'usd',
+        userId: userId,
+        bookingId: bookingId,
+        email: email,
+        country: country,
+        nameCard:name
+      })
+      .then((response) => {
+        const { clientSecret } = response.data;
+  
+        return stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardElement),
+            billing_details: {
+              name: name,
+              email: email,
+              address: {
+                country: country,
+              },
+            },
+          },
+        });
+      })
+      .then((result) => {
+        if (result.error) {
+          setError(result.error.message);
+          setLoading(false);
+        } else {
+          if (result.paymentIntent.status === 'succeeded') {
+            alert('Payment successful!');
+            handleSendSMS()
+            console.log(result)
+          }
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
+  };
   return (
     <div className="payment-container">
       <div className="payment-card">
         <h2 className="payment-title">Payment</h2>
-        <form className="payment-form" onSubmit={handleSubmit}>
+        <div className="payment-form" >
           <div className="form-group">
             <label htmlFor="email" className="form-label">
               Email
@@ -44,52 +112,7 @@ export default function PaymentComponent() {
             <label htmlFor="cardNumber" className="form-label">
               Card Number
             </label>
-            <div className="card-number-input">
-              <input
-                type="text"
-                id="cardNumber"
-                className="form-input"
-                placeholder="1234 5678 9012 3456"
-                value={cardNumber}
-                onChange={(e) => setCardNumber(e.target.value)}
-                required
-              />
-              <div className="card-logos">
-                <img src="https://www.svgrepo.com/show/328144/visa.svg" alt="Visa" />
-                <img src="https://cdn.icon-icons.com/icons2/1186/PNG/512/1490135018-mastercard_82253.png" alt="Mastercard" />
-                <img src="https://static.vecteezy.com/system/resources/previews/009/469/637/original/paypal-payment-icon-editorial-logo-free-vector.jpg" alt="American Express" />
-              </div>
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="expirationDate" className="form-label">
-                Expiration Date
-              </label>
-              <input
-                type="text"
-                id="expirationDate"
-                className="form-input"
-                placeholder="MM/YY"
-                value={expirationDate}
-                onChange={(e) => setExpirationDate(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="cvv" className="form-label">
-                CVV
-              </label>
-              <input
-                type="text"
-                id="cvv"
-                className="form-input"
-                placeholder="123"
-                value={cvv}
-                onChange={(e) => setCvv(e.target.value)}
-                required
-              />
-            </div>
+            <CardElement className="form-input" />
           </div>
           <div className="form-group">
             <label htmlFor="name" className="form-label">
@@ -99,7 +122,7 @@ export default function PaymentComponent() {
               type="text"
               id="name"
               className="form-input"
-              placeholder="name"
+              placeholder="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -107,7 +130,7 @@ export default function PaymentComponent() {
           </div>
           <div className="form-group">
             <label className="form-label">Country</label>
-            <select id="country" className="form-inputdrop">
+            <select id="country" className="form-inputdrop" onChange={(e) => setCountry(e.target.value)} value={country}>
               <option value="">Select Country</option>
               <option value="US">United States</option>
               <option value="CA">Canada</option>
@@ -119,14 +142,23 @@ export default function PaymentComponent() {
               <option value="ES">Spain</option>
               <option value="BR">Brazil</option>
               <option value="JP">Japan</option>
-              <option value="TUN">Tunisie</option>
+              <option value="IT">Tunisie</option>
             </select>
           </div>
-          <button type="submit" className="payment-button">
-            Pay Now
+          <button type="submit" className="payment-button" disabled={!stripe || loading} onClick={()=>{handleSubmit()}}>
+            {loading ? 'Processing...' : 'Pay Now'}
           </button>
-        </form>
+          {error && <div className="error-message">{error}</div>}
+        </div>
       </div>
     </div>
   );
-}
+};
+
+const PaymentComponent = () => (
+  <Elements stripe={stripePromise}>
+    <PaymentForm />
+  </Elements>
+);
+
+export default PaymentComponent;

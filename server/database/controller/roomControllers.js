@@ -54,7 +54,7 @@ module.exports = {
         if (!room) {
           return res.status(404).json({ error: 'Room not found' });
         }
-        return room.destroy()
+        return room.destroy()  
           .then(() => {
             res.status(204).json();
           });

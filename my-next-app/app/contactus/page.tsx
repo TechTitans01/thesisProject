@@ -2,18 +2,31 @@
 
 
 import React, { useState } from "react";
+import Image from 'next/image';
 import "../styles/contactus.css"
 import axios from "axios";
-import Image from 'next/image';
+
+import { useRouter } from "next/navigation";
+import { useAuth } from "../context/authcontex/Authcontex";
 
 
 export default function ContactForm  (){
+
+
+  const {token}=useAuth()
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  
+  const toggleDropdown = () => {
+      setDropdownOpen(!dropdownOpen);
+  };
 const[first,setfirst]=useState<string>("")
 const[last,setlast]=useState<string>("")
 const[phone,setphone]=useState<string>("")
 const[text,settext]=useState<string>("")
 const[email,setemail]=useState<string>("")
-
+const { logOut } = useAuth();
+const router = useRouter();
 
 const sendReclamation=()=>{
   axios.post(`http://localhost:8080/api/reclamation/send`,{
@@ -36,12 +49,55 @@ const sendReclamation=()=>{
 
 
 
-    return (
+    return (<>
+   <nav id="navBar" className='navbar-white'>
+    {/* <Image className="logo" src="/img/travel.jpg" width={100} height={100} alt="dtg" quality={75} priority={false}/> */}
+    <ul className='nav-links'>
+        <li><a href="/" className="active">Home</a></li>
+        
+      
+    </ul>
+    {!token ? (
+            <a href="/auth" className="register-btn">
+              {" "}
+              Register Now
+            </a>
+          ) : (
+            <div className="toggle-container">
+              <div className="toggle-option active">
+                <img
+                  className="noti"
+                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                  alt="notification"
+                />
+              </div>
+              <div className="toggle-option" onClick={toggleDropdown}>
+                <img
+                  className="usee"
+                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                  alt="User"
+                />
+              </div>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <ul>
+                    <li>
+                      <a href="/editprofile">Edit Profile</a>
+                    </li>
+                   
+                    <li>
+                      <a href="/auth" onClick={()=>{logOut()}}>Logout</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+    </nav>
         <div className="contactContainer">
               <div className="videoContainer">
             <video className="backgroundVideo" autoPlay muted loop>
-              <source src="https://cdn.pixabay.com/video/2019/04/23/23011-332483109_large.mp4" type="video/mp4" />
-              Contact Us
+              <source src="https://cdn.pixabay.com/video/2019/04/23/23011-332483109_large.mp4" type="video/mp4" title="Contact Us" />
             </video>
             <div className="videoTextOverlay">
           <h3>Conatct Us </h3>
@@ -56,15 +112,15 @@ const sendReclamation=()=>{
               <address>
             <div className="addressItem">
               <Image className="imgicon" src="/img/map.png" width={20} height={20} alt="dtg" />
-              <b>1055 Arthur ave Elk Groot, 67, New Palmas South Carolina.</b>
+              <b>5020 Monastir Rue Basatin, 67, sousse Kantaoui.</b>
             </div>
             <div className="addressItem">
               <Image className="imgicon" src="/img/phone.png" width={20} height={20} alt="dtg" />
-              <b>+1 234 678 9108 99</b>
+              <b>+216 55 600 939</b>
             </div>
             <div className="addressItem">
               <Image className="imgicon" src="/img/email.png" width={20} height={20} alt="dtg" />
-              <b>Contact@moralizer.com</b>
+              <b>Contact.travel@agency.com</b>
             </div>
           </address>
             </div>
@@ -81,9 +137,11 @@ const sendReclamation=()=>{
                 <button type="submit" className="submitButton" onClick={()=>{sendReclamation()}}>Send Message</button>
               </div>
             </div>
+           
           </div>
         
         </div>
+        </>
       );
     }
     

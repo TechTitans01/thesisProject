@@ -46,9 +46,9 @@ export default function EditProfile() {
   const uploadImage = () => {
     const form = new FormData();
     form.append("file", file);
-    form.append("upload_preset", "raslen bg");
+    form.append("upload_preset", "travel agency");
     axios
-      .post("cloudinary://<your_api_key>:<your_api_secret>@dtyq6i57z", form)
+      .post("https://api.cloudinary.com/v1_1/dcyeimdps/image/upload", form)
       .then((result) => {
         setImageUrl(result.data.secure_url);
       })

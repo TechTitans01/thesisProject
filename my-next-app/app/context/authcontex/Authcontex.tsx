@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchUser = async (userId: number) => {
     try {
-      const response = await axios.get(`http://localhost:8080/Client/get/${userId}`);
+      const response = await axios.get(`http://localhost:8080/api/user/getone/${userId}`);
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user information", error);
@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loginAction = async (data: LoginData) => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/login', data);
-      const userData = response.data.data;
+      const userData = response.data.user.id;
       console.log(response.data);
 
       setUser(userData);
@@ -92,9 +92,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/signup', data);
      
-      const userData = response.data.newUser.id
+      const userData = response.data.newUser
 
-      setUser(response.data.username);
+      setUser(response.data.newUser);
       localStorage.setItem("user", JSON.stringify(userData));
       setToken(response.data.token);
       localStorage.setItem("token", response.data.token);
@@ -113,7 +113,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setToken("");
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    router.push("/login");
+    router.push("/auth");
   };
 
   return (

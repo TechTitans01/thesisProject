@@ -5,6 +5,7 @@ module.exports=(sequelize,DataTypes)=>{
             type: DataTypes.TEXT,
             allowNull: true,
           },
+        
     
     })
  return  messages
