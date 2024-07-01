@@ -309,7 +309,7 @@ const Page: React.FC = () => {
                 type="number"
                 InputLabelProps={{ shrink: true }}
               />
-              <Button variant="contained" color="primary" fullWidth>
+              <Button onClick={()=>router.push("/payment")} variant="contained" color="primary" fullWidth>
                 Rent
               </Button>
               <Box my={2}>

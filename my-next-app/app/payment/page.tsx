@@ -2,10 +2,12 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import '../styles/payment.css';
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useAuth } from '../context/authcontex/Authcontex';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
 
@@ -13,6 +15,7 @@ const PaymentForm = ( { userId, bookingId }:any) => {
   const stripe :any= useStripe();
   const elements = useElements();
 
+  const { user } = useAuth();
   const [cardNumber, setCardNumber] = useState('');
   const [expirationDate, setExpirationDate] = useState('');
   const [cvv, setCvv] = useState('');
@@ -21,6 +24,12 @@ const PaymentForm = ( { userId, bookingId }:any) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [country, setCountry] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const {token}=useAuth()
+  const { logOut } = useAuth();
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+};
 
 
   const handleSendSMS = async () => {
@@ -49,7 +58,7 @@ const PaymentForm = ( { userId, bookingId }:any) => {
       .post('http://localhost:8080/api/payments/create', {
         amount: 1000,
         currency: 'usd',
-        userId: userId,
+        userId: user.id,
         bookingId: bookingId,
         email: email,
         country: country,
@@ -89,7 +98,53 @@ const PaymentForm = ( { userId, bookingId }:any) => {
         setLoading(false);
       });
   };
-  return (
+  return (<>
+  <nav id="navBar" className='navbar-white'>
+    <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false}/>
+    <ul className='nav-links'>
+        <li><a href="/" className="active">Home</a></li>
+        <li><a href="/contactus" className="active">Contact Us</a></li>
+      
+    </ul>
+    {!token ? (
+            <a href="/auth" className="register-btn">
+             
+              Register Now
+            </a>
+          ) : (
+            <div className="toggle-container">
+              <div className="toggle-option active">
+                <img
+                  className="noti"
+                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                  alt="notification"
+                />
+              </div>
+              <div className="toggle-option" onClick={toggleDropdown}>
+                <img
+                  className="usee"
+                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                  alt="User"
+                />
+              </div>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <ul>
+                    <li>
+                      <a href="/editprofile">Edit Profile</a>
+                    </li>
+                   
+                    <li>
+                      <a href="/auth" onClick={()=>{logOut()}}>Logout</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+    </nav>
+
+
     <div className="payment-container">
       <div className="payment-card">
         <h2 className="payment-title">Payment</h2>
@@ -102,7 +157,7 @@ const PaymentForm = ( { userId, bookingId }:any) => {
               type="email"
               id="email"
               className="form-input"
-              placeholder="example@mail.com"
+              placeholder="email@mail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -152,7 +207,7 @@ const PaymentForm = ( { userId, bookingId }:any) => {
         </div>
       </div>
     </div>
-  );
+    </> );
 };
 
 const PaymentComponent = () => (
