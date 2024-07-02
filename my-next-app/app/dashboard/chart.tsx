@@ -15,11 +15,10 @@ import {
   ArcElement,
 } from 'chart.js';
 import { Card, CardContent, Typography, Box, Grid, Paper } from '@mui/material';
-<<<<<<< HEAD
-=======
+
 
 import { useAuth } from '../context/authcontex/Authcontex';
->>>>>>> f96e0404b6465dc179b322574d8b3c79e7e81279
+
 
 
 ChartJS.register(
@@ -71,24 +70,17 @@ const Charts: React.FC = () => {
   const [usersData, setUsersData] = useState<User[]>([]);
   const [bookingsData, setBookingsData] = useState<Booking[]>([]);
 
-<<<<<<< HEAD
-=======
+
 const {token}=useAuth()
 
->>>>>>> f96e0404b6465dc179b322574d8b3c79e7e81279
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-<<<<<<< HEAD
       const token = localStorage.getItem('token');
-=======
-
-      const token = localStorage.getItem('token');
-
->>>>>>> f96e0404b6465dc179b322574d8b3c79e7e81279
       if (!token) {
         throw new Error('No token found in localStorage');
       }
