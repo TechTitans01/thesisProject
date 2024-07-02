@@ -42,7 +42,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any>({});
-  const [token, setToken] = useState<string>("");
+  const [token, setToken] = useState<string>(localStorage.getItem("token") as string);
 
   const router = useRouter();
 
@@ -73,11 +73,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loginAction = async (data: LoginData) => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/login', data);
-  
+
       if (response.data && response.data.token && response.data.user) {
         const userData = response.data.user.id;
         console.log('Login response:', response.data);
-  
+
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
         setToken(response.data.token);

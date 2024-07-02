@@ -11,6 +11,14 @@ module.exports=(sequelize,DataTypes)=>{
             type: DataTypes.DATE,
             allowNull: false,
           },
+          image: {
+            type: DataTypes.STRING,
+            allowNull: true,
+          },
+          name: {
+            type: DataTypes.STRING,
+            allowNull: true,
+          },
 
     })
  return  commentaire

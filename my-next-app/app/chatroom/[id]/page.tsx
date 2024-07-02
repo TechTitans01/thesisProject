@@ -7,6 +7,7 @@ import "../../styles/chat.css"
 const socket = io('http://localhost:8080'); 
 import { useAuth } from "../../context/authcontex/Authcontex";
 import axios from 'axios';
+import Image from 'next/image';
 
 export default function Chat  ( )  {
   const [messageInput, setMessageInput] = useState<string>('');
@@ -15,6 +16,12 @@ export default function Chat  ( )  {
   const [imageFreind, setImage] = useState<any>({});
   const freindId = pathname.slice(pathname.length - 1);
   const { user } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const {token}=useAuth()
+  const { logOut } = useAuth();
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+};
 
 
 
@@ -71,6 +78,53 @@ export default function Chat  ( )  {
   }, [messages]); 
 
   return (
+<><nav id="navBar" className='navbar-white'>
+    <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false}/>
+    <ul className='nav-links'>
+        <li><a href="/" className="active">Home</a></li>
+        <li><a href="/contactus" className="active">Contact Us</a></li>
+      
+    </ul>
+    {!token ? (
+            <a href="/auth" className="register-btn">
+             
+              Register Now
+            </a>
+          ) : (
+            <div className="toggle-container">
+              <div className="toggle-option active">
+                <img
+                  className="noti"
+                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                  alt="notification"
+                />
+              </div>
+              <div className="toggle-option" onClick={toggleDropdown}>
+                <img
+                  className="usee"
+                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                  alt="User"
+                />
+              </div>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <ul>
+                    <li>
+                      <a href="/editprofile">Edit Profile</a>
+                    </li>
+                   
+                    <li>
+                      <a href="/auth" onClick={()=>{logOut()}}>Logout</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+    </nav>
+
+
+
     <div className="chat-container">
       <div className="chat-header">
         Chat Room
@@ -95,5 +149,5 @@ export default function Chat  ( )  {
         <button onClick={sendMessage}>Send</button>
       </div>
     </div>
-  );
+    </> );
 };

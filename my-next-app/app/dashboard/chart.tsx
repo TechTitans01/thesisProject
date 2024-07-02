@@ -16,6 +16,11 @@ import {
 } from 'chart.js';
 import { Card, CardContent, Typography, Box, Grid, Paper } from '@mui/material';
 
+
+import { useAuth } from '../context/authcontex/Authcontex';
+
+
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -64,6 +69,10 @@ interface Booking {
 const Charts: React.FC = () => {
   const [usersData, setUsersData] = useState<User[]>([]);
   const [bookingsData, setBookingsData] = useState<Booking[]>([]);
+
+
+const {token}=useAuth()
+
 
   useEffect(() => {
     fetchData();
