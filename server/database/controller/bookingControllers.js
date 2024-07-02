@@ -77,5 +77,24 @@ module.exports = {
       .catch(error => {
         res.status(500).json({ error: error.message });
       })
+  },
+  updateBookingStatus : async (req, res) => {
+    const { bookingId } = req.params;
+    const { status } = req.body;
+  
+    try {
+      const bookingToUpdate = await booking.findByPk(bookingId);
+  
+      if (!bookingToUpdate) {
+        return res.status(404).json({ message: 'Booking not found' });
+      }
+  
+      bookingToUpdate.status = status;
+      await bookingToUpdate.save();
+  
+      res.status(200).json({ message: 'Booking status updated', booking: bookingToUpdate });
+    } catch (error) {
+      res.status(500).json({ message: 'Error updating booking status', error });
+    }
   }
 }

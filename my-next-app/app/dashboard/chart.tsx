@@ -15,7 +15,9 @@ import {
   ArcElement,
 } from 'chart.js';
 import { Card, CardContent, Typography, Box, Grid, Paper } from '@mui/material';
+
 import { useAuth } from '../context/authcontex/Authcontex';
+
 
 ChartJS.register(
   CategoryScale,
@@ -65,14 +67,18 @@ interface Booking {
 const Charts: React.FC = () => {
   const [usersData, setUsersData] = useState<User[]>([]);
   const [bookingsData, setBookingsData] = useState<Booking[]>([]);
+
 const {token}=useAuth()
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-     
+
+      const token = localStorage.getItem('token');
+
       if (!token) {
         throw new Error('No token found in localStorage');
       }
