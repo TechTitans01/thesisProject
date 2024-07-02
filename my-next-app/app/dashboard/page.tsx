@@ -1,3 +1,4 @@
+// File: Dashboard.tsx
 "use client"
 import { useState } from 'react';
 import { Box, CssBaseline, Drawer, List, ListItem, ListItemText, Typography, AppBar, Toolbar } from '@mui/material';
@@ -5,6 +6,7 @@ import Booking from './booking';
 import Users from './user';
 import Charts from './chart';
 import Hotels from './hotel';
+import Destinations from './destination';
 import './style/page.css';
 
 const drawerWidth = 240;
@@ -18,11 +20,18 @@ const Dashboard = () => {
         return <Booking />;
       case 'Users':
         return <Users />;
-     
+      case 'Charts':
+        return <Charts />;
       case 'Hotels':
         return <Hotels />;
+      case 'Destinations':
+        return <Destinations />;
       default:
-        return <Typography variant="h4" sx={{ textAlign: 'center', mt: 4 }}>Welcome to the Dashboard!</Typography>;
+        return (
+          <Typography variant="h4" sx={{ textAlign: 'center', mt: 4 }}>
+            Welcome to the Dashboard!
+          </Typography>
+        );
     }
   };
 
@@ -55,7 +64,7 @@ const Dashboard = () => {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            {['Dashboard', 'Booking', 'Users', 'Charts', 'Hotels'].map((text) => (
+            {['Dashboard', 'Booking', 'Users', 'Charts', 'Hotels', 'Destinations'].map((text) => ( // Updated 'Destination' to 'Destinations'
               <ListItem button key={text} onClick={() => setSelectedSection(text)}>
                 <ListItemText primary={text} />
               </ListItem>
