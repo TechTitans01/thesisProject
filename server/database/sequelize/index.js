@@ -25,6 +25,10 @@ db.commentaire=require("../models/commentaireModel.js")(sequelize,DataTypes)
 db.reclamation=require("../models/reclamation.js")(sequelize,DataTypes)
 
 
+
+db.reclamation.belongsTo(db.user);
+db.user.hasMany(db.reclamation);
+
 db.notification.belongsTo(db.user);
 db.user.hasMany(db.notification);
 
