@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/app/context/authcontex/Authcontex';
 export default function hotel() {
   const [data,setData] = useState<any>([])
   const pathname = usePathname()
@@ -15,6 +16,13 @@ export default function hotel() {
   const toHotelrooms = (id:number)=>{
     router.push(`/rooms/${id}`)
   }
+
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const {token}=useAuth()
+  const { logOut } = useAuth();
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+};
 
   useEffect(()=>{
     axios.get(`http://localhost:8080/api/hotels/getone/${id}`).then((res)=>{
@@ -29,21 +37,49 @@ export default function hotel() {
 <body>
   
 <nav id="navBar" className='navbar-white'>
-<Image className="logo" src="/img/logotr.png" width={100} height={100} alt="dtg" quality={75} priority={false}/>
-<ul className='nav-links'>
-    <li><a href="/" className="active">Home</a></li>
-    <li><a href="/contactus" className="active">contact us</a></li>
-    
-</ul>
-<div className="toggle-container">
-          <div className="toggle-option active">
-            <img src="https://img.icons8.com/ios-glyphs/30/000000/globe--v1.png" alt="Globe" />
-          </div>
-          <div className="toggle-option">
-            <img src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png" alt="User" />
-          </div>
-        </div>
-</nav>
+    <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false}/>
+    <ul className='nav-links'>
+        <li><a href="/" className="active">Home</a></li>
+        <li><a href="/contactus" className="active">Contact Us</a></li>
+      
+    </ul>
+    {!token ? (
+            <a href="/auth" className="register-btn">
+             
+              Register Now
+            </a>
+          ) : (
+            <div className="toggle-container">
+              <div className="toggle-option active">
+                <img
+                  className="noti"
+                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                  alt="notification"
+                />
+              </div>
+              <div className="toggle-option" onClick={toggleDropdown}>
+                <img
+                  className="usee"
+                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                  alt="User"
+                />
+              </div>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <ul>
+                    <li>
+                      <a href="/editprofile">Edit Profile</a>
+                    </li>
+                   
+                    <li>
+                      <a href="/auth" onClick={()=>{logOut()}}>Logout</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+    </nav>
 
 <div className="container2">
  
@@ -75,17 +111,17 @@ export default function hotel() {
 
 <div className='list-container'>
 <div className="left-col">
-  <p>200+ Options</p>
-  <h1>Recomended PlacesIn San Francisco</h1>
+  <p>{data.length}+ Options</p>
+  <h1>Recomended Places</h1>
   {data.map((el: any) => (
               <div onClick={()=>{toHotelrooms(el.id)}} className='house' key={el.id} style={{cursor:"pointer"}}>
                 <div className="house-img" >
                   <img src={el.image}  width={330} height={200} alt="" />
                 </div>
                 <div className="house-info">
-                  <p>{el.name}</p>
+                  <h1 style={{fontSize:22}}>{el.name}</h1>
                   
-                  <p>in french</p>
+                  <p></p>
                   <br /><div> {el.stars} <i> <Image src="/img/star.png" alt='image house' width={20} height={20} /></i></div>
                  
                   
@@ -143,7 +179,7 @@ export default function hotel() {
 <a href="https://www.youtube.com/"><i className='fab fa-facebook-f'></i></a>
 <a href="https://www.youtube.com/"><i className='fab fa-facebook-f'></i></a>
 <hr />
-<p>Copyright 2021, Easy tutorials</p>
+<p>Copyright 2021</p>
 </div>
 </div>
 

@@ -5,6 +5,7 @@ import "../../styles/rooms.css";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/app/context/authcontex/Authcontex';
 
 export default function House() {
   const [data, setData] = useState<any>([]);
@@ -12,6 +13,12 @@ export default function House() {
   const pathname = usePathname()
   const id = pathname.slice(pathname.length-1)
 
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const {token}=useAuth()
+  const { logOut } = useAuth();
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+};
 
 
   
@@ -34,22 +41,50 @@ export default function House() {
 
   return (
     <body>
-      <nav id="navBar" className='navbar-white'>
-        <Image className="logo" src="/img/logotr.png" width={100} height={100} alt="dtg" quality={75} priority={false} />
-        <ul className='nav-links'>
-          <li><a href="/" className="active">Home</a></li>
-          <li><a href="/contactus" className="active">contact us</a></li>
-          <li><a href="#" className="active">online packages</a></li>
-        </ul>
-        <div className="toggle-container">
-          <div className="toggle-option active">
-            <img src="https://img.icons8.com/ios-glyphs/30/000000/globe--v1.png" alt="Globe" />
-          </div>
-          <div className="toggle-option">
-            <img src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png" alt="User" />
-          </div>
-        </div>
-      </nav>
+     <nav id="navBar" className='navbar-white'>
+    <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false}/>
+    <ul className='nav-links'>
+        <li><a href="/" className="active">Home</a></li>
+        <li><a href="/contactus" className="active">Contact Us</a></li>
+      
+    </ul>
+    {!token ? (
+            <a href="/auth" className="register-btn">
+             
+              Register Now
+            </a>
+          ) : (
+            <div className="toggle-container">
+              <div className="toggle-option active">
+                <img
+                  className="noti"
+                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                  alt="notification"
+                />
+              </div>
+              <div className="toggle-option" onClick={toggleDropdown}>
+                <img
+                  className="usee"
+                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                  alt="User"
+                />
+              </div>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <ul>
+                    <li>
+                      <a href="/editprofile">Edit Profile</a>
+                    </li>
+                   
+                    <li>
+                      <a href="/auth" onClick={()=>{logOut()}}>Logout</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+    </nav>
 
       <div className="container2">
         <div className="search-bar">
@@ -74,8 +109,8 @@ export default function House() {
       <div className='container'>
         <div className='list-container'>
           <div className="left-col">
-            <p>200+ Options</p>
-            <h1>Recommended Places in San Francisco</h1>
+            <p>{data.length}+ Options</p>
+            <h1>Recommended Places </h1>
             {data.map((el: any) => (
               <div className='house' key={el.id} onClick={()=>{toOneRoom(el.id)}} style={{cursor:"pointer"}}>
                 <div className="house-img" onClick={() => handleImageClick(el.id)}>
@@ -131,7 +166,7 @@ export default function House() {
           <a href="https://www.youtube.com/"><i className='fab fa-facebook-f'></i></a>
           <a href="https://www.youtube.com/"><i className='fab fa-facebook-f'></i></a>
           <hr />
-          <p>Copyright 2021, Easy tutorials</p>
+          <p>Copyright 2021</p>
         </div>
       </div>
     </body>
