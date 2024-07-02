@@ -42,7 +42,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any>({});
-  const [token, setToken] = useState<string>("");
+  const [token, setToken] = useState<string>(localStorage.getItem("token") as string);
 
   const router = useRouter();
 
@@ -73,18 +73,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loginAction = async (data: LoginData) => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/login', data);
-      const userData = response.data.user.id;
-      console.log(response.data);
 
-      setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
-      setToken(response.data.token);
-      localStorage.setItem("token", response.data.token);
+      if (response.data && response.data.token && response.data.user) {
+        const userData = response.data.user.id;
+        console.log('Login response:', response.data);
+
+        setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
+        setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
+      } else {
+        throw new Error('Invalid login response structure');
+      }
     } catch (err: any) {
       console.error("An error occurred during login:", err);
       if (err.response && err.response.data && err.response.data.message) {
-        console.error(err.response.data.message);
+        console.error("Error message:", err.response.data.message);
       }
+      throw new Error('Login failed');
     }
   };
 

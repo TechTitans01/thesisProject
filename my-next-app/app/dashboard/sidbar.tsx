@@ -1,4 +1,4 @@
-
+// use client
 import { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar, faCalendarAlt, faUsers, faEnvelope, faTv, faQuestionCircle, faHotel } from '@fortawesome/free-solid-svg-icons';
@@ -12,7 +12,6 @@ const Sidebar: FC<SidebarProps> = ({ onSelect }) => {
   return (
     <div className="sidebar">
       <div className="profile">
-      
       </div>
       <nav className="nav">
         <ul>
@@ -26,8 +25,8 @@ const Sidebar: FC<SidebarProps> = ({ onSelect }) => {
           <li onClick={() => onSelect('Messages')}>
             <FontAwesomeIcon icon={faEnvelope} /> <span>Messages</span>
           </li>
-          <li onClick={() => onSelect('Programs')}>
-            <FontAwesomeIcon icon={faTv} /> <span>Programs</span>
+          <li onClick={() => onSelect('Distination')}>
+            <FontAwesomeIcon icon={faTv} /> <span>Distination</span>
           </li>
           <li onClick={() => onSelect('FAQ')}>
             <FontAwesomeIcon icon={faQuestionCircle} /> <span>FAQ</span>

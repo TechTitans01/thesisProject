@@ -31,8 +31,8 @@ import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 
 const property = {
-  title: "Bordeaux Getaway",
-  location: "Bordeaux, France",
+  title: "india Getaway",
+  location: "Delhi, IN",
   images: [
     "https://via.placeholder.com/800x400",
     "https://via.placeholder.com/800x400",
@@ -68,7 +68,9 @@ const Page: React.FC = () => {
   const [comments, setComments] = useState<any>([]);
   const [newComment, setNewComment] = useState('');
   const [data, setData] = useState<any>({});
+  const [use, setuser ] = useState<any>({});
   const [array, setArray] = useState<any>([]);
+   const [ref,setref]=useState<any>(false)
   const { user } = useAuth();
 
   const router = useRouter();
@@ -83,14 +85,16 @@ const Page: React.FC = () => {
 
 
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<number>(-1);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleClick = (id:number) => {
+    
+    
+    setAnchorEl(id);
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setAnchorEl(-1);
   };
 
   const pathname = usePathname();
@@ -105,6 +109,17 @@ const Page: React.FC = () => {
   const handleDateChange = (newDateRange: [Date | null, Date | null]) => {
     setDateRange(newDateRange);
   };
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/user/getone/${user.id}`)
+      .then((resp) => {
+        console.log("heyoad",resp.data);
+        setuser(resp.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   useEffect(() => {
     axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
@@ -123,9 +138,15 @@ const Page: React.FC = () => {
   const commenti = () => {
     axios.post(`http://localhost:8080/commentaires/${id}/${user.id}`, {
       text: newComment,
-      date: "12/10/2024"
+      date: "12/10/2024",
+      name:use.username,
+      image:use.image
     }).then((res) => {
       console.log(res);
+      setref(!ref)
+      setNewComment('');
+
+
     }).catch((error) => { console.log(error) });
   };
 
@@ -135,7 +156,7 @@ const Page: React.FC = () => {
     axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
       setComments(res.data);
     }).catch(err => { console.log(err) });
-  }, [comments]);
+  }, [ref]);
 
   const addBooking = async () => {
     if (!dateRange[0] || !dateRange[1] || !guests) {
@@ -300,39 +321,56 @@ const Page: React.FC = () => {
               </LocalizationProvider>
             </Box>
 
-            <Box my={2}>
-              <Typography variant="h6" gutterBottom>
-                5.0 <StarIcon fontSize="small" style={{ color: "#FFC107" }} /> • 7 reviews
-              </Typography>
+            <div style={{ margin: '16px 0' }}>
+      <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        5.0 <span style={{ fontSize: 'small', color: '#FFC107' }}>★</span> • {comments.length} reviews
+      </div>
 
-              {comments.map((review: any, index: any) => (
-                <Box key={index} my={2}>
-                  <Grid container alignItems="center">
-                    <Grid item>
-                      <Avatar src="" onClick={handleClick} style={{ cursor: 'pointer' }} />
-                      <Menu
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                      >
-                        <MenuItem onClick={() => { handleClose(); seeprofile(review.userId); }}>Profile</MenuItem>
-                        <MenuItem onClick={() => { handleClose(); toChat(review.userId); }}>Send message</MenuItem>
-                      </Menu>
-                    </Grid>
+      {comments.map((review:any, index:any) => (
+        <div key={index} style={{ margin: '16px 0', cursor: 'pointer' }} onClick={()=>{handleClick(review.id)}}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div>
+              <img 
+                src={review.image} 
+                alt="avatar" 
+                style={{ width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer' }}
+              />
+              {anchorEl===review.id && (
+                <div 
+                  style={{
+                    position: 'absolute', 
+                    backgroundColor: 'white', 
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    zIndex: 1
+                  }}
+                >
+                  <div 
+                    onClick={() => { handleClose(); seeprofile(review.userId); }} 
+                    style={{ padding: '8px', cursor: 'pointer' }}
+                  >
+                    Profile
+                  </div>
+                  <div 
+                    onClick={() => { toChat( review.userId); }} 
+                    style={{ padding: '8px', cursor: 'pointer' }}
+                  >
+                    Send message
+                  </div>
+                </div>
+              )}
+            </div>
 
-                    <Grid item xs>
-                      <Typography variant="subtitle2">guest</Typography>
-                      <Typography variant="caption" color="textSecondary">
-                        {review.date}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <Typography gutterBottom>{review.text}</Typography>
-                  <Divider />
-                </Box>
-              ))}
-
-            </Box>
+            <div style={{ flex: 1, marginLeft: '8px' }}>
+              <div style={{ fontWeight: 'bold' }}>{review.name} </div>
+              <div style={{ fontSize: '12px', color: 'gray' }}>{review.date}</div>
+            </div>
+          </div>
+          <div style={{ marginTop: '8px' }}>{review.text}</div>
+          <hr style={{ margin: '16px 0', border: 'none', borderTop: '1px solid #e0e0e0' }} />
+        </div>
+      ))}
+    </div>
+  
 
 
             <Box my={2}>
