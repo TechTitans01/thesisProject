@@ -4,7 +4,6 @@ import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useAuth } from '../../context/authcontex/Authcontex';
 import { useRouter } from "next/navigation";
 
-
 const LoginPage: React.FC = () => {
   const { loginAction } = useAuth();
   const router = useRouter();

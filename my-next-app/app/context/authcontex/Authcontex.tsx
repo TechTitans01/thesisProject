@@ -102,6 +102,7 @@ console.log("user auth  ",user);
         localStorage.setItem("token", response.data.token);
   
         return { role: 'user' }; 
+        
       } else if (response.data.token && response.data.admin) {
         const adminData = response.data.admin;
         console.log('Login response:', response.data);
@@ -111,7 +112,7 @@ console.log("user auth  ",user);
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
   
-        return { role: 'admin' };
+        return { role: 'admin' }; 
       } else {
         throw new Error('Invalid login response structure');
       }
@@ -123,6 +124,7 @@ console.log("user auth  ",user);
       throw new Error('Login failed');
     }
   };
+  
   
   
 
