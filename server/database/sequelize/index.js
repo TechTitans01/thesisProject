@@ -1,7 +1,7 @@
 // const config = require("./config.js");
 const { Sequelize, DataTypes } = require("sequelize");
 
-
+const createAdmin=require('../../createAdmin.js')
 const sequelize = new Sequelize(
   "travell",
   "root",
@@ -77,16 +77,15 @@ sequelize.authenticate().then(()=>{
 
 
 
-
 // sequelize
-//   .sync({ force: true })
-//   .then(() => {
-//     console.log("phrase table created successfully!");
+//   .sync({ force: false }) 
+//   .then(async () => {
+//     console.log("Database synchronized successfully");
+//     await createAdmin(db);
 //   })
 //   .catch((error) => {
-//     console.error("Unable to create table : ", error);
+//     console.error("Unable to synchronize the database:", error);
 //   });
-
 
 
 module.exports=db
