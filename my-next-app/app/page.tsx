@@ -14,6 +14,9 @@ export default function home (){
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
     const[destination,setdestination]=useState<any>([])
     const router = useRouter();
+    const [famee, setfamee] = useState<string>("");
+    const [trending, setTrending] = useState<any>([]);
+    const [filteredTrending, setFilteredTrending] = useState<any>([]);
 
     const toHotel = (id:number)=>{
       router.push(`/hotel/${id}`)
@@ -23,16 +26,30 @@ export default function home (){
         setDropdownOpen(!dropdownOpen);
     };
 
-
-
     useEffect(()=>{
-      axios.get("http://localhost:8080/api/destination/getall").then((resp)=>{
-        setdestination(resp.data)
-      }).catch((err)=>{
-        console.log(err)
-      }) 
-    
-    },[])
+      
+
+
+      axios.get(`http://localhost:8080/api/destination/getall`).then((res)=>{
+        setdestination(res.data)
+        setTrending(res.data);
+        const filtered = res.data.filter((dest: any) => dest.fame === "trending"); 
+        setFilteredTrending(filtered);
+      }).catch(error=>{console.error(error)})
+
+
+      }, []) 
+
+
+
+    const falter = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const value = parseInt(event.target.value);
+      console.log(value);
+      const filtered = trending.filter((dest: any) => dest.fame === value);
+      setFilteredTrending(filtered);
+    };
+
+
 
     return (<body>
 
@@ -129,30 +146,14 @@ return(
 </div>
 
 <h2 className="sub-title">Trending Places</h2>
-<div className="tranding">
-
-    <div>
-    <Image  src="/img/dubai.png" width={230} height={280}style={{borderRadius:10}}  alt="dtg"  />
-    <h3>Dubai</h3>
-    </div>
-    <div>
-    <Image  src="/img/new-york.png" width={230} height={280}style={{borderRadius:10}}  alt="dtg"  />
-    <h3>New York</h3>
-    </div>
-    <div>
-    <Image  src="/img/paris.png" width={230} height={280}style={{borderRadius:10}}  alt="dtg"  />
-    <h3>Paris</h3>
-    </div>
-    <div>
-    <Image  src="/img/new-delhi.png" width={230} height={280}style={{borderRadius:10}}  alt="dtg"  />
-    <h3>New Delhi</h3>
-    </div>
-    <div>
-    <Image  src="/img/new-delhi.png" width={230} height={280}style={{borderRadius:10}}  alt="dtg"  />
-    <h3>New Delhi</h3>
-    </div>
-    
-</div>
+<div className="trending">
+          {filteredTrending.map((dest: any) => (
+            <div key={dest.id}>
+              <Image src={dest.image} width={230} height={280} style={{ borderRadius: 10 }} alt="dtg" />
+              <h3>{dest.name}</h3>
+            </div>
+          ))}
+        </div>
 
 <div className="cta">
     <h3> Sharing <br /> is Earning Now</h3>

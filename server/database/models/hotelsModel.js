@@ -27,6 +27,10 @@ module.exports=(sequelize,DataTypes)=>{
             type: DataTypes.DECIMAL(10, 0),
             allowNull: true,
           },
+          type: {
+            type: DataTypes.STRING,
+            allowNull: false,
+          }
 
     })
  return  hotel

@@ -41,7 +41,8 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<any>(JSON.parse(localStorage.getItem("user")||'') );
+  const storedUser=JSON.parse(localStorage?.getItem("user")||"{}")
+  const [user, setUser] = useState<any>(storedUser );
   const [token, setToken] = useState<string>(localStorage.getItem("token") as string);
 
   const router = useRouter();

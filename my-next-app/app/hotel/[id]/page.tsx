@@ -23,6 +23,7 @@ export default function hotel() {
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
 };
+const [type,settype] = useState<any>([])
 
   useEffect(()=>{
     axios.get(`http://localhost:8080/api/hotels/getone/${id}`).then((res)=>{
@@ -32,6 +33,12 @@ export default function hotel() {
       
     }).catch(err=>{console.log(err)})
   },[])
+
+  const falter = (v:string) => {
+    console.log(v);
+    const filtered = data.filter((hote: any) => hote.type === v);
+    type(filtered);
+  };
   
   return (
 <body>
@@ -138,23 +145,23 @@ export default function hotel() {
   <h2>select Filters</h2>
   <h3>Property type</h3>
   <div className="filter">
-    <input type="checkbox" /> <p>House</p><span>(0)</span>
+    <input type="checkbox"  onClick={()=>{falter("house")}}/> <p>House</p><span>(0)</span>
   </div>
 
   <div className="filter">
-    <input type="checkbox" /> <p>Hostel</p><span>(0)</span>
+    <input type="checkbox" onClick={()=>{falter("Hostel")}} /> <p>Hostel</p><span>(0)</span>
   </div>
   
    <div className="filter">
-    <input type="checkbox" /> <p>Flat</p><span>(0)</span>
+    <input type="checkbox" onClick={()=>{falter("Flat")}} /> <p>Flat</p><span>(0)</span>
   </div>
   
    <div className="filter">
-    <input type="checkbox" /> <p>Villa</p><span>(0)</span>
+    <input type="checkbox" onClick={()=>{falter("Villa")}} /> <p>Villa</p><span>(0)</span>
   </div>
   
    <div className="filter">
-    <input type="checkbox" /> <p>Guest suite</p><span>(0)</span>
+    <input type="checkbox" onClick={()=>{falter("Guest suite")}} /> <p>Guest suite</p><span>(0)</span>
   </div>
  
 </div>
