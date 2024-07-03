@@ -9,12 +9,12 @@ interface AuthContextType {
   token: string;
   setToken: (token: string) => void;
   user: any;
-  admin: any;
-  loginAction: (data: LoginData) => Promise<void>;
+  admin:any;
+  loginAction: (data: LoginData, str: string) => Promise<void>;
   signupAction: (data: SignupData) => Promise<void>;
   logOut: () => void;
   fetchUser: (userId: number) => Promise<void>;
-  fetchAdmin: (adminId: number) => Promise<void>;
+  fetchAdmin: (userId: number) => Promise<void>;
 }
 
 interface LoginData {
@@ -33,7 +33,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw Error("useAuth must be used within an AuthProvider");
+    throw  Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -42,14 +42,15 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const storedUser = JSON.parse(localStorage?.getItem("user") || "{}");
-  const [user, setUser] = useState<any>(storedUser);
-  const [token, setToken] = useState<string>(localStorage.getItem("token") as string);
-  const [admin, setAdmin] = useState<any>(JSON.parse(localStorage?.getItem("admin") || "{}"));
-  const router = useRouter();
 
-  console.log("user auth  ", user);
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const storedUser=JSON.parse(localStorage?.getItem("user")||"{}")
+  const [user, setUser] = useState<any>(storedUser );
+  const [token, setToken] = useState<string>(localStorage.getItem("token") as string);
+  const[admin,setAdmin] = useState<any>(localStorage.getItem("admin"))
+console.log("user auth  ",user);
+
+  const router = useRouter();
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -60,24 +61,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           fetchUser(decoded.id);
           fetchAdmin(decoded.id);
         }
+        
       } catch (error) {
         console.error("Error decoding token:", error);
         logOut();
       }
     }
   }, []);
-
   const fetchAdmin = async (adminId: number) => {
+
     try {
       const response = await axios.get(`http://localhost:8080/api/admin/get/${adminId}`);
-      setAdmin(response.data);
-      localStorage.setItem("admin", JSON.stringify(response.data));
+      setUser(response.data);
     } catch (error) {
-      console.error("Error fetching admin information", error);
+      console.error("Error fetching user information", error);
     }
   };
-
   const fetchUser = async (userId: number) => {
+
     try {
       const response = await axios.get(`http://localhost:8080/api/user/getone/${userId}`);
       setUser(response.data);
@@ -90,27 +91,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/login', data);
       console.log(response);
-
+  
       if (response.data.token && response.data.user) {
         const userData = response.data.user;
         console.log('Login response:', response.data);
-
+  
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
-
-        router.push('/');
+  
+        return { role: 'user' }; 
       } else if (response.data.token && response.data.admin) {
         const adminData = response.data.admin;
         console.log('Login response:', response.data);
-
+  
         setAdmin(adminData);
         localStorage.setItem("admin", JSON.stringify(adminData));
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
-
-        router.push('/dashboard');
+  
+        return { role: 'admin' };
       } else {
         throw new Error('Invalid login response structure');
       }
@@ -122,13 +123,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       throw new Error('Login failed');
     }
   };
+  
+  
 
   const signupAction = async (data: SignupData) => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/signup', data);
+     
+      const userData = response.data.newUser
 
-      const userData = response.data.newUser;
-      setUser(userData);
+      setUser(response.data.newUser);
       localStorage.setItem("user", JSON.stringify(userData));
       setToken(response.data.token);
       localStorage.setItem("token", response.data.token);
@@ -144,16 +148,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logOut = () => {
     setUser({});
-    setAdmin({});
     setToken("");
     localStorage.removeItem("user");
-    localStorage.removeItem("admin");
     localStorage.removeItem("token");
+    localStorage.removeItem("admin");
     router.push("/auth");
   };
 
   return (
-    <AuthContext.Provider value={{ token, setToken, user, admin, loginAction, signupAction, fetchUser, fetchAdmin, logOut }}>
+    <AuthContext.Provider value={{ token, setToken, user, admin,loginAction, signupAction, fetchUser, logOut }}>
       {children}
     </AuthContext.Provider>
   );
