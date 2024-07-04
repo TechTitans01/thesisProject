@@ -25,6 +25,8 @@ import {
 } from '@mui/material';
 import { Delete, Add, Room, ExpandMore, ExpandLess } from '@mui/icons-material';
 import './style/hotel.css';
+import Swal from 'sweetalert2';
+
 
 interface Destination {
   id: number;
@@ -218,33 +220,67 @@ const Destinations: FC = () => {
   };
 
   const handleDeleteHotel = (hotelId: number, destinationId: number) => {
-    axios.delete(`http://localhost:8080/api/hotels/remove/${hotelId}`)
-      .then(() => {
-        setSnackbarMessage('Hotel removed successfully');
-        setSnackbarOpen(true);
-        fetchHotels(destinationId);
-      })
-      .catch(error => {
-        console.error("There was an error removing the hotel!", error);
-        setSnackbarMessage('Failed to remove hotel');
-        setSnackbarOpen(true);
-      });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this hotel!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`http://localhost:8080/api/hotels/deleteHotel/${hotelId}`)
+          .then(() => {
+            setSnackbarMessage('Hotel removed successfully');
+            setSnackbarOpen(true);
+            fetchHotels(destinationId);
+          })
+          .catch(error => {
+            console.error("There was an error removing the hotel!", error);
+            setSnackbarMessage('Failed to remove hotel');
+            setSnackbarOpen(true);
+          });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelled',
+          'The hotel is safe :)',
+          'error'
+        );
+      }
+    });
   };
-
+  
   const handleDeleteRoom = (roomId: number, hotelId: number) => {
-    axios.delete(`http://localhost:8080/rooms/${roomId}`)
-      .then(() => {
-        setSnackbarMessage('Room removed successfully');
-        setSnackbarOpen(true);
-        fetchRooms(hotelId);
-      })
-      .catch(error => {
-        console.error("There was an error removing the room!", error);
-        setSnackbarMessage('Failed to remove room');
-        setSnackbarOpen(true);
-      });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this room!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`http://localhost:8080/rooms/${roomId}`)
+          .then(() => {
+            setSnackbarMessage('Room removed successfully');
+            setSnackbarOpen(true);
+            fetchRooms(hotelId);
+          })
+          .catch(error => {
+            console.error("There was an error removing the room!", error);
+            setSnackbarMessage('Failed to remove room');
+            setSnackbarOpen(true);
+          });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelled',
+          'The room is safe :)',
+          'error'
+        );
+      }
+    });
   };
-
+  
   const handleToggleExpandDestination = (destinationId: number) => {
     if (expandedDestination === destinationId) {
       setExpandedDestination(null);
