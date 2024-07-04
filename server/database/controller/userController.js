@@ -82,6 +82,18 @@ getOneUser:(req, res) => {
         res.status(500).send(err);
       });
   },
+  getOneUserByemail:(req, res) => {
+    db.user.findOne({ where: { email: req.params.email } })
+      .then(data => {
+        if(!data){
+          res.send(err)
+        }
+        res.send(data)
+      })
+      .catch(err => {
+        res.status(404).send(err);
+      });
+  },
 
   removeUser:(req, res) => {
     db.user.destroy({ where: { id: req.params.id } })

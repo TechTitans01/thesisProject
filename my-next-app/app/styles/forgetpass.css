@@ -1,0 +1,64 @@
+.account-recovery {
+  width: 100%;
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  text-align: center;
+}
+
+.account-recovery h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.account-recovery p {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #666;
+}
+
+.account-recovery input[type="text"] {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttons .cancel, .buttons .search {
+  width: 48%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttons .cancel {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.buttons .search {
+  background-color: #4c93af;
+  color: #fff;
+}
+
+.buttons .cancel:hover {
+  background-color: #2f97d3;
+}
+
+.buttons .search:hover {
+  background-color: #2d8099;
+}
