@@ -51,15 +51,16 @@ export default function home (){
 
 
 
-    return (<body>
+    return (<div>
 
      <div className="header">
 
      <nav id="navBar" className='navbar-white'>
-    <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false}/>
+    {/* <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false}/> */}
     <ul className='nav-links'>
         <li><a href="/" className="active">Home</a></li>
         <li><a href="/contactus" className="active">Contact Us</a></li>
+        {/* <input type="text" /> */}
       
     </ul>
     {!token ? (
@@ -149,7 +150,7 @@ return(
 <div className="trending">
           {filteredTrending.map((dest: any) => (
             <div key={dest.id}>
-              <Image src={dest.image} width={230} height={280} style={{ borderRadius: 10 }} alt="dtg" />
+              <img src={dest.image} width={230} height={280} style={{ borderRadius: 10 }} alt="dtg" />
               <h3>{dest.name}</h3>
             </div>
           ))}
@@ -200,7 +201,7 @@ return(
 
 
 
-            </body>
+            </div>
       );
     
     
