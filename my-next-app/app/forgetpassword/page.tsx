@@ -1,35 +1,45 @@
 "use client"
 
 import React, { useState } from 'react';
-import '../styles/forgetpass.css'; // Ensure you link to your stylesheet
+import '../styles/forgetpass.css'; 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
-const AccountRecovery = () => {
-const[email,seteamil]=useState<string>("")
-const forget=()=>{
-  axios.post("http://localhost:8080/api/user/getoneByemail",{
-    email:email
-  }).then((res)=>{
-    toast.success("succes")
-    console.log(res)
-  })
-  .catch((err)=>{console.log(err)
-    toast.error("error")
-  })
-}
+import { useRouter } from "next/navigation";
 
-  return (<>
-    <div className="account-recovery">
-      <h2>Trouvez votre compte</h2>
-      <p>Veuillez entrer votre e-mail ou votre numéro de mobile pour rechercher votre compte.</p>
-      <input type="text" placeholder="E-mail ou numéro de mobile" onChange={(e)=>seteamil(e.target.value)} />
-      <div className="buttons">
-        <button className="cancel">Annuler</button>
-        <button className="search" onClick={()=>{forget()}}>Rechercher</button>
+const AccountRecovery = () => {
+  const [email, setEmail] = useState<string>("");
+  const router = useRouter();
+
+  const forget = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8080/api/user/getoneByemail/${email}`);
+      toast.success("Success");
+      router.push(`/checkprofilepass/${email}`);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+      toast.error("Error");
+    }
+  };
+
+  return (
+    <>
+      <div className="account-recovery">
+        <h2>Find Your Account</h2>
+        <p>Please enter your email to search for your account.</p>
+        <input 
+          type="text" 
+          placeholder="Email" 
+          onChange={(e) => setEmail(e.target.value)} 
+          value={email}
+        />
+        <div className="buttons">
+          <button className="cancel" onClick={() => router.push("/auth")}>Cancel</button>
+          <button className="search" onClick={forget}>Search</button>
+        </div>
       </div>
-    </div>
-    <ToastContainer />
+      <ToastContainer />
     </>
   );
 };

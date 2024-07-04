@@ -83,7 +83,7 @@ getOneUser:(req, res) => {
       });
   },
   getOneUserByemail:(req, res) => {
-    db.user.findOne({ where: { email: req.body.email } })
+    db.user.findOne({ where: { email: req.params.email } })
       .then(data => {
         if(!data){
           res.send(err)

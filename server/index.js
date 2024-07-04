@@ -9,6 +9,7 @@ const bookingRoutes = require('./database/routes/bookingRoutes.js')
 const reviewRoutes = require('./database/routes/reviewRoutes.js')
 const roomRoutes = require('./database/routes/roomRoutes.js')
 const reclamationRoutes = require('./database/routes/reclamtion.js')
+const adminRoutes = require('./database/routes/adminRt.js')
 
 const messagesRouter=require("./database/routes/messageRoute.js")
 
@@ -49,6 +50,7 @@ app.use('/api/destination', destinationRoutes);
 app.use('/api/reclamation', reclamationRoutes);
 app.use('/api/payments', paymentRouter);
 app.use('/api/chat',messagesRouter)
+app.use('/api/admin', adminRoutes);
 
 
 app.post('/send-sms', (req, res) => {

@@ -3,6 +3,7 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useAuth } from '../../context/authcontex/Authcontex';
 import { useRouter } from "next/navigation";
+
 const LoginPage: React.FC = () => {
   const { loginAction } = useAuth();
   const router = useRouter();
@@ -24,13 +25,18 @@ const LoginPage: React.FC = () => {
     const { email, password } = state;
 
     try {
-      await loginAction({ email, password }, 'login');
+      const result = await loginAction({ email, password });
       alert('Login successful');
       setState({
         email: '',
         password: ''
       });
-      router.push("/")
+
+      if (result.role === 'admin') {
+        router.push('/dashboard');
+      } else {
+        router.push('/');
+      }
     } catch (error) {
       alert('Login failed');
       console.error('Error:', error);
