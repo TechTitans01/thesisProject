@@ -4,12 +4,14 @@ import React, { useEffect, useState } from 'react';
 import "../../styles/checkpass.css"; 
 import { usePathname } from 'next/navigation';
 export default function checkAccount  ()  {
-  const [method, setMethod] = useState<string>('email');
+  const [method, setMethod] = useState<string>('');
   const pathname = usePathname()
-  const email = pathname.slice(pathname.length-1)
+ const filt=pathname.split("/")
+ const email=filt[filt.length-1]
 
 useEffect(()=>{
     console.log(email)
+    setMethod(email)
 
 },[])
 
@@ -24,9 +26,9 @@ useEffect(()=>{
         <div className="radio-group">
           <label>
             <input 
-              type="radio" 
+              type="checkBox" 
               value="email" 
-              checked={method === 'email'} 
+            
            
             />
             Send the code by email
