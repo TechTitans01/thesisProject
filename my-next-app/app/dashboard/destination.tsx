@@ -39,21 +39,42 @@ interface Hotel {
   image: string;
   bookings: number;
   stars: number;
-  latitude: number ;
-  longitude: number ;
+  latitude: number | null;
+  longitude: number | null;
   destinationId: number;
+}
+
+interface Room {
+  id: number;
+  description: string;
+  guests: number;
+  nightPrice: number;
+  bedroom: number;
+  baths: number;
+  beds: number;
+  status: number | null;
+  image1: string;
+  image2: string;
+  image3: string;
+  image4: string;
+  image5: string;
+  hotelId: number;
 }
 
 const Destinations: FC = () => {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [hotels, setHotels] = useState<{ [key: number]: Hotel[] }>({});
+  const [rooms, setRooms] = useState<{ [key: number]: Room[] }>({});
   const [loading, setLoading] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [hotelDialogOpen, setHotelDialogOpen] = useState(false);
+  const [roomDialogOpen, setRoomDialogOpen] = useState(false);
+  const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [expandedDestination, setExpandedDestination] = useState<number | null>(null);
+  const [expandedHotel, setExpandedHotel] = useState<number | null>(null);
   const [newDestination, setNewDestination] = useState({
     name: '',
     image: '',
@@ -67,6 +88,21 @@ const Destinations: FC = () => {
     latitude: null,
     longitude: null,
     destinationId: 0
+  });
+  const [newRoom, setNewRoom] = useState({
+    description: '',
+    guests: 0,
+    nightPrice: 0,
+    bedroom: 0,
+    baths: 0,
+    beds: 0,
+    status: 1,
+    image1: '',
+    image2: '',
+    image3: '',
+    image4: '',
+    image5: '',
+    hotelId: 0
   });
 
   useEffect(() => {
@@ -86,7 +122,7 @@ const Destinations: FC = () => {
   };
 
   const fetchHotels = (destinationId: number) => {
-    axios.get(`http://localhost:8080/api/hotels/getall?destinationId=${destinationId}`)
+    axios.get(`http://localhost:8080/api/hotels/getone/${destinationId}`)
       .then(response => {
         setHotels(prevHotels => ({
           ...prevHotels,
@@ -95,6 +131,19 @@ const Destinations: FC = () => {
       })
       .catch(error => {
         console.error("There was an error fetching the hotels!", error);
+      });
+  };
+
+  const fetchRooms = (hotelId: number) => {
+    axios.get(`http://localhost:8080/rooms/hotel/${hotelId}`)
+      .then(response => {
+        setRooms(prevRooms => ({
+          ...prevRooms,
+          [hotelId]: response.data
+        }));
+      })
+      .catch(error => {
+        console.error("There was an error fetching the rooms!", error);
       });
   };
 
@@ -138,8 +187,38 @@ const Destinations: FC = () => {
       });
   };
 
+  const handleAddRoom = () => {
+    axios.post(`http://localhost:8080/rooms/hotel/${newRoom.hotelId}`, newRoom)
+      .then(() => {
+        setSnackbarMessage('Room added successfully');
+        setSnackbarOpen(true);
+        fetchRooms(newRoom.hotelId); 
+        setRoomDialogOpen(false); 
+        setNewRoom({
+          description: '',
+          guests: 0,
+          nightPrice: 0,
+          bedroom: 0,
+          baths: 0,
+          beds: 0,
+          status: 1,
+          image1: '',
+          image2: '',
+          image3: '',
+          image4: '',
+          image5: '',
+          hotelId: 0
+        }); 
+      })
+      .catch(error => {
+        console.error("There was an error adding the room!", error);
+        setSnackbarMessage('Failed to add room');
+        setSnackbarOpen(true);
+      });
+  };
+
   const handleDeleteHotel = (hotelId: number, destinationId: number) => {
-    axios.delete(`http://localhost:8080/api/hotels/deleteHotel/${hotelId}`)
+    axios.delete(`http://localhost:8080/api/hotels/remove/${hotelId}`)
       .then(() => {
         setSnackbarMessage('Hotel removed successfully');
         setSnackbarOpen(true);
@@ -152,12 +231,35 @@ const Destinations: FC = () => {
       });
   };
 
-  const handleToggleExpand = (destinationId: number) => {
+  const handleDeleteRoom = (roomId: number, hotelId: number) => {
+    axios.delete(`http://localhost:8080/rooms/${roomId}`)
+      .then(() => {
+        setSnackbarMessage('Room removed successfully');
+        setSnackbarOpen(true);
+        fetchRooms(hotelId);
+      })
+      .catch(error => {
+        console.error("There was an error removing the room!", error);
+        setSnackbarMessage('Failed to remove room');
+        setSnackbarOpen(true);
+      });
+  };
+
+  const handleToggleExpandDestination = (destinationId: number) => {
     if (expandedDestination === destinationId) {
       setExpandedDestination(null);
     } else {
       setExpandedDestination(destinationId);
       fetchHotels(destinationId);
+    }
+  };
+
+  const handleToggleExpandHotel = (hotelId: number) => {
+    if (expandedHotel === hotelId) {
+      setExpandedHotel(null);
+    } else {
+      setExpandedHotel(hotelId);
+      fetchRooms(hotelId);
     }
   };
 
@@ -181,6 +283,16 @@ const Destinations: FC = () => {
 
   const handleCloseHotelDialog = () => {
     setHotelDialogOpen(false);
+  };
+
+  const handleOpenRoomDialog = (hotel: Hotel) => {
+    setSelectedHotel(hotel);
+    setNewRoom(prevRoom => ({ ...prevRoom, hotelId: hotel.id }));
+    setRoomDialogOpen(true);
+  };
+
+  const handleCloseRoomDialog = () => {
+    setRoomDialogOpen(false);
   };
 
   return (
@@ -210,32 +322,61 @@ const Destinations: FC = () => {
                       secondary={`Flag: ${destination.flag}`}
                     />
                     <ListItemSecondaryAction>
-                      <IconButton edge="end" color="primary" onClick={() => handleOpenHotelDialog(destination)}>
-                        <Add />
-                      </IconButton>
-                      <IconButton edge="end" onClick={() => handleToggleExpand(destination.id)}>
+                      <IconButton edge="end" color="primary" onClick={() => handleToggleExpandDestination(destination.id)}>
                         {expandedDestination === destination.id ? <ExpandLess /> : <ExpandMore />}
                       </IconButton>
                     </ListItemSecondaryAction>
                   </ListItem>
                   <Collapse in={expandedDestination === destination.id} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                      {hotels[destination.id] && hotels[destination.id].map((hotel) => (
-                        <ListItem key={hotel.id} divider sx={{ pl: 4 }}>
-                          <ListItemAvatar>
-                            <Avatar src={hotel.image} />
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={hotel.name}
-                            secondary={`Bookings: ${hotel.bookings}, Stars: ${hotel.stars}`}
-                          />
-                          <ListItemSecondaryAction>
-                            <IconButton edge="end" color="secondary" onClick={() => handleDeleteHotel(hotel.id, destination.id)}>
-                              <Delete />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        </ListItem>
+                      {hotels[destination.id]?.map((hotel) => (
+                        <Box key={hotel.id} pl={4}>
+                          <ListItem divider>
+                            <ListItemAvatar>
+                              <Avatar src={hotel.image} />
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={hotel.name}
+                              secondary={`Bookings: ${hotel.bookings}, Stars: ${hotel.stars}`}
+                            />
+                            <ListItemSecondaryAction>
+                              <IconButton edge="end" color="primary" onClick={() => handleOpenRoomDialog(hotel)}>
+                                <Add />
+                              </IconButton>
+                              <IconButton edge="end" color="secondary" onClick={() => handleDeleteHotel(hotel.id, destination.id)}>
+                                <Delete />
+                              </IconButton>
+                              <IconButton edge="end" color="primary" onClick={() => handleToggleExpandHotel(hotel.id)}>
+                                {expandedHotel === hotel.id ? <ExpandLess /> : <ExpandMore />}
+                              </IconButton>
+                            </ListItemSecondaryAction>
+                          </ListItem>
+                          <Collapse in={expandedHotel === hotel.id} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                              {rooms[hotel.id]?.map((room) => (
+                                <Box key={room.id} pl={8}>
+                                  <ListItem divider>
+                                    <ListItemText
+                                      primary={room.name}
+                                      secondary={`Type: ${room.type}, Price: ${room.price}`}
+                                    />
+                                    <ListItemSecondaryAction>
+                                      <IconButton edge="end" color="secondary" onClick={() => handleDeleteRoom(room.id, hotel.id)}>
+                                        <Delete />
+                                      </IconButton>
+                                    </ListItemSecondaryAction>
+                                  </ListItem>
+                                </Box>
+                              ))}
+                            </List>
+                          </Collapse>
+                        </Box>
                       ))}
+                      <Box pl={4} mt={2}>
+                        <Button variant="outlined" color="primary" onClick={() => handleOpenHotelDialog(destination)}>
+                          Add Hotel
+                        </Button>
+                      </Box>
                     </List>
                   </Collapse>
                 </Box>
@@ -355,6 +496,127 @@ const Destinations: FC = () => {
         <DialogActions>
           <Button onClick={handleCloseHotelDialog}>Cancel</Button>
           <Button onClick={handleAddHotel}>Add Hotel</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={roomDialogOpen} onClose={handleCloseRoomDialog}>
+        <DialogTitle>Add a New Room</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please fill out the form below to add a new room to {selectedHotel?.name}.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Description"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newRoom.description}
+            onChange={e => setNewRoom({ ...newRoom, description: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Guests"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={newRoom.guests}
+            onChange={e => setNewRoom({ ...newRoom, guests: parseInt(e.target.value, 10) })}
+          />
+          <TextField
+            margin="dense"
+            label="Night Price"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={newRoom.nightPrice}
+            onChange={e => setNewRoom({ ...newRoom, nightPrice: parseInt(e.target.value, 10) })}
+          />
+          <TextField
+            margin="dense"
+            label="Bedrooms"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={newRoom.bedroom}
+            onChange={e => setNewRoom({ ...newRoom, bedroom: parseInt(e.target.value, 10) })}
+          />
+          <TextField
+            margin="dense"
+            label="Baths"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={newRoom.baths}
+            onChange={e => setNewRoom({ ...newRoom, baths: parseInt(e.target.value, 10) })}
+          />
+          <TextField
+            margin="dense"
+            label="Beds"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={newRoom.beds}
+            onChange={e => setNewRoom({ ...newRoom, beds: parseInt(e.target.value, 10) })}
+          />
+          <TextField
+            margin="dense"
+            label="Status"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={newRoom.status !== null ? newRoom.status : 1}
+            onChange={e => setNewRoom({ ...newRoom, status: parseInt(e.target.value, 10) })}
+          />
+          <TextField
+            margin="dense"
+            label="Image 1 URL"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newRoom.image1}
+            onChange={e => setNewRoom({ ...newRoom, image1: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Image 2 URL"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newRoom.image2}
+            onChange={e => setNewRoom({ ...newRoom, image2: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Image 3 URL"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newRoom.image3}
+            onChange={e => setNewRoom({ ...newRoom, image3: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Image 4 URL"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newRoom.image4}
+            onChange={e => setNewRoom({ ...newRoom, image4: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Image 5 URL"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newRoom.image5}
+            onChange={e => setNewRoom({ ...newRoom, image5: e.target.value })}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseRoomDialog}>Cancel</Button>
+          <Button onClick={handleAddRoom}>Add Room</Button>
         </DialogActions>
       </Dialog>
     </Box>
