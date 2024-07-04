@@ -54,7 +54,7 @@ interface Room {
   bedroom: number;
   baths: number;
   beds: number;
-  status: number | null;
+  status: boolean | null;
   image1: string;
   image2: string;
   image3: string;
@@ -203,7 +203,7 @@ const Destinations: FC = () => {
           bedroom: 0,
           baths: 0,
           beds: 0,
-          status: 1,
+          status: true,
           image1: '',
           image2: '',
           image3: '',
@@ -598,10 +598,10 @@ const Destinations: FC = () => {
           <TextField
             margin="dense"
             label="Status"
-            type="number"
+            type="text"
             fullWidth
             variant="standard"
-            value={newRoom.status !== null ? newRoom.status : 1}
+            value={newRoom.status !== null ? newRoom.status : true}
             onChange={e => setNewRoom({ ...newRoom, status: parseInt(e.target.value, 10) })}
           />
           <TextField
