@@ -1,5 +1,4 @@
 "use client"
-
 import Image from 'next/image';
 import "../../styles/hotel.css"
 import { usePathname } from 'next/navigation';
@@ -110,23 +109,40 @@ const DataPerPage = data.slice(startIndex, endIndex);
 
       <div className='container'>
         <div className='list-container'>
-          <div className="left-col">
-            <p>{data.length}+ Options</p>
-            <h1>Recommended Places</h1>
-            {DataPerPage.map((el: any) => (
-              <div onClick={() => { toHotelRooms(el.id) }} className='house' key={el.id} style={{ cursor: "pointer" }}>
-                <div className="house-img">
-                  <img src={el.image} width={330} height={200} alt="" />
+        <div className="hotel-card-container">
+      <div className='list-container'>
+        <div className="left-col">
+          <p>{data.length}+ Options</p>
+          <h1>Recommended Places</h1>
+          {DataPerPage.map((el: any) => (
+            <div onClick={() => { toHotelRooms(el.id) }} className='house' key={el.id} style={{ cursor: "pointer" }}>
+              <div className="hotel-card">
+                <div className="hotel-card-img">
+                  <img src={el.image} alt={el.name} width={330} height={200} />
+                  <button className="favorite-btn">&#9825;</button> {/* Heart icon */}
                 </div>
-                <div className="house-info">
-                  <h1 style={{ fontSize: 22 }}>{el.name}</h1>
-                  <p></p>
-                  <br />
-                  <div>{el.stars} <i><Image src="/img/star.png" alt='image house' width={20} height={20} /></i></div>
+                <div className="hotel-card-info">
+                  <h2>{el.name}</h2>
+                  <div className="hotel-rating">
+                    <span className="stars">{"★".repeat(el.stars)}</span>
+                    <span className="superb">Superbe</span>
+                    <span className="rating">8,7</span>
+                    <span className="reviews">7 803 expériences vécues</span>
+                  </div>
+                  <div className="hotel-location">
+                    <a href="/path/to/location">12e arr., Paris</a> - <a href="/path/to/map">Indiquer sur la carte</a> - 4,9 km du centre - Proche du métro
+                  </div>
+                  <div className="hotel-description">
+                    Situé à Paris, dans le 12ème arrondissement, le Motel One Paris-Porte Dorée dispose d'un bar et d'un jardin.
+                  </div>
+                  <button className="view-rates-btn">Voir les tarifs</button>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
           <div className='right-col'>
             <div className="sidebar">
               <h2>Select Filters</h2>
@@ -240,6 +256,11 @@ const DataPerPage = data.slice(startIndex, endIndex);
           <a href="https://www.youtube.com/"><i className='fab fa-facebook-f'></i></a>
           <hr />
           <p>Copyright 2021</p>
+          <div className="footer-info">
+            <p>Contact us: <a href="mailto:info@bookingagency.com">info@bookingagency.com</a></p>
+            <p>Phone: +123 456 7890</p>
+            <p>Address: 123 Booking St., City, Country</p>
+          </div>
         </div>
       </div>
     </div>

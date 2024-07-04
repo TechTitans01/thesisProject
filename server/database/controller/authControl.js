@@ -43,9 +43,28 @@ module.exports = {
             let user = await db.user.findOne({
                 where: { email: email }
             });
-
+            let admin = await db.admin.findOne({
+                where: { email: email }
+            });
             if (!user) {
-                return res.status(404).json({ message: "User not found" });
+                const check = await bcrypt.compare(password, admin.password);
+                if (!check) {
+                    return res.status(401).json({ error: "Wrong password" });
+                }
+    
+                // generate a JWT token
+                const token = jwt.sign(
+                    {
+                        id: admin.id,
+                        email: admin.email,
+                    },
+                    process.env.JWT_SECRET,
+                    
+                );
+    
+               console.log(token);
+               return  res.json({ token,admin });
+              
             }
 
             // compare the provided password with the stored hashed password
