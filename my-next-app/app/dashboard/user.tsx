@@ -62,7 +62,7 @@ const Users: FC = () => {
           .then(() => {
             setSnackbarMessage('User deleted successfully');
             setSnackbarOpen(true);
-            fetchUsers(); // Refresh the list after deletion
+            fetchUsers(); 
           })
           .catch(error => {
             console.error("There was an error deleting the user!", error);
