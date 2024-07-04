@@ -38,6 +38,7 @@ const styles = {
     padding: '20px',
     borderRadius: '8px',
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+    marginBottom: '20px',
   },
   card: {
     height: '100%',
@@ -168,8 +169,18 @@ const {token}=useAuth()
   };
 
   return (
-    <Paper style={styles.paper}>
-      <Box sx={{ flexGrow: 1, padding: '20px', marginTop: '10px', width: '90%', justifyContent: 'center', ml: 7 }}>
+    <Paper style={styles.paper}  >
+    <Box
+  sx={{
+    flexGrow: 1,
+    padding: '20px',
+    marginTop: '10px',
+    width: '90%',
+    justifyContent: 'center',
+    marginLeft: '17%',
+    
+  }}
+>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <Card style={styles.card}>
