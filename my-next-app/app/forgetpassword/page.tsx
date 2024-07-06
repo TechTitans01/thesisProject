@@ -19,7 +19,7 @@ const AccountRecovery = () => {
       console.log(res);
     } catch (err) {
       console.log(err);
-      toast.error("Error");
+      toast.error("Email Not Found");
     }
   };
 

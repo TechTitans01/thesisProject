@@ -5,6 +5,7 @@ import LoginPage from './login/login';
 import SignupPage from './siginup/signup';
 import '../styles/auth.css';
 
+
 const AuthPage: React.FC = () => {
   const [type, setType] = useState<'signIn' | 'signUp'>('signIn');
 
