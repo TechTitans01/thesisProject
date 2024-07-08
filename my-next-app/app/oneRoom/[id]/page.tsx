@@ -205,8 +205,40 @@ const Page: React.FC = () => {
 
   return (
     <Container>
+
+
+      <div className="house-details">
+<div className="house-title">
+  <h1>
+    Wenge House</h1>
+    <div className="row">
+      <div>
+      <span className="stars">{"★".repeat(3)}</span>
+      </div>
+      <div>
+        <p>Location:San France</p>
+      </div>
+    </div>
+</div>
+<div className="gallery">
+  <div className="gallery-img-1">
+    <img src={data.image1} alt="house" /></div>
+  <div><img src={data.image2} alt="house" /></div>
+  <div><img src={data.image3} alt="house" /></div>
+  <div><img src={data.image4} alt="house" /></div>
+  <div><img src={data.image5} alt="house" /></div>
+</div>
+</div>
       <Box my={4}>
-        <Typography variant="h4" gutterBottom>
+
+       
+
+
+
+
+
+
+        {/* <Typography variant="h4" gutterBottom>
           {data.name}
         </Typography>
         <Typography
@@ -236,7 +268,7 @@ const Page: React.FC = () => {
             <CardMedia component="img" height="200" image={data.image5} alt="image" />
           </Grid>
        
-        </Grid>
+        </Grid> */}
 
         <Grid container spacing={2} my={2}>
           <Grid item xs={12} md={8}>
