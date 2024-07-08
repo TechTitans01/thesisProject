@@ -1,5 +1,8 @@
 "use client"
 import React, { useEffect, useState } from "react";
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:8080'); 
 import axios from 'axios';
 import {
   Container,
@@ -136,7 +139,7 @@ const Page: React.FC = () => {
   }, []);
 
   const commenti = () => {
-    axios.post(`http://localhost:8080/commentaires/${id}/${user.id}`, {
+    axios.post(`http://localhost:8080/commentaires/${id}/${use.id}`, {
       text: newComment,
       date: "12/10/2024",
       name:use.username,
@@ -151,49 +154,57 @@ const Page: React.FC = () => {
   };
 
 
-
   useEffect(() => {
     axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
       setComments(res.data);
     }).catch(err => { console.log(err) });
   }, [ref]);
 
-  const addBooking = async () => {
-    if (!dateRange[0] || !dateRange[1] || !guests) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Missing Information',
-        text: 'Please provide start date, end date, and number of guests.',
-      });
-      return;
-    }
 
+  const handleConfirmBooking = async () => {
     const bookingDetails = {
       start: dateRange[0].toISOString().split('T')[0],
-      end: dateRange[1].toISOString().split('T')[0],
-      guests: parseInt(guests, 10),
-      status: 'pending',
-      userId: user.id,
-      roomId:roomid
-    };
-
+          end: dateRange[1].toISOString().split('T')[0],
+          guests: parseInt(guests, 10),
+          status: 'pending',
+          userId: use.id,
+          roomId:parseInt (roomid)
+        }
+        console.log(bookingDetails);
+        
     try {
-      const response = await axios.post('http://localhost:8080/bookings', bookingDetails);
-      Swal.fire({
-        icon: 'success',
-        title: 'Booking Created',
-        text: 'Your booking is created and awaiting confirmation.',
+      const response = await axios.post('http://localhost:8080/bookings/', {
+        bookingDetails,
       });
-      console.log('Booking added successfully:', response.data);
-      setDateRange([null, null]);
-      setGuests('');
+console.log(response.data);
+
+      if (response.data) {
+        console.log('Booking confirmed:', response.data.message);
+
+        socket.emit('sendNotification', {
+          content: `User ${use.id} confirmed a booking: ${bookingDetails}`,
+          userId:use.id,
+          adminId: 1, 
+        });
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Booking Created',
+          text: 'Your booking is created and awaiting confirmation.',
+        });
+        console.log('Booking added successfully:', response.data);
+        setDateRange([null, null]);
+        setGuests('');
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'There was an error creating your booking. Please try again.',
+        });
+      }
     } catch (error) {
-      console.error('Error adding booking:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'There was an error creating your booking. Please try again.',
-      });
+      console.error('Error confirming booking:', error);
+      alert('Error confirming booking.');
     }
   };
 
@@ -409,7 +420,7 @@ const Page: React.FC = () => {
                 onChange={(e) => setGuests(e.target.value)}
                 InputLabelProps={{ shrink: true }}
               />
-              <Button onClick={addBooking} variant="contained" color="primary" fullWidth>
+              <Button onClick={handleConfirmBooking} variant="contained" color="primary" fullWidth>
                 Rent
               </Button>
               <Box my={2}>
