@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import "./styles/home.css"
+import "./styles/hotel.css" 
 import axios from "axios";
 import Image from 'next/image';
 import { useAuth } from "./context/authcontex/Authcontex";
@@ -131,15 +132,27 @@ export default function home (){
 {destination.map((el:any,index:number)=>{
 return(
 <div onClick={()=>{toHotel(el.id)}} style={{cursor:"pointer"}}>
-<img src={el.flag} width={25} height={25} alt="" />
-{/* <Image  src="/img/image-1.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  /> */}
+{/* {<img src={el.flag} width={25} height={25} alt="" />
+<Image  src="/img/image-1.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  /> 
 <img src={el.image}  width={220} height={120} style={{borderRadius:10}} alt="place"  />
 <span>
     <h3 >{el.name}</h3>
-    <p>  $250</p>
+    <p>$250</p>
 </span>
-</div>
+</div> } */}
 
+<div className="hotel-card">
+                <div className="hotel-card-img">
+                  <img src={el.image} alt={el.name} width={330} height={200} />
+                </div>
+                <div className="hotel-card-info">
+                  <h2>{el.name}</h2>
+                  <div className="hotel-description">
+                    {el.description}
+                  </div>
+                </div>
+              </div>
+            </div>
 
 )})}
    

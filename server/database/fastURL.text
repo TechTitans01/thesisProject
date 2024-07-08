@@ -8,7 +8,7 @@
 --http://localhost:8080/api/hotels/addHotel::(add hotel)
 --http://localhost:8080/api/hotels/getall::(get all hotel)
 --http://localhost:8080/api/hotels/getone/1::(get one hotel by (ID))
---http://localhost:8080/api/hotels/remove/7::(delete hotel by (ID))
+--http://localhost:8080/api/hotels/deleteHotel/7::(delete hotel by (ID))
 --http://localhost:8080/api/hotels/updateHotel::(update hotel )
                  ---------------auth------------------------------------
 http://localhost:8080/api/auth/signup
@@ -20,7 +20,7 @@ http://localhost:8080/api/auth/login
 --http://localhost:8080/bookings/2::(update booking by (ID) PUT)
 --http://localhost:8080/bookings/bookingId/status::(update booking  status by (ID) PUT)
                  ---------------rooms-------------------------
---http://localhost:8080/rooms/hotel/1::(add room POST)
+--  ::(add room POST)
 --http://localhost:8080/rooms/hotel/1::(get rooms GET)
 --http://localhost:8080/rooms/1::(get one room GET)
 --http://localhost:8080/rooms/1::(update room PUT)

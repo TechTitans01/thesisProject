@@ -9,7 +9,7 @@ import { useAuth } from '@/app/context/authcontex/Authcontex';
 
 export default function Hotel() {
   const [data, setData] = useState<any>([]);
-  const [allData, setAllData] = useState<any>([]); // Store all data
+  const [allData, setAllData] = useState<any>([]); 
   const pathname = usePathname();
   const id = pathname.slice(pathname.length - 1);
   const router = useRouter();
@@ -119,23 +119,16 @@ const DataPerPage = data.slice(startIndex, endIndex);
               <div className="hotel-card">
                 <div className="hotel-card-img">
                   <img src={el.image} alt={el.name} width={330} height={200} />
-                  <button className="favorite-btn">&#9825;</button> {/* Heart icon */}
+                  <button className="favorite-btn"></button>
                 </div>
                 <div className="hotel-card-info">
                   <h2>{el.name}</h2>
                   <div className="hotel-rating">
                     <span className="stars">{"★".repeat(el.stars)}</span>
-                    <span className="superb">Superbe</span>
-                    <span className="rating">8,7</span>
-                    <span className="reviews">7 803 expériences vécues</span>
-                  </div>
-                  <div className="hotel-location">
-                    <a href="/path/to/location">12e arr., Paris</a> - <a href="/path/to/map">Indiquer sur la carte</a> - 4,9 km du centre - Proche du métro
                   </div>
                   <div className="hotel-description">
                     Situé à Paris, dans le 12ème arrondissement, le Motel One Paris-Porte Dorée dispose d'un bar et d'un jardin.
                   </div>
-                  <button className="view-rates-btn">Voir les tarifs</button>
                 </div>
               </div>
             </div>
@@ -144,12 +137,12 @@ const DataPerPage = data.slice(startIndex, endIndex);
       </div>
     </div>
           <div className='right-col'>
-            <div className="sidebar">
-              <h2>Select Filters</h2>
-              <h3>Property Type</h3>
-              <div className="filter">
-                <button title="Add New"
-  className="group cursor-pointer outline-none hover:rotate-90 duration-300" type="button" value={"house"} onClick={() => falter("house")}><svg
+             <div className="sidebar">
+           <h2>Select Filters</h2>
+           <h3>Property Type</h3>
+             <div className="filter">
+    <button title="Add New"
+    className="group cursor-pointer outline-none hover:rotate-90 duration-300" type="button" value={"house"} onClick={() => falter("house")}><svg
     xmlns="http://www.w3.org/2000/svg"
     width="20px"
     height="20px"

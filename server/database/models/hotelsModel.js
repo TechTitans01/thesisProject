@@ -1,5 +1,3 @@
-
-
 module.exports=(sequelize,DataTypes)=>{
     const hotel=sequelize.define("hotel",{
      
@@ -28,6 +26,10 @@ module.exports=(sequelize,DataTypes)=>{
             allowNull: true,
           },
           type: {
+            type: DataTypes.STRING,
+            allowNull: false,
+          },
+          description: {
             type: DataTypes.STRING,
             allowNull: false,
           }
