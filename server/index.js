@@ -10,6 +10,7 @@ const reviewRoutes = require('./database/routes/reviewRoutes.js')
 const roomRoutes = require('./database/routes/roomRoutes.js')
 const reclamationRoutes = require('./database/routes/reclamtion.js')
 const adminRoutes = require('./database/routes/adminRt.js')
+const notficationRoutes=require('./database/routes/notfication.js')
 
 const messagesRouter=require("./database/routes/messageRoute.js")
 
@@ -31,6 +32,7 @@ const io = require('socket.io')(server, {
 });
 
 
+app.set('socketio', io); 
 
 
 
@@ -52,6 +54,7 @@ app.use('/api/payments', paymentRouter);
 app.use('/api/chat',messagesRouter)
 app.use('/api/admin', adminRoutes);
 
+app.use('/api', notficationRoutes);
 
 app.post('/send-sms', (req, res) => {
   const { to, text } = req.body;
@@ -93,6 +96,7 @@ io.on('connection', (socket) => {
     console.log('A user disconnected');
   });
 });
+
 
 server.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);

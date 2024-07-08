@@ -45,5 +45,9 @@ http://localhost:8080/api/auth/login
 ------------------------destination-------------------
 --http://localhost:8080/api/destination/adddestination::: (add destination POST)
 ---http://localhost:8080/api/destination/getall:: (get all )
+   ------------admin------------
+--http://localhost:8080/api/admin/get
 
-http://localhost:8080/api/admin/get
+-------------------notification---------------------
+--http://localhost:8080/api/notification (send notification)
+http://localhost:8080/api/notification/user/:userId
