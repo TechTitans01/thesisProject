@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
     const { email, password } = state;
 
     try {
-      const result = await loginAction({ email, password });
+      const result:any = await loginAction({ email, password });
       alert('Login successful');
       setState({
         email: '',
@@ -64,7 +64,7 @@ const LoginPage: React.FC = () => {
           onChange={handleChange}
           required
         />
-        <a href="#">Forgot your password?</a>
+        <a href="/forgetpassword">Forgot your password?</a>
         <button type="submit">Sign In</button>
       </form>
     </div>

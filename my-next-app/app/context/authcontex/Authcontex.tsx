@@ -15,6 +15,10 @@ interface AuthContextType {
   logOut: () => void;
   fetchUser: (userId: number) => Promise<void>;
   fetchAdmin: (userId: number) => Promise<void>;
+  code: string;
+  setCode: (code: string) => void;
+  emailForReset: string;
+  setemailResetPass: (code: string) => void;
 }
 
 interface LoginData {
@@ -48,6 +52,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any>(storedUser );
   const [token, setToken] = useState<string>(localStorage.getItem("token") as string);
   const[admin,setAdmin] = useState<any>(localStorage.getItem("admin"))
+  const [code, setCode] = useState<string>("");
+const[emailForReset,setemailResetPass]= useState<string>("");
+
 console.log("user auth  ",user);
 
   const router = useRouter();
@@ -87,7 +94,7 @@ console.log("user auth  ",user);
     }
   };
 
-  const loginAction = async (data: LoginData) => {
+  const loginAction = async (data: LoginData, str: string) => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/login', data);
       console.log(response);
@@ -158,7 +165,7 @@ console.log("user auth  ",user);
   };
 
   return (
-    <AuthContext.Provider value={{ token, setToken, user, admin,loginAction, signupAction, fetchUser, logOut }}>
+    <AuthContext.Provider value={{ token, setToken, user, admin,loginAction, signupAction, fetchUser, logOut,code,setCode,emailForReset,setemailResetPass }}>
       {children}
     </AuthContext.Provider>
   );

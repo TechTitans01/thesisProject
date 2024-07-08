@@ -1,7 +1,13 @@
 const db = require("../sequelize/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { nodeMailer } = require("../../lib/nodeMailer");
 require('dotenv').config();
+
+
+function generateVerificationCode() {
+    return Math.floor(100000 + Math.random() * 900000); // Generates a random 6-digit code
+  }
 module.exports = {
     signup: async (req, res) => {
         const {  email, password, username } = req.body;
@@ -89,5 +95,17 @@ module.exports = {
             console.error(error);
             res.status(500).json({ error: error.message });
         }
-    }
+    },
+
+    sendMail: async (req, res) => {
+        const code = generateVerificationCode();
+        try {
+          await nodeMailer(req.body.to,req.body.subject,`<b><h3>Your verification code is:<h3><br/><h1> ${code}<h1></b>`);
+          res.send( "mail sent/"+code);
+        } catch (err) {
+          res.status(500).send("Failed to send email");
+        }
+      }
 };
+
+
