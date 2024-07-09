@@ -6,6 +6,7 @@ import Users from './user';
 import Charts from './chart';
 import Destinations from './destination';
 import './style/page.css';
+import Reclamation from './reclamation';
 
 const drawerWidth = 240;
 
@@ -20,6 +21,8 @@ const Dashboard = () => {
         return <Users />;
       case 'Destinations':
         return <Destinations />;
+        case 'Reclamation':
+        return <Reclamation />;
       default:
         return (
           <Typography variant="h4" sx={{ textAlign: 'center', mt: 4 }}>
@@ -58,7 +61,7 @@ const Dashboard = () => {
           <Toolbar />
           <Box sx={{ overflow: 'auto' }}>
             <List>
-              {['Dashboard', 'Booking', 'Users', 'Destinations'].map((text) => (
+              {['Dashboard', 'Booking', 'Users', 'Destinations','Reclamation'].map((text) => (
                 <ListItem
                   button
                   key={text}
