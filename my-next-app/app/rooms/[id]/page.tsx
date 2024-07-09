@@ -27,7 +27,10 @@ export default function House() {
   }
   useEffect(() => {
     axios.get(`http://localhost:8080/rooms/hotel/${id}`)
+    
       .then((res) => {
+        console.log(res.data);
+        
         setData(res.data);
       })
       .catch(error => {
@@ -117,7 +120,8 @@ export default function House() {
                   <img src={el.image2}  width={330} height={200} alt="" />
                 </div>
                 <div className="house-info">
-                  <p>{el.name}</p>
+                
+                  <p> {el.name}</p>
                   <h3>{el.description}</h3>
                   <p>{el.bedroom} Bedroom / {el.baths} Bathroom / {el.beds} Beds / Wifi / Kitchen</p>
                   <br />

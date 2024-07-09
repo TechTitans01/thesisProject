@@ -17,6 +17,9 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import Swal from 'sweetalert2';
 import './style/booking.css';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:8080');
 
 const Booking: FC = () => {
   const [bookings, setBookings] = useState<any[]>([]);
@@ -24,6 +27,17 @@ const Booking: FC = () => {
 
   useEffect(() => {
     fetchBookings();
+
+    const adminId = 1;
+    socket.emit('join', adminId);
+
+    socket.on('notification', (notification) => {
+      Swal.fire('Notification', notification.content, 'info');
+    });
+
+    return () => {
+      socket.off('notification');
+    };
   }, []);
 
   const fetchBookings = async () => {
@@ -37,10 +51,18 @@ const Booking: FC = () => {
     }
   };
 
+  const sendNotification = async (userId: number, content: string) => {
+    try {
+      await axios.post('http://localhost:8080/api/notifications', { userId, content });
+    } catch (error) {
+      console.error('There was an error sending the notification!', error);
+    }
+  };
+
   const updateBookingStatus = async (bookingId: number, status: string) => {
     const action = status === 'confirmed' ? 'confirm' : 'cancel';
     const actionPast = action === 'confirm' ? 'confirmed' : 'canceled';
-    
+
     Swal.fire({
       title: `Are you sure you want to ${action} this booking?`,
       icon: 'warning',
@@ -51,8 +73,8 @@ const Booking: FC = () => {
       if (result.isConfirmed) {
         try {
           const response = await axios.put(`http://localhost:8080/bookings/${bookingId}/status`, { status });
-          console.log(`Booking ${status}:`, response.data);
-          fetchBookings(); 
+          fetchBookings();
+          sendNotification(response.data.userId, `Your booking (ID: ${bookingId}) has been ${actionPast}.`);
           Swal.fire(
             `${action.charAt(0).toUpperCase() + action.slice(1)}d!`,
             `The booking has been ${actionPast}.`,
