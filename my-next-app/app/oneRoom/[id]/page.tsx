@@ -67,7 +67,7 @@ const property = {
 };
 
 const Page: React.FC = () => {
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null] >([null, null]);
   const [comments, setComments] = useState<any>([]);
   const [newComment, setNewComment] = useState('');
   const [data, setData] = useState<any>({});
@@ -75,6 +75,7 @@ const Page: React.FC = () => {
   const [array, setArray] = useState<any>([]);
    const [ref,setref]=useState<any>(false)
   const { user } = useAuth();
+  const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
 
   const router = useRouter();
   
@@ -114,10 +115,13 @@ const Page: React.FC = () => {
   };
 
   useEffect(() => {
+
+    
     axios.get(`http://localhost:8080/api/user/getone/${user.id}`)
       .then((resp) => {
         console.log("heyoad",resp.data);
-        setuser(resp.data);
+      setuser(resp.data);
+     
       })
       .catch((err) => {
         console.log(err);
@@ -127,8 +131,8 @@ const Page: React.FC = () => {
   useEffect(() => {
     axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
       setData(res.data);
-      array.push(res.data.image1, res.data.image2, res.data.image3);
-      console.log(array, "image1");
+      // array.push(res.data.image1, res.data.image2, res.data.image3);
+      
     }).catch(err => { console.log(err) });
   }, []);
 
@@ -139,7 +143,7 @@ const Page: React.FC = () => {
   }, []);
 
   const commenti = () => {
-    axios.post(`http://localhost:8080/commentaires/${id}/${use.id}`, {
+    axios.post(`http://localhost:8080/commentaires/${id}/${userr.id}`, {
       text: newComment,
       date: "12/10/2024",
       name:use.username,
@@ -167,7 +171,7 @@ const Page: React.FC = () => {
           end: dateRange[1].toISOString().split('T')[0],
           guests: parseInt(guests, 10),
           status: 'pending',
-          userId: use.id,
+          userId: userr.id,
           roomId:parseInt (roomid)
         }
         console.log(bookingDetails);
@@ -182,7 +186,7 @@ console.log(response.data);
         console.log('Booking confirmed:', response.data.message);
 
         socket.emit('sendNotification', {
-          content: `User ${use.id} confirmed a booking: ${bookingDetails}`,
+          content: `User ${userr.id} confirmed a booking: ${bookingDetails}`,
           userId:use.id,
           adminId: 1, 
         });

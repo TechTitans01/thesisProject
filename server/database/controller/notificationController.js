@@ -18,7 +18,7 @@ module.exports = {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  },
+},
 
   getNotificationById: async (req, res) => {
     const { id } = req.params;
@@ -44,17 +44,17 @@ module.exports = {
   },
 
   updateNotification: async (req, res) =>{
-    try {
-      await Notification.update(
-        { isSeen: true },
-        { where: { isSeen: false } }
-      );
-      res.status(200).send('Notifications marked as seen');
-    } catch (error) {
-      console.error('Error marking notifications as seen:', error);
-      res.status(500).send('Internal Server Error');
-    }
-  },
+  try {
+    await Notification.update(
+      { isSeen: true },
+      { where: { isSeen: false } }
+    );
+    res.status(200).send('Notifications marked as seen');
+  } catch (error) {
+    console.error('Error marking notifications as seen:', error);
+    res.status(500).send('Internal Server Error');
+  }
+},
 
   deleteNotification: async (req, res) => {
     const { id } = req.params;
