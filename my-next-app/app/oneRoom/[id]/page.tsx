@@ -128,6 +128,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
       setData(res.data);
+      console.log(res.data)
       // array.push(res.data.image1, res.data.image2, res.data.image3);
       
     }).catch(err => { console.log(err) });
@@ -209,14 +210,13 @@ const Page: React.FC = () => {
 
       <div className="house-details">
 <div className="house-title">
-  <h1>
-    Wenge House</h1>
+  <h1>{data.description}</h1>
     <div className="row">
       <div>
       <span className="stars">{"★".repeat(3)}</span>
       </div>
       <div>
-        <p>Location:San France</p>
+        <p>Location:america</p>
       </div>
     </div>
 </div>
