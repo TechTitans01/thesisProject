@@ -98,7 +98,7 @@ const Destinations: FC = () => {
     bedroom: 0,
     baths: 0,
     beds: 0,
-    status: 1,
+    status: 0,
     image1: '',
     image2: '',
     image3: '',
@@ -203,7 +203,7 @@ const Destinations: FC = () => {
           bedroom: 0,
           baths: 0,
           beds: 0,
-          status: true,
+          status: 0,
           image1: '',
           image2: '',
           image3: '',
@@ -217,6 +217,20 @@ const Destinations: FC = () => {
         setSnackbarMessage('Failed to add room');
         setSnackbarOpen(true);
       });
+  };
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const response = await axios.post<string>('http://localhost:8080/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to upload image');
+    }
   };
 
   const handleDeleteHotel = (hotelId: number, destinationId: number) => {
@@ -393,8 +407,8 @@ const Destinations: FC = () => {
                                 <Box key={room.id} pl={8}>
                                   <ListItem divider>
                                     <ListItemText
-                                      primary={room.name}
-                                      secondary={`Type: ${room.type}, Price: ${room.price}`}
+                                      
+                                      secondary={` Price: ${room.nightPrice}`}
                                     />
                                     <ListItemSecondaryAction>
                                       <IconButton edge="end" color="secondary" onClick={() => handleDeleteRoom(room.id, hotel.id)}>

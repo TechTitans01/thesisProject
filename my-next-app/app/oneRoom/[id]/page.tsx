@@ -72,6 +72,7 @@ const Page: React.FC = () => {
   const [array, setArray] = useState<any>([]);
    const [ref,setref]=useState<any>(false)
   const { user } = useAuth();
+  const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
 
   const router = useRouter();
   
@@ -111,10 +112,13 @@ const Page: React.FC = () => {
   };
 
   useEffect(() => {
+
+    
     axios.get(`http://localhost:8080/api/user/getone/${user.id}`)
       .then((resp) => {
         console.log("heyoad",resp.data);
-        setuser(resp.data);
+      setuser(resp.data);
+     
       })
       .catch((err) => {
         console.log(err);
@@ -124,8 +128,8 @@ const Page: React.FC = () => {
   useEffect(() => {
     axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
       setData(res.data);
-      array.push(res.data.image1, res.data.image2, res.data.image3);
-      console.log(array, "image1");
+      // array.push(res.data.image1, res.data.image2, res.data.image3);
+      
     }).catch(err => { console.log(err) });
   }, []);
 
@@ -136,7 +140,7 @@ const Page: React.FC = () => {
   }, []);
 
   const commenti = () => {
-    axios.post(`http://localhost:8080/commentaires/${id}/${user.id}`, {
+    axios.post(`http://localhost:8080/commentaires/${id}/${userr.id}`, {
       text: newComment,
       date: "12/10/2024",
       name:use.username,

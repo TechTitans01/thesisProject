@@ -1,14 +1,15 @@
-const {  Notification , user} = require('../models/notificationMode');
+ const db =require('../sequelize/index')
+
 
 const sendNotification = async (req, res) => {
   const { userId, adminId, content } = req.body;
   try {
-    const client = await User.findByPk(userId);
+    const client = await db.user.findByPk(userId);
     if (!client) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const notification = await Notification.create({ userId, adminId, content });
+    const notification = await db.notification.create({ userId, adminId, content });
 
     const io = req.app.get('socketio');
     if (io) {
@@ -25,7 +26,7 @@ const sendNotification = async (req, res) => {
 const getNotificationsByUser = async (req, res) => {
   const { userId } = req.params;
   try {
-    const notifications = await Notification.findAll({ where: { userId } });
+    const notifications = await db.notification.findAll({ where: { userId } });
     res.json(notifications);
   } catch (error) {
     console.error('Error fetching notifications:', error); g
