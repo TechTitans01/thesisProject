@@ -18,6 +18,7 @@ export default function Chat  ( )  {
   const { user } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const {token}=useAuth()
+  const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
   const { logOut } = useAuth();
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -38,7 +39,7 @@ export default function Chat  ( )  {
 
   useEffect(() => {
    
-    socket.emit('joinRoom', user.id);
+    socket.emit('joinRoom', userr.id);
     console.log(user);
 
     // Listen for new messages
@@ -55,7 +56,7 @@ export default function Chat  ( )  {
   const sendMessage = () => {
     const messageData = {
       content: messageInput,
-      senderId: user.id,
+      senderId: userr.id,
       receiverId: freindId,
     };
 
@@ -64,7 +65,7 @@ export default function Chat  ( )  {
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/chat/messages/${user.id}/${freindId}`)
+    axios.get(`http://localhost:8080/api/chat/messages/${userr.id}/${freindId}`)
       .then((resp) => {
         setMessages(resp.data);
       })
@@ -131,8 +132,8 @@ export default function Chat  ( )  {
       </div>
       <div className="chat-messages">
         {messages.map((msg: any, index: number) => (
-          <div key={index} className={`chat-message ${msg.senderId === user.id ? 'user' : 'friend'}`}>
-            <img src={msg.senderId === user.id ? user.image : imageFreind} alt="User Profile" />
+          <div key={index} className={`chat-message ${msg.senderId === userr.id ? 'user' : 'friend'}`}>
+            <img src={msg.senderId === userr.id ? userr.image : imageFreind} alt="User Profile" />
             <div className="message-content">
               {msg.content}
             </div>
