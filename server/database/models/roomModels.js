@@ -48,7 +48,10 @@ module.exports=(sequelize,DataTypes)=>{
             type: DataTypes.STRING,
             allowNull: false,
           },
-
+          image3: {
+            type: DataTypes.STRING,
+            allowNull: false,
+          }
     })
  return  room
 }

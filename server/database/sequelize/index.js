@@ -23,7 +23,7 @@ db.destination=require("../models/destinationModel.js")(sequelize,DataTypes)
 db.admin=require("../models/adminModel.js")(sequelize,DataTypes)
 db.commentaire=require("../models/commentaireModel.js")(sequelize,DataTypes)
 db.reclamation=require("../models/reclamation.js")(sequelize,DataTypes)
-
+db.stories=require("../models/storiesModel.js")(sequelize,DataTypes)
 
 
 db.reclamation.belongsTo(db.user);

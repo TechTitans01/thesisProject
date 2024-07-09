@@ -207,8 +207,6 @@ background-image: linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.3)),url("/img/exo
   }
 
 
-/*exculsiv*/
-
 .sub-title{
     margin: 50px 0 20px;
     font-size: 2.2vw;
@@ -293,17 +291,20 @@ color: #fff;
 
 
 .stories{
+    justify-content: space-between;
+    justify-content: space-around;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
     grid-gap: 30px;
     margin-bottom: 30px;
+    
 }
 
 .stories div{
     position: relative;
     text-align: center;
 }
-.stories p{
+.stories p{ 
    width: 80%;
    position: absolute;
    top: 50%;
@@ -409,3 +410,7 @@ color: #fff;
   background-color: #f0f0f0;
 }
 
+.ps{
+  color-scheme: aqua;
+}
+  

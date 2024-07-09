@@ -3,7 +3,6 @@
 
 import React, { useEffect, useState } from "react";
 import "./styles/home.css"
-import "./styles/hotel.css" 
 import axios from "axios";
 import Image from 'next/image';
 import { useAuth } from "./context/authcontex/Authcontex";
@@ -131,28 +130,16 @@ export default function home (){
 <div className="exclusives">
 {destination.map((el:any,index:number)=>{
 return(
-<div onClick={()=>{toHotel(el.id)}} style={{cursor:"pointer"}}>
-{/* {<img src={el.flag} width={25} height={25} alt="" />
-<Image  src="/img/image-1.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  /> 
+<div  onClick={()=>{toHotel(el.id)}} style={{cursor:"pointer"}} >
+<img src={el.flag} width={25} height={25} alt="" />
+{/* <Image  src="/img/image-1.png" width={220} height={120} style={{borderRadius:10}} alt="dtg"  /> */}
 <img src={el.image}  width={220} height={120} style={{borderRadius:10}} alt="place"  />
 <span>
     <h3 >{el.name}</h3>
     <p>$250</p>
 </span>
-</div> } */}
+</div>
 
-<div className="hotel-card">
-                <div className="hotel-card-img">
-                  <img src={el.image} alt={el.name} width={330} height={200} />
-                </div>
-                <div className="hotel-card-info">
-                  <h2>{el.name}</h2>
-                  <div className="hotel-description">
-                    {el.description}
-                  </div>
-                </div>
-              </div>
-            </div>
 
 )})}
    
@@ -162,7 +149,7 @@ return(
 <h2 className="sub-title">Trending Places</h2>
 <div className="trending">
           {filteredTrending.map((dest: any) => (
-            <div key={dest.id}>
+            <div key={dest.id} onClick={()=>{toHotel(dest.id)}} style={{cursor:"pointer"}}>
               <img src={dest.image} width={230} height={280} style={{ borderRadius: 10 }} alt="dtg" />
               <h3>{dest.name}</h3>
             </div>
@@ -180,17 +167,24 @@ return(
 <div className="stories">
     <div>
     <Image  src="/img/story-1.png" width={350} height={400}style={{borderRadius:10}}  alt="dtg"  />
-    <p>Popular European countries with  a budget of just $10,000</p>
+    <p className="ps">Popular European countries with  a budget of just $10,000</p>
     </div>
     <div>
     <Image  src="/img/story-2.png" width={350} height={400}style={{borderRadius:10}}  alt="dtg"  />
-    <p>Popular European countries with  a budget of just $10,000</p>
+    <p className="ps">Popular European countries with  a budget of just $10,000</p>
     </div>
     <div>
     <Image  src="/img/story-3.png" width={350} height={400}style={{borderRadius:10}}  alt="dtg"  />
-    <p>Popular European countries with  a budget of just $10,000</p>
+    <p className="ps">Popular European countries with  a budget of just $10,000</p>
     </div>
-    
+    <div>
+    <Image  src="/img/story-3.png" width={350} height={400}style={{borderRadius:10}}  alt="dtg"  />
+    <p className="ps">Popular European countries with  a budget of just $10,000</p>
+    </div>
+    <div>
+    <img src="https://img.freepik.com/vecteurs-libre/vecteur-typographie-coup-pinceau-symbole-plus_53876-166821.jpg" width={350} height={400}style={{borderRadius:10}}  alt="dtg"  />
+    <p className="ps">add your story</p>
+    </div>
 </div>
 
 <a href="#" className="start-btn"> Start Now</a>

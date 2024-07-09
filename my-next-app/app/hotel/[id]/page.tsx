@@ -41,12 +41,12 @@ const DataPerPage = data.slice(startIndex, endIndex);
     setDropdownOpen(!dropdownOpen);
   };
 
-  const falter = (v: string) => {
-    console.log(v);
-    if (v === "all") {
+  const falter = (value: string) => {
+    console.log(value);
+    if (value === "all") {
       setData(allData);
     } else {
-      const filtered = allData.filter((hotel: any) => hotel.type === v);
+      const filtered = allData.filter((hotel: any) => hotel.type === value);
       setData(filtered);
     }
   };

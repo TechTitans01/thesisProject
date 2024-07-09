@@ -82,6 +82,18 @@ getOneUser:(req, res) => {
         res.status(500).send(err);
       });
   },
+  getOneUserByemail:(req, res) => {
+    db.user.findOne({ where: { email: req.params.email } })
+      .then(data => {
+        if(!data){
+          res.send(err)
+        }
+        res.send(data)
+      })
+      .catch(err => {
+        res.status(404).send(err);
+      });
+  },
 
   removeUser:(req, res) => {
     db.user.destroy({ where: { id: req.params.id } })
@@ -113,8 +125,30 @@ getOneUser:(req, res) => {
       });
   },
 
-
-
+  resetPassword:(req,res)=>{
+    bcrypt.hash(req.body.newpassword, 10)
+    .then((hashedNewPassword) => {
+      // Update the user's password in the database
+      db.user.update(
+        { password: hashedNewPassword },
+        { where: { email: req.body.email } }
+      )
+      .then((result) => {
+        if (result[0] === 0) {
+          return res.status(404).send("User not found");
+        }
+        res.send("Password updated successfully");
+      })
+      .catch((updateError) => {
+        console.error("Update error:", updateError);
+        res.status(500).send(updateError);
+      });
+    })
+    .catch((hashError) => {
+      console.error("Hash error:", hashError);
+      res.status(500).send(hashError);
+    });
 
 }
 
+}
