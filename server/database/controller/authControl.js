@@ -6,7 +6,7 @@ require('dotenv').config();
 
 
 function generateVerificationCode() {
-    return Math.floor(100000 + Math.random() * 900000); // Generates a random 6-digit code
+    return Math.floor(100000 + Math.random() * 900000); 
   }
 module.exports = {
     signup: async (req, res) => {

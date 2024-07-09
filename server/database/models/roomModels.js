@@ -25,7 +25,7 @@ module.exports=(sequelize,DataTypes)=>{
             allowNull: false,
           },
           status: {
-            type: DataTypes.TINYINT,
+            type: DataTypes.STRING,
             allowNull: true,
           },
           image1: {

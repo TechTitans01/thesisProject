@@ -1,4 +1,4 @@
-
+                                                  
 "use client";
 
 import React, { useState } from 'react';
@@ -25,6 +25,7 @@ const PaymentForm = ( { userId, bookingId }:any) => {
   const [loading, setLoading] = useState(false);
   const [country, setCountry] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
   const {token}=useAuth()
   const { logOut } = useAuth();
   const toggleDropdown = () => {
@@ -36,7 +37,7 @@ const PaymentForm = ( { userId, bookingId }:any) => {
     try {
       const response = await axios.post('http://localhost:8080/send-sms', {
         to: "+21655600939",
-        text: "congratulation your payment successfully"
+        text: `payment has been successfully with name: ${userr.username} email:${userr.email}`
       });
       alert('SMS sent successfully!');
     } catch (error) {
@@ -58,7 +59,7 @@ const PaymentForm = ( { userId, bookingId }:any) => {
       .post('http://localhost:8080/api/payments/create', {
         amount: 1000,
         currency: 'usd',
-        userId: user.id,
+        userId: userr.id,
         bookingId: bookingId,
         email: email,
         country: country,
