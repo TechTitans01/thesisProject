@@ -32,6 +32,7 @@ interface Destination {
   id: number;
   name: string;
   image: string;
+  fame: string;
   flag: string;
 }
 
@@ -44,6 +45,7 @@ interface Hotel {
   latitude: number | null;
   longitude: number | null;
   destinationId: number;
+  discription: string;
 }
 
 interface Room {
@@ -80,8 +82,10 @@ const Destinations: FC = () => {
   const [newDestination, setNewDestination] = useState({
     name: '',
     image: '',
-    flag: ''
+    flag: '',
+    fame: '', 
   });
+  
   const [newHotel, setNewHotel] = useState({
     name: '',
     image: '',
@@ -89,8 +93,11 @@ const Destinations: FC = () => {
     stars: 0,
     latitude: null,
     longitude: null,
-    destinationId: 0
+    destinationId: 0,
+    type: '', 
+    description: '', 
   });
+  
   const [newRoom, setNewRoom] = useState({
     description: '',
     guests: 0,
@@ -156,7 +163,7 @@ const Destinations: FC = () => {
         setSnackbarOpen(true);
         fetchDestinations(); 
         setDialogOpen(false); 
-        setNewDestination({ name: '', image: '', flag: '' }); 
+        setNewDestination({ name: '', image: '', flag: '' ,fame:''}); 
       })
       .catch(error => {
         console.error("There was an error adding the destination!", error);
@@ -173,13 +180,15 @@ const Destinations: FC = () => {
         fetchHotels(newHotel.destinationId); 
         setHotelDialogOpen(false); 
         setNewHotel({ 
-          name: '', 
-          image: '', 
-          bookings: 0, 
-          stars: 0, 
-          latitude: null, 
-          longitude: null, 
-          destinationId: 0 
+          name: '',
+    image: '',
+    bookings: 0,
+    stars: 0,
+    latitude: null,
+    longitude: null,
+    destinationId: 0,
+    type: '', 
+    description: '', 
         }); 
       })
       .catch(error => {
@@ -441,46 +450,56 @@ const Destinations: FC = () => {
         onClose={handleCloseSnackbar}
         message={snackbarMessage}
       />
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Add a New Destination</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Please fill out the form below to add a new destination.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Name"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newDestination.name}
-            onChange={(e) => setNewDestination({ ...newDestination, name: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Image URL"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newDestination.image}
-            onChange={(e) => setNewDestination({ ...newDestination, image: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Flag URL"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newDestination.flag}
-            onChange={(e) => setNewDestination({ ...newDestination, flag: e.target.value })}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleAddDestination}>Add Destination</Button>
-        </DialogActions>
-      </Dialog>
+     <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+  <DialogTitle>Add a New Destination</DialogTitle>
+  <DialogContent>
+    <DialogContentText>
+      Please fill out the form below to add a new destination.
+    </DialogContentText>
+    <TextField
+      autoFocus
+      margin="dense"
+      label="Name"
+      type="text"
+      fullWidth
+      variant="standard"
+      value={newDestination.name}
+      onChange={(e) => setNewDestination({ ...newDestination, name: e.target.value })}
+    />
+    <TextField
+      margin="dense"
+      label="Image URL"
+      type="text"
+      fullWidth
+      variant="standard"
+      value={newDestination.image}
+      onChange={(e) => setNewDestination({ ...newDestination, image: e.target.value })}
+    />
+    <TextField
+      margin="dense"
+      label="Flag URL"
+      type="text"
+      fullWidth
+      variant="standard"
+      value={newDestination.flag}
+      onChange={(e) => setNewDestination({ ...newDestination, flag: e.target.value })}
+    />
+    <TextField
+      margin="dense"
+      label="Fame"
+      type="text"
+      fullWidth
+      variant="standard"
+      value={newDestination.fame}
+      onChange={(e) => setNewDestination({ ...newDestination, fame: e.target.value })}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseDialog}>Cancel</Button>
+    <Button onClick={handleAddDestination}>Add Destination</Button>
+  </DialogActions>
+</Dialog>
+
       <Dialog open={hotelDialogOpen} onClose={handleCloseHotelDialog}>
         <DialogTitle>Add a New Hotel</DialogTitle>
         <DialogContent>
@@ -542,6 +561,24 @@ const Destinations: FC = () => {
             value={newHotel.longitude !== null ? newHotel.longitude : ''}
             onChange={(e) => setNewHotel({ ...newHotel, longitude: e.target.value ? parseFloat(e.target.value) : null })}
           />
+              <TextField
+      margin="dense"
+      label="Type"
+      type="text"
+      fullWidth
+      variant="standard"
+      value={newHotel.type}
+      onChange={(e) => setNewHotel({ ...newHotel, type: e.target.value })}
+    />
+           <TextField
+      margin="dense"
+      label="Description"
+      type="text"
+      fullWidth
+      variant="standard"
+      value={newHotel.description}
+      onChange={(e) => setNewHotel({ ...newHotel, description: e.target.value })}
+    />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseHotelDialog}>Cancel</Button>
