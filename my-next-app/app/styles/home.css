@@ -207,8 +207,6 @@ background-image: linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.3)),url("/img/exo
   }
 
 
-/*exculsiv*/
-
 .sub-title{
     margin: 50px 0 20px;
     font-size: 2.2vw;
@@ -293,17 +291,20 @@ color: #fff;
 
 
 .stories{
+    justify-content: space-between;
+    justify-content: space-around;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
     grid-gap: 30px;
     margin-bottom: 30px;
+    
 }
 
 .stories div{
     position: relative;
     text-align: center;
 }
-.stories p{
+.stories p{ 
    width: 80%;
    position: absolute;
    top: 50%;
@@ -407,4 +408,87 @@ color: #fff;
 
 .dropdown-menu ul li a:hover {
   background-color: #f0f0f0;
+}
+
+.ps{
+  color-scheme: aqua;
+}
+.stories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.stories > div {
+  position: relative;
+}
+
+.ps {
+  text-align: center;
+}
+
+.story-form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.story-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.story-form input,
+.story-form button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+.story-form input {
+  margin-bottom: 10px;
+}
+
+.story-form button {
+  background-color: #61dafb;
+  color: white;
+  cursor: pointer;
+}
+.story-form input[type="text"],
+.story-form input[type="file"] {
+  color: rgb(31, 166, 179);
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+}
+.story-form button {
+  padding: 10px;
+  background-color: #42a7c3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.upload-photo button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.upload-photo button:hover {
+  background-color: #0056b3;
+}
+.addProduct-file-input {
+  display: none;
 }

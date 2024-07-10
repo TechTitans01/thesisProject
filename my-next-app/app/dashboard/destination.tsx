@@ -55,7 +55,7 @@ interface Room {
   bedroom: number;
   baths: number;
   beds: number;
-  status: boolean | null;
+  status: string;
   image1: string;
   image2: string;
   image3: string;
@@ -104,12 +104,14 @@ const Destinations: FC = () => {
     bedroom: 0,
     baths: 0,
     beds: 0,
+
     status: 0,
     image1: null as File | null,
     image2: null as File | null,
     image3: null as File | null,
     image4: null as File | null,
     image5: null as File | null,
+
     hotelId: 0
   });
 
@@ -154,6 +156,7 @@ const Destinations: FC = () => {
         console.error("There was an error fetching the rooms!", error);
       });
   };
+
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
@@ -669,8 +672,8 @@ const Destinations: FC = () => {
             type="text"
             fullWidth
             variant="standard"
-            value={newRoom.status !== null ? newRoom.status : true}
-            onChange={e => setNewRoom({ ...newRoom, status: parseInt(e.target.value, 10) })}
+            value={newRoom.status}
+            onChange={e => setNewRoom({ ...newRoom, status: e.target.value })}
           />
           <TextField
   margin="dense"

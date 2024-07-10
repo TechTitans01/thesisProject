@@ -11,7 +11,7 @@ const roomRoutes = require('./database/routes/roomRoutes.js')
 const reclamationRoutes = require('./database/routes/reclamtion.js')
 const adminRoutes = require('./database/routes/adminRt.js')
 const notficationRoutes=require('./database/routes/notfication.js')
-
+const storiesRoutes = require('./database/routes/storiesRoutes.js')
 const messagesRouter=require("./database/routes/messageRoute.js")
 
 const destinationRoutes = require('./database/routes/destinationRoutes.js')
@@ -47,13 +47,13 @@ app.use("/api/auth", authRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/commentaires', reviewRoutes);
 app.use('/rooms', roomRoutes);
- 
+
 app.use('/api/destination', destinationRoutes);
 app.use('/api/reclamation', reclamationRoutes);
 app.use('/api/payments', paymentRouter);
 app.use('/api/chat',messagesRouter)
 app.use('/api/admin', adminRoutes);
-
+app.use('/api/stories',storiesRoutes)
 app.use('/api', notficationRoutes);
 
 app.post('/send-sms', (req, res) => {
