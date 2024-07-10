@@ -22,6 +22,7 @@ export default function Home() {
   const [refresh, setRefresh]= useState<boolean>(true)
   const [storyText, setStoryText] = useState('');
   const [userr, setUserr] = useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
+  const [use, setuser ] = useState<any>({});
   const [storyImage, setStoryImage] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -50,8 +51,18 @@ export default function Home() {
       const filtered = res.data.filter((dest: any) => dest.fame === "trending");
       setFilteredTrending(filtered);
     }).catch(error => { console.error(error) })
+    axios.get(`http://localhost:8080/api/user/getone/${userr.id}`)
+    .then((resp) => {
+      console.log("heyoad",resp.data);
+    setuser(resp.data);
+   
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}, []);
 
-  }, []);
+  
 
   useEffect(() => {
     axios.get("http://localhost:8080/api/stories/getall").then((res) => {
@@ -66,9 +77,9 @@ export default function Home() {
     axios.post('http://localhost:8080/api/stories/addStory',{
       text:storyText,
       image: imageUrl,
-      userId: userr.id,
-      userName: userr.username,
-      userImage: userr.image
+      userId: use.id,
+      userName: use.username,
+      userImage: use.image
     }).then((res) =>{
       setRefresh(!refresh)
 

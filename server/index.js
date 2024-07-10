@@ -88,21 +88,21 @@ io.on('connection', (socket) => {
   });
 
 
-  socket.on('notification', async (messageData) => {
-    try {
-      const notif = await db.notification.create({
-        content: notificationData.content,
-        userId: notificationData.userId,
-        adminId: notificationData.adminId,
-      });
+  // socket.on('notification', async (messageData) => {
+  //   try {
+  //     const notif = await db.notification.create({
+  //       content: notificationData.content,
+  //       userId: notificationData.userId,
+  //       adminId: notificationData.adminId,
+  //     });
   
     
-      io.to(notificationData.userId).emit('newnotification', notif);
-      io.to(notificationData.adminId).emit('newnotification', notif);
-    } catch (error) {
-      console.error('Error saving notification:', error);
-    }
-  });
+  //     io.to(notificationData.userId).emit('newnotification', notif);
+  //     io.to(notificationData.adminId).emit('newnotification', notif);
+  //   } catch (error) {
+  //     console.error('Error saving notification:', error);
+  //   }
+  // });
   
   socket.on('joinRoom', (userId) => {
     socket.join(userId);

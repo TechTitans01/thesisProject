@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [code, setCode] = useState<string>("");
 const[emailForReset,setemailResetPass]= useState<string>("");
 
-console.log("user auth  ",admin);
+console.log("user auth  ",user);
 
   const router = useRouter();
 
