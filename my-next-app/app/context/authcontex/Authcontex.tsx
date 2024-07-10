@@ -79,7 +79,7 @@ console.log("user auth  ",user);
 
     try {
       const response = await axios.get(`http://localhost:8080/api/admin/get/${adminId}`);
-      setUser(response.data);
+      setAdmin(response.data);
     } catch (error) {
       console.error("Error fetching user information", error);
     }
