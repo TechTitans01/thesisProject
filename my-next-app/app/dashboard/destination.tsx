@@ -27,11 +27,10 @@ import { Delete, Add, Room, ExpandMore, ExpandLess } from '@mui/icons-material';
 import './style/hotel.css';
 import Swal from 'sweetalert2';
 
-
 interface Destination {
   id: number;
   name: string;
-  image: string;
+  image:string;
   fame: string;
   flag: string;
 }
@@ -81,21 +80,21 @@ const Destinations: FC = () => {
   const [expandedHotel, setExpandedHotel] = useState<number | null>(null);
   const [newDestination, setNewDestination] = useState({
     name: '',
-    image: '',
+    image: null as File | null, 
     flag: '',
-    fame: '', 
+    fame: ''
   });
   
   const [newHotel, setNewHotel] = useState({
     name: '',
-    image: '',
+    image: null as File | null,
     bookings: 0,
     stars: 0,
     latitude: null,
     longitude: null,
     destinationId: 0,
-    type: '', 
-    description: '', 
+    type: '',
+    description: '',
   });
   
   const [newRoom, setNewRoom] = useState({
@@ -105,12 +104,14 @@ const Destinations: FC = () => {
     bedroom: 0,
     baths: 0,
     beds: 0,
-    status: '',
-    image1: '',
-    image2: '',
-    image3: '',
-    image4: '',
-    image5: '',
+
+    status: 0,
+    image1: null as File | null,
+    image2: null as File | null,
+    image3: null as File | null,
+    image4: null as File | null,
+    image5: null as File | null,
+
     hotelId: 0
   });
 
@@ -156,91 +157,119 @@ const Destinations: FC = () => {
       });
   };
 
-  const handleAddDestination = () => {
-    axios.post('http://localhost:8080/api/destination/adddestination', newDestination)
-      .then(() => {
-        setSnackbarMessage('Destination added successfully');
-        setSnackbarOpen(true);
-        fetchDestinations(); 
-        setDialogOpen(false); 
-        setNewDestination({ name: '', image: '', flag: '' ,fame:''}); 
-      })
-      .catch(error => {
-        console.error("There was an error adding the destination!", error);
-        setSnackbarMessage('Failed to add destination');
-        setSnackbarOpen(true);
-      });
-  };
-
-  const handleAddHotel = () => {
-    axios.post('http://localhost:8080/api/hotels/addHotel', newHotel)
-      .then(() => {
-        setSnackbarMessage('Hotel added successfully');
-        setSnackbarOpen(true);
-        fetchHotels(newHotel.destinationId); 
-        setHotelDialogOpen(false); 
-        setNewHotel({ 
-          name: '',
-    image: '',
-    bookings: 0,
-    stars: 0,
-    latitude: null,
-    longitude: null,
-    destinationId: 0,
-    type: '', 
-    description: '', 
-        }); 
-      })
-      .catch(error => {
-        console.error("There was an error adding the hotel!", error);
-        setSnackbarMessage('Failed to add hotel');
-        setSnackbarOpen(true);
-      });
-  };
-
-  const handleAddRoom = () => {
-    axios.post(`http://localhost:8080/rooms/hotel/${newRoom.hotelId}`, newRoom)
-      .then(() => {
-        setSnackbarMessage('Room added successfully');
-        setSnackbarOpen(true);
-        fetchRooms(newRoom.hotelId); 
-        setRoomDialogOpen(false); 
-        setNewRoom({
-          description: '',
-          guests: 0,
-          nightPrice: 0,
-          bedroom: 0,
-          baths: 0,
-          beds: 0,
-          status: '',
-          image1: '',
-          image2: '',
-          image3: '',
-          image4: '',
-          image5: '',
-          hotelId: 0
-        }); 
-      })
-      .catch(error => {
-        console.error("There was an error adding the room!", error);
-        setSnackbarMessage('Failed to add room');
-        setSnackbarOpen(true);
-      });
-  };
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
+    formData.append("upload_preset", "raslen");
     try {
-      const response = await axios.post<string>('http://localhost:8080/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      return response.data;
+      const response = await axios.post("https://api.cloudinary.com/v1_1/dtyq6i57z/image/upload", formData);
+      return response.data.secure_url;
     } catch (error) {
-      throw new Error('Failed to upload image');
+      console.error("Failed to upload image", error);
+      throw new Error("Failed to upload image");
     }
   };
+  
+
+  const handleAddDestination = async () => {
+    try {
+      if (newDestination.image) {
+        const uploadedImageUrl = await uploadImage(newDestination.image); 
+        const newDestinationData = { 
+          ...newDestination, 
+          image: uploadedImageUrl, 
+          
+        };
+        
+        await axios.post('http://localhost:8080/api/destination/adddestination', newDestinationData);
+        setSnackbarMessage('Destination added successfully');
+        fetchDestinations();
+        setDialogOpen(false);
+        setNewDestination({ name: '', image: null, flag: '', fame: '' });
+      } else {
+        setSnackbarMessage('Please select an image');
+      }
+    } catch (error) {
+      console.error("There was an error adding the destination!", error);
+      setSnackbarMessage('Failed to add destination');
+    }
+    setSnackbarOpen(true);
+  };
+  
+
+  const handleAddHotel = async () => {
+    try {
+      const uploadedImageUrl = await uploadImage(newHotel.image);
+      const newHotelData = { ...newHotel, image: uploadedImageUrl };
+  
+      await axios.post('http://localhost:8080/api/hotels/addHotel', newHotelData);
+      setSnackbarMessage('Hotel added successfully');
+      fetchHotels(newHotel.destinationId); 
+      setHotelDialogOpen(false); 
+      setNewHotel({ 
+        name: '',
+        image: null,
+        bookings: 0,
+        stars: 0,
+        latitude: null,
+        longitude: null,
+        destinationId: 0,
+        type: '', 
+        description: '', 
+      });
+    } catch (error) {
+      console.error("There was an error adding the hotel!", error);
+      setSnackbarMessage('Failed to add hotel');
+    }
+    setSnackbarOpen(true);
+  };
+  
+
+  const handleAddRoom = async () => {
+    try {
+      const uploadedImageUrls = await Promise.all([
+        uploadImage(newRoom.image1),
+        uploadImage(newRoom.image2),
+        uploadImage(newRoom.image3),
+        uploadImage(newRoom.image4),
+        uploadImage(newRoom.image5)
+      ]);
+  
+      const newRoomData = {
+        ...newRoom,
+        image1: uploadedImageUrls[0],
+        image2: uploadedImageUrls[1],
+        image3: uploadedImageUrls[2],
+        image4: uploadedImageUrls[3],
+        image5: uploadedImageUrls[4]
+      };
+  
+      await axios.post(`http://localhost:8080/rooms/hotel/${newRoom.hotelId}`, newRoomData);
+      setSnackbarMessage('Room added successfully');
+      fetchRooms(newRoom.hotelId); 
+      setRoomDialogOpen(false); 
+      setNewRoom({
+        description: '',
+        guests: 0,
+        nightPrice: 0,
+        bedroom: 0,
+        baths: 0,
+        beds: 0,
+        status: 0,
+        image1: null,
+        image2: null,
+        image3: null,
+        image4: null,
+        image5: null,
+        hotelId: 0
+      });
+    } catch (error) {
+      console.error("There was an error adding the room!", error);
+      setSnackbarMessage('Failed to add room');
+    }
+    setSnackbarOpen(true);
+  };
+  
 
   const handleDeleteHotel = (hotelId: number, destinationId: number) => {
     Swal.fire({
@@ -457,42 +486,35 @@ const Destinations: FC = () => {
       Please fill out the form below to add a new destination.
     </DialogContentText>
     <TextField
-      autoFocus
-      margin="dense"
-      label="Name"
-      type="text"
-      fullWidth
-      variant="standard"
-      value={newDestination.name}
-      onChange={(e) => setNewDestination({ ...newDestination, name: e.target.value })}
-    />
-    <TextField
-      margin="dense"
-      label="Image URL"
-      type="text"
-      fullWidth
-      variant="standard"
-      value={newDestination.image}
-      onChange={(e) => setNewDestination({ ...newDestination, image: e.target.value })}
-    />
-    <TextField
-      margin="dense"
-      label="Flag URL"
-      type="text"
-      fullWidth
-      variant="standard"
-      value={newDestination.flag}
-      onChange={(e) => setNewDestination({ ...newDestination, flag: e.target.value })}
-    />
-    <TextField
-      margin="dense"
-      label="Fame"
-      type="text"
-      fullWidth
-      variant="standard"
-      value={newDestination.fame}
-      onChange={(e) => setNewDestination({ ...newDestination, fame: e.target.value })}
-    />
+  autoFocus
+  margin="dense"
+  label="Name"
+  fullWidth
+  value={newDestination.name}
+  onChange={(e) => setNewDestination({ ...newDestination, name: e.target.value })}
+/>
+<input
+  type="file"
+  onChange={(e) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    setNewDestination({ ...newDestination, image: file });
+  }}
+/>
+<TextField
+  margin="dense"
+  label="Flag URL"
+  fullWidth
+  value={newDestination.flag}
+  onChange={(e) => setNewDestination({ ...newDestination, flag: e.target.value })}
+/>
+<TextField
+  margin="dense"
+  label="Fame"
+  fullWidth
+  value={newDestination.fame}
+  onChange={(e) => setNewDestination({ ...newDestination, fame: e.target.value })}
+/>
+
   </DialogContent>
   <DialogActions>
     <Button onClick={handleCloseDialog}>Cancel</Button>
@@ -516,15 +538,13 @@ const Destinations: FC = () => {
             value={newHotel.name}
             onChange={(e) => setNewHotel({ ...newHotel, name: e.target.value })}
           />
-          <TextField
-            margin="dense"
-            label="Hotel Image URL"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newHotel.image}
-            onChange={(e) => setNewHotel({ ...newHotel, image: e.target.value })}
-          />
+  <input
+      type="file"
+      onChange={(e) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        setNewHotel({ ...newHotel, image: file });
+      }}
+    />
           <TextField
             margin="dense"
             label="Bookings"
@@ -656,50 +676,65 @@ const Destinations: FC = () => {
             onChange={e => setNewRoom({ ...newRoom, status: e.target.value })}
           />
           <TextField
-            margin="dense"
-            label="Image 1 URL"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newRoom.image1}
-            onChange={e => setNewRoom({ ...newRoom, image1: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Image 2 URL"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newRoom.image2}
-            onChange={e => setNewRoom({ ...newRoom, image2: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Image 3 URL"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newRoom.image3}
-            onChange={e => setNewRoom({ ...newRoom, image3: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Image 4 URL"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newRoom.image4}
-            onChange={e => setNewRoom({ ...newRoom, image4: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Image 5 URL"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newRoom.image5}
-            onChange={e => setNewRoom({ ...newRoom, image5: e.target.value })}
-          />
+  margin="dense"
+  label="Image 1"
+  type="file"
+  fullWidth
+  variant="standard"
+  onChange={(e) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    setNewRoom({ ...newRoom, image1: file });
+  }}
+/>
+
+<TextField
+  margin="dense"
+  label="Image 2"
+  type="file"
+  fullWidth
+  variant="standard"
+  onChange={(e) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    setNewRoom({ ...newRoom, image2: file });
+  }}
+/>
+
+<TextField
+  margin="dense"
+  label="Image 3"
+  type="file"
+  fullWidth
+  variant="standard"
+  onChange={(e) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    setNewRoom({ ...newRoom, image3: file });
+  }}
+/>
+
+<TextField
+  margin="dense"
+  label="Image 4"
+  type="file"
+  fullWidth
+  variant="standard"
+  onChange={(e) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    setNewRoom({ ...newRoom, image4: file });
+  }}
+/>
+
+<TextField
+  margin="dense"
+  label="Image 5"
+  type="file"
+  fullWidth
+  variant="standard"
+  onChange={(e) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    setNewRoom({ ...newRoom, image5: file });
+  }}
+/>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseRoomDialog}>Cancel</Button>
