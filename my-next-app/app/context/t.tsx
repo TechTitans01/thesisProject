@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [code, setCode] = useState<string>("");
 const[emailForReset,setemailResetPass]= useState<string>("");
 
-console.log("user auth  ",admin);
+console.log("user auth  ",user);
 
   const router = useRouter();
 
@@ -79,7 +79,7 @@ console.log("user auth  ",admin);
 
     try {
       const response = await axios.get(`http://localhost:8080/api/admin/get/${adminId}`);
-      setAdmin(response.data);
+      setUser(response.data);
     } catch (error) {
       console.error("Error fetching user information", error);
     }

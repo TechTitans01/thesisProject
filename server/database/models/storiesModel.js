@@ -11,7 +11,15 @@ module.exports=(sequelize,DataTypes)=>{
           userId: {
             type: DataTypes.INTEGER,
             allowNull: false,
-          }             
+          },
+          userName: {
+            type: DataTypes.STRING,
+            allowNull: false,
+          },
+          userImage: {
+            type: DataTypes.STRING,
+            allowNull: false,
+          },       
     })          
  return  stories
 }
