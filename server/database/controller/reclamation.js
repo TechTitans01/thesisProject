@@ -1,5 +1,5 @@
 const db=require("../sequelize/index.js")
-
+const { nodeMailer } = require("../../lib/nodeMailer");
 
 module.exports={
     sendReclamation:(req, res) => {
@@ -30,5 +30,14 @@ module.exports={
         res.status(500).send(err);
       });
   },
+
+  sendReclamtionGmail: async (req, res) => {
+    try {
+      await nodeMailer(req.body.to,req.body.subject,req.body.html);
+      res.send( "mail sent");
+    } catch (err) {
+      res.status(500).send("Failed to send email");
+    }
+  }
 
 }
