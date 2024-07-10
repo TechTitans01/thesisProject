@@ -19,6 +19,8 @@ export default function Chat  ( )  {
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const {token}=useAuth()
   const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
+  const [ usee,  setuse] = useState<any>({});
+ 
   const { logOut } = useAuth();
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -31,6 +33,15 @@ export default function Chat  ( )  {
     .then((resp) => {
       console.log(resp.data);
       setImage(resp.data.image);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    axios.get(`http://localhost:8080/api/user/getone/${userr.id}`)
+    .then((resp) => {
+      console.log(resp.data);
+      setuse(resp.data);
     })
     .catch((err) => {
       console.log(err);
@@ -133,7 +144,7 @@ export default function Chat  ( )  {
       <div className="chat-messages">
         {messages.map((msg: any, index: number) => (
           <div key={index} className={`chat-message ${msg.senderId === userr.id ? 'user' : 'friend'}`}>
-            <img src={msg.senderId === userr.id ? userr.image : imageFreind} alt="User Profile" />
+            <img src={msg.senderId === userr.id ? usee.image : imageFreind} alt="User Profile" />
             <div className="message-content">
               {msg.content}
             </div>
