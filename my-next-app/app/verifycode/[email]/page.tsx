@@ -14,7 +14,7 @@ export default function Security() {
   const route = useRouter();
   const filt = pathname.split("/");
   const [verify, setVerify] = useState("");
-  const [timer, setTimer] = useState(180); // 3 minutes in seconds
+  const [timer, setTimer] = useState(180); 
   const [canResend, setCanResend] = useState(false);
   const email:string = filt[filt.length - 1];
   const { setemailResetPass} = useAuth();
@@ -40,7 +40,7 @@ export default function Security() {
         setemailResetPass(email)
       toast.success('Code verified successfully');
       route.push("/resetpassword")
-      // Handle successful verification
+ 
     } else {
       
       toast.error('Incorrect code. Please try again.');
@@ -57,7 +57,7 @@ export default function Security() {
       let newCode = info[info.length - 1];
       setCode(newCode);
       toast.success("A new code has been sent to your email.");
-      setTimer(180); // Reset timer to 3 minutes
+      setTimer(180); 
       setCanResend(false);
     } catch (err) {
       console.log(err);
