@@ -25,7 +25,7 @@ module.exports=(sequelize,DataTypes)=>{
             allowNull: false,
           },
           status: {
-            type: DataTypes.TINYINT,
+            type: DataTypes.STRING,
             allowNull: true,
           },
           image1: {
@@ -48,7 +48,10 @@ module.exports=(sequelize,DataTypes)=>{
             type: DataTypes.STRING,
             allowNull: false,
           },
-
+          image3: {
+            type: DataTypes.STRING,
+            allowNull: false,
+          }
     })
  return  room
 }

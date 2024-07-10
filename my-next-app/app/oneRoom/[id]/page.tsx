@@ -114,7 +114,7 @@ const Page: React.FC = () => {
   useEffect(() => {
 
     
-    axios.get(`http://localhost:8080/api/user/getone/${user.id}`)
+    axios.get(`http://localhost:8080/api/user/getone/${userr.id}`)
       .then((resp) => {
         console.log("heyoad",resp.data);
       setuser(resp.data);

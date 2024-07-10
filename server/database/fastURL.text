@@ -22,7 +22,7 @@ http://localhost:8080/api/auth/login
 --http://localhost:8080/bookings/2::(update booking by (ID) PUT)
 --http://localhost:8080/bookings/bookingId/status::(update booking  status by (ID) PUT)
                  ---------------rooms-------------------------
---http://localhost:8080/rooms/hotel/1::(add room POST)
+--  ::(add room POST)
 --http://localhost:8080/rooms/hotel/1::(get rooms GET)
 --http://localhost:8080/rooms/1::(get one room GET)
 --http://localhost:8080/rooms/1::(update room PUT)
