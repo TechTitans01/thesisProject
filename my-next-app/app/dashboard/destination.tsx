@@ -45,6 +45,7 @@ interface Hotel {
   longitude: number | null;
   destinationId: number;
   discription: string;
+  nightPrice:number;
 }
 
 interface Room {
@@ -95,6 +96,7 @@ const Destinations: FC = () => {
     destinationId: 0,
     type: '',
     description: '',
+    nightPrice:0
   });
   
   const [newRoom, setNewRoom] = useState({
@@ -216,6 +218,7 @@ const Destinations: FC = () => {
         destinationId: 0,
         type: '', 
         description: '', 
+        nightPrice:0
       });
     } catch (error) {
       console.error("There was an error adding the hotel!", error);
@@ -599,6 +602,15 @@ const Destinations: FC = () => {
       value={newHotel.description}
       onChange={(e) => setNewHotel({ ...newHotel, description: e.target.value })}
     />
+        <TextField
+            margin="dense"
+            label="nightPrice"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={newHotel.nightPrice}
+            onChange={(e) => setNewHotel({ ...newHotel, stars: parseInt(e.target.value, 10) })}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseHotelDialog}>Cancel</Button>
