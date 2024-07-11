@@ -1,7 +1,8 @@
 const router= require("express").Router()
-const {getDestination,addDestination,updateDestination,removeDestination,getOneDestination} = require("../controller/destinationontroller.js")
+const {getDestination,addDestination,updateDestination,removeDestination,getOneDestination,getOneDestinationbyname} = require("../controller/destinationontroller.js")
 
 router.get("/getone/:id", getOneDestination);
+router.get("/getonebyname/:name", getOneDestinationbyname);
 router.get("/getall",getDestination);
 router.post("/adddestination",addDestination);
 router.put("/updatedestination",updateDestination);

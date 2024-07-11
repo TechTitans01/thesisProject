@@ -291,19 +291,20 @@ color: #fff;
 
 
 .stories{
+  position: relative;
     justify-content: space-between;
-    justify-content: space-around;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
     grid-gap: 30px;
-    margin-bottom: 30px;
-    
+    width: 35%;
+    height: 15%;
+    align-items: center;
 }
 
-.stories div{
+/* .stories div{
     position: relative;
     text-align: center;
-}
+} */
 .stories p{ 
    width: 80%;
    position: absolute;
