@@ -26,7 +26,8 @@ const LoginPage: React.FC = () => {
 
     try {
       const result:any = await loginAction({ email, password });
-        setState({
+      
+      setState({
         email: '',
         password: ''
       });

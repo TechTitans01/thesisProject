@@ -161,11 +161,11 @@ export default function Home() {
               </div>
               <div>
                 <label>Check in</label>
-                <input type="text" placeholder="Add date" />
+                <input type="date" placeholder="Add date" />
               </div>
               <div>
                 <label>Check out</label>
-                <input type="text" placeholder="Add date" />
+                <input type="date" placeholder="Add date" />
               </div>
               <div>
                 <label>Guest</label>
