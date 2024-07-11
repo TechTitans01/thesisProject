@@ -23,13 +23,19 @@ export default function Home() {
   const [storyText, setStoryText] = useState('');
   const [userr, setUserr] = useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
   const [use, setuser ] = useState<any>({});
-  const [storyImage, setStoryImage] = useState('');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [night, setnight ] = useState<number>(0);
+  const [month, setmonth ] = useState<number>(0);
+  const [guest, setguest] = useState<string>('');
+  const [desId,setdesid] = useState<string>('');
+  const [totalbooks, settotalbooks] =useState<string>('');
+  const [location, setLocation] = useState<string>('');
+  const [inn, setin] = useState<string>('');
+  const [out, setout] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>("");
   const handleAddStoryClick = () => {
     setShowForm(true);
   };
-
+ var x="";
 
   const toHotel = (id: number) => {
     router.push(`/hotel/${id}`)
@@ -39,15 +45,49 @@ export default function Home() {
     setDropdownOpen(!dropdownOpen);
   };
 
+const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
+    const startDate = new Date(checkIn);
+    const endDate = new Date(checkOut);
 
+    let months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+    let days = endDate.getDate() - startDate.getDate();
+
+    if (days < 0) {
+        months--;
+        const previousMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate();
+        days += previousMonth;
+    }
+    x=`months+${months}+days+${days}+guest+${guest}`
+    axios.get(`http://localhost:8080/api/destination/getonebyname/${location}`).then((res) => {
+        setdesid(res.data.id)
+        console.log(res.data);
+        router.push(`/search/${res.data.id}/${x}`)
+        
+      }).catch((err) => {
+      console.log(err);
+      
+      })
+    console.log(x);
+    
+
+}
+// useEffect(() => {
+// axios.get('http://localhost:8080/api/destination/getonebyname',
+//   {name:location}).then((res) => {
+//     setdesid(res.data.id)
+//   }).catch((err) => {
+//   console.log(err);
+  
+//   })
+
+// },[])
 
 
   useEffect(() => {
+  
     axios.get(`http://localhost:8080/api/destination/getall`).then((res) => {
       setDestination(res.data);
       setTrending(res.data);
-     
-      
       const filtered = res.data.filter((dest: any) => dest.fame === "trending");
       setFilteredTrending(filtered);
     }).catch(error => { console.error(error) })
@@ -55,17 +95,17 @@ export default function Home() {
     .then((resp) => {
       console.log("heyoad",resp.data);
     setuser(resp.data);
-   
     })
     .catch((err) => {
       console.log(err);
     });
-}, []);
-
+}, [])
   
 
   useEffect(() => {
     axios.get("http://localhost:8080/api/stories/getall").then((res) => {
+    
+      console.log(inn);
       setStorie(res.data);
     }).catch((err) => {
       console.error(err)
@@ -89,11 +129,11 @@ export default function Home() {
       
     });
   }
-  const falter = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = parseInt(event.target.value);
-    const filtered = trending.filter((dest: any) => dest.fame === value);
-    setFilteredTrending(filtered);
-  };
+  // const falter = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const value = parseInt(event.target.value);
+  //   const filtered = trending.filter((dest: any) => dest.fame === value);
+  //   setFilteredTrending(filtered);
+  // };
   const uploadImage = () => {
     const form = new FormData();
     form.append("file", file);
@@ -157,22 +197,22 @@ export default function Home() {
             <div id="for">
               <div className="location-input">
                 <label>Location</label>
-                <input type="text" placeholder="Where are you going?" />
+                <input type="text" placeholder="Where are you going?" onChange={(e)=>{setLocation(e.target.value)}}/>
               </div>
               <div>
                 <label>Check in</label>
-                <input type="date" placeholder="Add date" />
+                <input type="date" placeholder="Add date"onChange={(e)=>{setin(e.target.value)}} />
               </div>
               <div>
                 <label>Check out</label>
-                <input type="date" placeholder="Add date" />
+                <input type="date" placeholder="Add date" onChange={(e)=>{setout(e.target.value)}} />
               </div>
               <div>
                 <label>Guest</label>
-                <input type="text" placeholder="Add Guest" />
+                <input type="text" placeholder="Add Guest"  onChange={(e)=>{setguest(e.target.value)}}/>
               </div>
               <button>
-                <Image src="/img/search.png" width={20} height={20} alt="dtg" style={{ marginTop: 5, marginLeft: 7 }} />
+                <Image src="/img/search.png" width={20} height={20} alt="dtg" style={{ marginTop: 5, marginLeft: 7 }} onClick={()=>{calculateDateDifference(inn,out)}}/>
               </button>
             </div>
           </div>
@@ -209,10 +249,10 @@ export default function Home() {
         <h2 className="sub-title">Travellers Stories</h2>
         <div className="stories">
           {Storie.map((el: any, index: number) => (
-            <div key={index}>
+            <div className="estories" key={index}>
               <h3>{el.userName}</h3>
-              <img src={el.userImage} width={50} height={50} style={{ borderRadius: 50, marginLeft: 10 }} alt="dtg" />
-              <img src={el.image} width={250} height={300} style={{ borderRadius: 10 }} alt="dtg" />
+              <img src={el.userImage} width={250} height={300} style={{ borderRadius: 50, marginLeft: 10 }} alt="dtg" />
+              <img src={el.image} alt="dtg" />
               <p className="ps">{el.text}</p>
             </div>
           ))}
