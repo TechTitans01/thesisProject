@@ -1,37 +1,33 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import io from 'socket.io-client';
+import React, { useEffect, useState } from 'react';
+import io, { Socket } from 'socket.io-client';
 import axios from 'axios';
-import { Badge, IconButton, Menu, MenuItem, ListItemText } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import { useAuth } from "@/app/context/authcontex/Authcontex";
+import { IconButton, Badge } from '@mui/material';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
-const socket = io('http://localhost:8080');
+interface Notification {
+  content: string;
+  userId: number;
+}
 
-const NotificationBell = () => {
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [unseenCount, setUnseenCount] = useState(0);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { user } = useAuth();
+const socket: Socket = io('http://localhost:8080');
 
-  const fetchNotifications = async () => {
-    try {
-      const response = await axios.get(`http://localhost:8080/api/notifications/${user.id}`);
-      const data = response.data;
-      setNotifications(data);
-      const unseenCount = data.filter((notif: any) => !notif.isSeen).length;
-      setUnseenCount(unseenCount);
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-    }
-  };
+const Notifications: React.FC = () => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
   useEffect(() => {
+    const fetchNotifications = async () => {
+      const response = await axios.get<Notification[]>('http://localhost:8080/notifications');
+      setNotifications(response.data);
+    };
+
     fetchNotifications();
 
-    socket.on('notification', (notification) => {
-      setNotifications((prev) => [notification, ...prev]);
-      setUnseenCount((prev) => prev + 1);
+    socket.on('notification', (notification: Notification) => {
+      setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+      setUnreadCount((prevCount) => prevCount + 1); 
     });
 
     return () => {
@@ -39,42 +35,30 @@ const NotificationBell = () => {
     };
   }, []);
 
-  const handleBellClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = async () => {
-    setAnchorEl(null);
-
-    try {
-      await axios.put('http://localhost:8080/api/notifications/mark-as-seen');
-      setNotifications((prev) => prev.map((notif) => ({ ...notif, isSeen: true })));
-      setUnseenCount(0);
-    } catch (error) {
-      console.error('Error marking notifications as seen:', error);
-    }
+  const handleBellClick = () => {
+    setShowDropdown(!showDropdown);
+    setUnreadCount(0); 
   };
 
   return (
-    <>
+    <div>
       <IconButton color="inherit" onClick={handleBellClick}>
-        <Badge badgeContent={unseenCount} color="error">
+        <Badge badgeContent={unreadCount} color="secondary">
           <NotificationsIcon />
         </Badge>
       </IconButton>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        {notifications.slice(0, 5).map((notification, index) => (
-          <MenuItem key={index} onClick={handleMenuClose}>
-            <ListItemText primary={notification.content} />
-          </MenuItem>
-        ))}
-      </Menu>
-    </>
+      {showDropdown && (
+        <div className="notifications-dropdown">
+          <h2>Notifications</h2>
+          <ul>
+            {notifications.map((notif) => (
+              <li key={notif.id}>{notif.message}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 };
 
-export default NotificationBell;
+export default Notifications;

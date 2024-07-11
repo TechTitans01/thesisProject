@@ -45,7 +45,7 @@ module.exports = {
 
   updateNotification: async (req, res) =>{
   try {
-    await Notification.update(
+    await notification.update(
       { isSeen: true },
       { where: { isSeen: false } }
     );

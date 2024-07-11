@@ -39,7 +39,7 @@ app.use('/api/reclamation', reclamationRoutes);
 app.use('/api/payments', paymentRouter);
 app.use('/api/chat', messagesRouter);
 app.use('/api/admin', adminRoutes);
-app.use('/api/notifications', notificationRoutes); 
+app.use('/notifications', notificationRoutes); 
 
 app.post('/send-sms', (req, res) => {
   const { to, text } = req.body;
