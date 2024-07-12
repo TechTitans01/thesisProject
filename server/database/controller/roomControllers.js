@@ -1,5 +1,5 @@
 const {room} = require('../sequelize/index');
-
+const { Op } = require('sequelize');
 module.exports = {
   getAllRoomsForHotel: async (req, res) => {
     try {
@@ -62,5 +62,24 @@ module.exports = {
       .catch(error => {
         res.status(500).json({ error: error.message });
       })
+  },
+
+  getoneroombysearch:async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { guests } = req.body
+      let where = { hotelId: id }
+  
+      if (guests) {
+        where.guests = {
+          [Op.eq]: guests 
+        };
+      }
+  
+      const rooms = await room.findAll({ where });
+      res.json(rooms);
+    } catch (error) {
+      res.status(500).json({ error: 'An error occurred while fetching rooms' });
+    }
   }
 }
