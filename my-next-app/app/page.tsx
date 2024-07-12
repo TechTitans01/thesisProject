@@ -29,7 +29,7 @@ export default function Home() {
   const [desId,setdesid] = useState<string>('');
   const [totalbooks, settotalbooks] =useState<string>('');
   const [location, setLocation] = useState<string>('');
-  const [inn, setin] = useState<string>('');
+  const [inn, setin] = useState<string>('');  
   const [out, setout] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>("");
   const handleAddStoryClick = () => {
@@ -57,9 +57,9 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
         const previousMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate();
         days += previousMonth;
     }
-    x=`months+${months}+days+${days}+guest+${guest}`
+    x=`${months}+months+${days}+days+with+${guest}+guest` 
     axios.get(`http://localhost:8080/api/destination/getonebyname/${location}`).then((res) => {
-        setdesid(res.data.id)
+        setdesid(res.data.id) 
         console.log(res.data);
         router.push(`/search/${res.data.id}/${x}`)
         
@@ -222,9 +222,9 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
         <h2 className="sub-title">Exclusives</h2>
         <div className="exclusives">
           {destination.map((el: any, index: number) => (
-            <div key={index} onClick={() => { toHotel(el.id) }} style={{ cursor: "pointer" }}>
+            <div key={index}>
               <img src={el.flag} width={25} height={25} alt="" />
-              <img src={el.image} width={220} height={120} style={{ borderRadius: 10 }} alt="place" />
+              <img src={el.image} width={220} height={120} alt="place"  onClick={() => { toHotel(el.id) }} style={{ cursor: "pointer" , borderRadius: 10 }} />
               <span>
                 <h3>{el.name}</h3>
                 <p>$250</p>

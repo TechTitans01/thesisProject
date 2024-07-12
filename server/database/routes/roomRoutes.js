@@ -6,6 +6,7 @@ const roomController = require('../controller/roomControllers');
 router.get('/hotel/:hotelId', roomController.getAllRoomsForHotel);
 
 router.get('/:id', roomController.getRoomById);
+router.post('/rooms/hotel/:id', roomController.getoneroombysearch)
 
 router.post('/hotel/:hotelId', roomController.createRoom);
 

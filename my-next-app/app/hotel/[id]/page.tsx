@@ -20,12 +20,12 @@ export default function Hotel() {
   const items = 5;
   const [current, setCurrent] = useState(1);
   const NbPage = Math.ceil(data.length / items); 
-const handleNextPage = () => {
+  const handleNextPage = () => {
   if (current < NbPage) {
     setCurrent(current + 1);
   }
 };
-const handlePrevPage = () => {
+ const handlePrevPage = () => {
   if (current > 1) {
     setCurrent(current - 1);
   }
@@ -33,7 +33,7 @@ const handlePrevPage = () => {
 const startIndex = (current - 1) * items;
 const endIndex = startIndex + items;
 const DataPerPage = data.slice(startIndex, endIndex); 
-  const toHotelRooms = (id: number) => {
+const toHotelRooms = (id: number) => {
     router.push(`/rooms/${id}`);
   };
 
