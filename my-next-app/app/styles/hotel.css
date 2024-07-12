@@ -83,6 +83,7 @@ footer p{
     flex-wrap: wrap;
     padding: 30px 0;
     border-top: 1px solid #ccc;
+    width: 140%;
  }
  .house-img{
     flex-basis: 40%;

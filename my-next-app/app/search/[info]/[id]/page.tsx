@@ -14,8 +14,9 @@ export default function HotelSearch() {
   const id = pathname.split('/')[2]
   const detail=pathname.split('/')[3];
   const info=detail.toString().split("+")
-
-
+  const months = parseInt(info[0]) || 0;
+  const days = parseInt(info[2]) || 0;
+  const guests = parseInt(info[5]) || 0;
 
   const router = useRouter();
   const [ref, setRef] = useState<boolean>(false);
@@ -25,21 +26,21 @@ export default function HotelSearch() {
   const items = 5;
   const [current, setCurrent] = useState(1);
   const NbPage = Math.ceil(data.length / items); 
-const handleNextPage = () => {
-  if (current < NbPage) {
-    setCurrent(current + 1);
-  }
-};
-const handlePrevPage = () => {
-  if (current > 1) {
-    setCurrent(current - 1);
-  }
-};
-const startIndex = (current - 1) * items;
-const endIndex = startIndex + items;
-const DataPerPage = data.slice(startIndex, endIndex); 
-  const toHotelRooms = (id: number) => {
-    router.push(`/rooms/${id}`);
+  const handleNextPage = () => {
+    if (current < NbPage) {
+      setCurrent(current + 1);
+    }
+  };
+  const handlePrevPage = () => {
+    if (current > 1) {
+      setCurrent(current - 1);
+    }
+  };
+  const startIndex = (current - 1) * items;
+  const endIndex = startIndex + items;
+  const DataPerPage = data.slice(startIndex, endIndex); 
+  const toOneRoom = (id: number) => {
+    router.push(`/oneroombysearch/${guests}/${id}`);
   };
 
   const toggleDropdown = () => {
@@ -47,7 +48,6 @@ const DataPerPage = data.slice(startIndex, endIndex);
   };
 
   const falter = (value: string) => {
-    console.log(value);
     if (value === "all") {
       setData(allData);
     } else {
@@ -57,12 +57,9 @@ const DataPerPage = data.slice(startIndex, endIndex);
   };
 
   useEffect(() => {
-    console.log(info);
-    
     axios.get(`http://localhost:8080/api/hotels/getone/${id}`).then((res) => {
       setData(res.data);
       setAllData(res.data); 
-      console.log(res.data);
     }).catch(err => { console.log(err) });
   }, [ref]);
 
@@ -121,25 +118,38 @@ const DataPerPage = data.slice(startIndex, endIndex);
         <div className="left-col">
           <p>{data.length}+ Options</p>
           <h1>Recommended Places</h1>
-          {DataPerPage.map((el: any) => (
-            <div onClick={() => { toHotelRooms(el.id) }} className='house' key={el.id} style={{ cursor: "pointer" }}>
-              <div className="hotel-card">
-                <div className="hotel-card-img">
-                  <img src={el.image} alt={el.name} width={330} height={200} />
-                  <button className="favorite-btn"></button>
-                </div>
-                <div className="hotel-card-info">
-                  <h2>{el.name}</h2>
-                  <div className="hotel-rating">
-                    <span className="stars">{"★".repeat(el.stars)}</span>
+          {DataPerPage.map((el: any) => {
+            const totalNights = months * 30 + days;
+            const totalPrice = totalNights * el.nightPrice;
+            return (
+              <div onClick={() => { toOneRoom(el.id) }} className='house' key={el.id} style={{ cursor: "pointer" }}>
+                <div className="hotel-card">
+                  <div className="hotel-card-img">
+                    <img src={el.image} alt={el.name} width={330} height={200} />
+                    <button className="favorite-btn"></button>
                   </div>
-                  <div className="hotel-description">
-                    Situé à Paris, dans le 12ème arrondissement, le Motel One Paris-Porte Dorée dispose d'un bar et d'un jardin.
+                  <div className="hotel-card-info">
+                    <h2>{el.name}</h2>
+                    <div className="hotel-rating">
+                      <span className="stars">{"★".repeat(el.stars)}</span>
+                    </div>
+                    <div>
+                      {!months ? (
+                        <h6>{days} days, {guests} guest </h6>
+                      ) : (
+                        <h6>{months} month, {days} days, {guests} guest</h6>
+                      )}
+                      <h6><b>Night Price: {el.nightPrice} dt</b></h6>
+                      <h6><b>Total Price: {totalPrice} dt</b></h6>
+                    </div>
+                    <div className="hotel-description">
+                      Situé à Paris, dans le 12ème arrondissement, le Motel One Paris-Porte Dorée dispose d'un bar et d'un jardin.
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
@@ -240,10 +250,7 @@ const DataPerPage = data.slice(startIndex, endIndex);
           
           <Image className='arroo' src="/img/arrow.png" alt='arrow' width={15} height={20} onClick={handlePrevPage} style={{ cursor: 'pointer' }} />
          
-          {/* {Array.from({length: NbPage},(_, i)=>i+1).map((page)=>{
-            return <button onClick={()=>setCurrent(page)} >{page}</button>
-          })} */}
-         <span className='curreent'>{current}</span>
+          <span className='curreent'>{current}</span>
          
           <Image id='rightarro' className='arroo' src="/img/arrow.png" alt='arrow' width={15} height={20} onClick={handleNextPage} style={{ cursor: 'pointer' }}/>
         </div>

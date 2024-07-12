@@ -1,4 +1,3 @@
-// const config = require("./config.js");
 const { Sequelize, DataTypes } = require("sequelize");
 
 const createAdmin=require('../../createAdmin.js')
