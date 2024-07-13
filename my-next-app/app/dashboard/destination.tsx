@@ -609,7 +609,7 @@ const Destinations: FC = () => {
             fullWidth
             variant="standard"
             value={newHotel.nightPrice}
-            onChange={(e) => setNewHotel({ ...newHotel, nightPrice: parseInt(e.target.value) })}
+            onChange={(e) => setNewHotel({ ...newHotel, nightPrice: parseInt(e.target.value, 10) })}
           />
         </DialogContent>
         <DialogActions>

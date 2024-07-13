@@ -19,6 +19,7 @@ import Swal from 'sweetalert2';
 import './style/booking.css';
 import io from 'socket.io-client';
 
+
 const socket = io('http://localhost:8080');
 
 const Booking: FC = () => {
@@ -29,10 +30,9 @@ const Booking: FC = () => {
     fetchBookings();
 
     const adminId = 1;
-    socket.emit('join', adminId);
 
-    socket.on('notification', (notification) => {
-      Swal.fire('Notification', notification.content, 'info');
+    socket.on('notification', () => {
+      Swal.fire('Notification', 'info');
     });
 
     return () => {
@@ -73,8 +73,29 @@ const Booking: FC = () => {
       if (result.isConfirmed) {
         try {
           const response = await axios.put(`http://localhost:8080/bookings/${bookingId}/status`, { status });
+          
+          // Fetch the updated booking details
+          const updatedBooking = response.data;
+
+          if (status === 'confirmed') {
+            // Fetch the room details
+            const roomResponse = await axios.get(`http://localhost:8080/rooms/${updatedBooking.roomId}`);
+            const room = roomResponse.data;
+
+            // Calculate the total cost
+            const startDate = new Date(updatedBooking.start);
+            const endDate = new Date(updatedBooking.end);
+            const numberOfNights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+            const totalCost = numberOfNights * room.nightPrice;
+
+            // Send notification with total cost
+            sendNotification(updatedBooking.userId, `Your booking (ID: ${bookingId}) has been confirmed. The total cost is ${totalCost} USD.`);
+          } else {
+            // Send notification for canceled booking
+            sendNotification(updatedBooking.userId, `Your booking (ID: ${bookingId}) has been canceled.`);
+          }
+
           fetchBookings();
-          sendNotification(response.data.userId, `Your booking (ID: ${bookingId}) has been ${actionPast}.`);
           Swal.fire(
             `${action.charAt(0).toUpperCase() + action.slice(1)}d!`,
             `The booking has been ${actionPast}.`,

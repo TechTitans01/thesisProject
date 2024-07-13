@@ -9,7 +9,7 @@ import { useAuth } from '@/app/context/authcontex/Authcontex';
 
 export default function House() {
   const [data, setData] = useState<any>([]);
-  const [allData, setAllData] = useState<any>([]); 
+ 
   const router = useRouter();
   const pathname = usePathname();
   const id = pathname.slice(pathname.length - 1);
@@ -56,7 +56,7 @@ export default function House() {
         console.log(res.data);
         
         setData(res.data);
-        setAllData(res.data); 
+       
       })
       .catch(error => {
         console.error(error);
@@ -106,26 +106,6 @@ export default function House() {
           </div>
         )}
       </nav>
-
-      <div className="container2">
-        <div className="search-bar">
-          <div id='for'>
-            <div className='location-input'>
-              <label>Location</label>
-              <input type="text" placeholder='Where are you going?' />
-            </div>
-            <div>
-              <label>Check In</label>
-              <input type="text" placeholder='Add Date?' />
-            </div>
-            <div>
-              <label>Guest</label>
-              <input type="text" placeholder='Add Guest?' />
-            </div>
-            <button><Image id='im' src="/img/search.png" alt='search' width={20} height={20} /></button>
-          </div>
-        </div>
-      </div>
 
       <div className='container'>
         <div className='list-container'>
