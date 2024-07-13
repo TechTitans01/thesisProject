@@ -117,7 +117,7 @@ const Page: React.FC = () => {
   useEffect(() => {
 
     
-    axios.get(`http://localhost:8080/api/user/getone/${user.id}`)
+    axios.get(`http://localhost:8080/api/user/getone/${userr.id}`)
       .then((resp) => {
         console.log("heyoad",resp.data);
       setuser(resp.data);
@@ -131,6 +131,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
       setData(res.data);
+      console.log(res.data)
       // array.push(res.data.image1, res.data.image2, res.data.image3);
       
     }).catch(err => { console.log(err) });
@@ -187,10 +188,9 @@ console.log(response.data);
 
         socket.emit('sendNotification', {
           content: `User ${userr.id} confirmed a booking: ${bookingDetails}`,
-          userId:use.id,
+          userId:userr.id,
           adminId: 1, 
         });
-
         Swal.fire({
           icon: 'success',
           title: 'Booking Created',
@@ -208,47 +208,42 @@ console.log(response.data);
       }
     } catch (error) {
       console.error('Error confirming booking:', error);
-      alert('Error confirming booking.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Please provide the missing informations before confirming the booking!',
+      })
     }
   };
 
 
   return (
     <Container>
+
+
+      <div className="house-details">
+<div className="house-title">
+  <h1>{data.description}</h1>
+    <div className="row">
+      <div>
+      <span className="stars">{"★".repeat(3)}</span>
+      </div>
+      <div>
+        <p>Location:america</p>
+      </div>
+    </div>
+</div>
+<div className="gallery">
+  <div className="gallery-img-1">
+    <img src={data.image1} alt="house" /></div>
+  <div><img src={data.image2} alt="house" /></div>
+  <div><img src={data.image3} alt="house" /></div>
+  <div><img src={data.image4} alt="house" /></div>
+  <div><img src={data.image5} alt="house" /></div>
+</div>
+</div>
       <Box my={4}>
-        <Typography variant="h4" gutterBottom>
-          {data.name}
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          color="textSecondary"
-          display="flex"
-          alignItems="center"
-          gutterBottom
-        >
-          <LocationOnIcon style={{ color: "#FF5733" }} /> {property.location}
-        </Typography>
-
-        <Grid container spacing={2} my={2}>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image1} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image2} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image3} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image4} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image5} alt="image" />
-          </Grid>
-       
-        </Grid>
-
-        <Grid container spacing={2} my={2}>
+   <Grid container spacing={2} my={2}>
           <Grid item xs={12} md={8}>
             <Box my={2}>
               <Typography variant="h6" gutterBottom>

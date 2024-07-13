@@ -26,7 +26,7 @@ const SignupPage: React.FC = () => {
 
     try {
       await signupAction({ username, email, password });
-      alert('Signup successful');
+      
       setState({
         username: '',
         email: '',

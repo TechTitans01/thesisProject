@@ -1,19 +1,26 @@
-const express = require("express");
-const db = require("../server/database/sequelize/index.js");
-const cors = require("cors");
-const routeruser = require("./database/routes/userRoutes.js");
-const routerhotel = require("./database/routes/hotelsRoutes.js");
-const authRoutes = require("./database/routes/authRout.js");
-const bookingRoutes = require('./database/routes/bookingRoutes.js');
-const reviewRoutes = require('./database/routes/reviewRoutes.js');
-const roomRoutes = require('./database/routes/roomRoutes.js');
-const reclamationRoutes = require('./database/routes/reclamtion.js');
-const adminRoutes = require('./database/routes/adminRt.js');
-const messagesRouter = require("./database/routes/messageRoute.js");
-const destinationRoutes = require('./database/routes/destinationRoutes.js');
-const paymentRouter = require('./database/routes/paymentRoute.js');
-const notificationRoutes = require('./database/routes/notificationRoutes.js'); 
-const { sendSMS } = require('./database/controller/sms.js');
+
+const express = require("express")
+const db =require("../server/database/sequelize/index.js")
+const cors = require("cors")
+require("../server/database/sequelize/index.js")
+const routeruser = require("./database/routes/userRoutes.js")
+const routerhotel = require("./database/routes/hotelsRoutes.js")
+const authRoutes = require("./database/routes/authRout.js")
+const bookingRoutes = require('./database/routes/bookingRoutes.js')
+const reviewRoutes = require('./database/routes/reviewRoutes.js')
+const roomRoutes = require('./database/routes/roomRoutes.js')
+const reclamationRoutes = require('./database/routes/reclamtion.js')
+const adminRoutes = require('./database/routes/adminRt.js')
+const notficationRoutes=require('./database/routes/notificationRoutes.js')
+const storiesRoutes = require('./database/routes/storiesRoutes.js')
+const messagesRouter=require("./database/routes/messageRoute.js")
+
+const destinationRoutes = require('./database/routes/destinationRoutes.js')
+
+const paymentRouter=require('./database/routes/paymentRoute.js')
+
+const {sendSMS} = require('./database/controller/sms.js');
+
 
 const PORT = 8080;
 const app = express();
@@ -25,6 +32,7 @@ const io = require('socket.io')(server, {
   }
 });
 
+
 app.use(express.json());
 app.use(cors());
 
@@ -34,12 +42,17 @@ app.use("/api/auth", authRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/commentaires', reviewRoutes);
 app.use('/rooms', roomRoutes);
+
+
 app.use('/api/destination', destinationRoutes);
 app.use('/api/reclamation', reclamationRoutes);
 app.use('/api/payments', paymentRouter);
 app.use('/api/chat', messagesRouter);
 app.use('/api/admin', adminRoutes);
-app.use('/notifications', notificationRoutes); 
+app.use('/notifications', notficationRoutes); 
+
+app.use('/api/stories',storiesRoutes)
+
 
 app.post('/send-sms', (req, res) => {
   const { to, text } = req.body;
@@ -71,22 +84,25 @@ io.on('connection', (socket) => {
     }
   });
 
+
   // Handle sendNotification event
   socket.on('sendNotification', async (notificationData) => {
+  
     try {
       const notification = await db.notification.create({
         content: notificationData.content,
         userId: notificationData.userId,
         adminId: notificationData.adminId,
         isSeen: notificationData.isSeen
-       });
-
-      io.to(notificationData.userId).emit('newNotification', notification);
-      io.to(notificationData.adminId).emit('newNotification', notification);
+      });
+      io.emit('newNotification', notification);
+      // io.to(notificationData.userId).emit('newNotification', notification);
+ 
     } catch (error) {
       console.error('Error saving notification:', error);
     }
   });
+
 
   socket.on('joinRoom', (userId) => {
     socket.join(userId);
@@ -96,6 +112,9 @@ io.on('connection', (socket) => {
     console.log('A user disconnected');
   });
 });
+
+
+
 
 server.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);

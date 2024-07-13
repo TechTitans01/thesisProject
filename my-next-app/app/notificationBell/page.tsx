@@ -1,64 +1,91 @@
-"use client";
+"use client"
 import React, { useEffect, useState } from 'react';
-import io, { Socket } from 'socket.io-client';
+import io from 'socket.io-client';
 import axios from 'axios';
-import { IconButton, Badge } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import {
+  Badge,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from '@mui/material';
+
+const socket = io('http://localhost:8080'); 
 
 interface Notification {
+  id: number;
   content: string;
   userId: number;
+  adminId: number;
+  isSeen: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const socket: Socket = io('http://localhost:8080');
-
-const Notifications: React.FC = () => {
+const NotificationBell: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState<number>(0);
-  const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      const response = await axios.get<Notification[]>('http://localhost:8080/notifications');
-      setNotifications(response.data);
-    };
-
+    // Fetch initial notifications or set up socket to listen for notifications
     fetchNotifications();
 
-    socket.on('notification', (notification: Notification) => {
-      setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-      setUnreadCount((prevCount) => prevCount + 1); 
+    // Socket.io event listeners
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('newNotification', (notification: Notification) => {
+      console.log('New Notification:', notification);
+      // Optionally update state with new notification
+      setNotifications((prevNotifications) => [...prevNotifications, notification]);
     });
 
     return () => {
-      socket.off('notification');
+      socket.disconnect();
     };
   }, []);
 
-  const handleBellClick = () => {
-    setShowDropdown(!showDropdown);
-    setUnreadCount(0); 
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get<Notification[]>('http://localhost:8080/notifications'); // Adjust API endpoint
+      setNotifications(response.data); // Assuming notifications are fetched in an array
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+
+  const handleBellClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+    // Optional: Mark notifications as seen or perform other actions
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
-    <div>
+    <>
       <IconButton color="inherit" onClick={handleBellClick}>
-        <Badge badgeContent={unreadCount} color="secondary">
+        <Badge badgeContent={notifications.length} color="error">
           <NotificationsIcon />
         </Badge>
       </IconButton>
-      {showDropdown && (
-        <div className="notifications-dropdown">
-          <h2>Notifications</h2>
-          <ul>
-            {notifications.map((notif) => (
-              <li key={notif.id}>{notif.message}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        onClick={handleClose}
+      >
+        {notifications.map((notification) => (
+          <MenuItem key={notification.id}>
+            <Typography variant="body1">{notification.content}</Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 };
 
-export default Notifications;
+export default NotificationBell;

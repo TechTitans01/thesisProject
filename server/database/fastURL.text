@@ -22,7 +22,7 @@ http://localhost:8080/api/auth/login
 --http://localhost:8080/bookings/2::(update booking by (ID) PUT)
 --http://localhost:8080/bookings/bookingId/status::(update booking  status by (ID) PUT)
                  ---------------rooms-------------------------
---http://localhost:8080/rooms/hotel/1::(add room POST)
+--  ::(add room POST)
 --http://localhost:8080/rooms/hotel/1::(get rooms GET)
 --http://localhost:8080/rooms/1::(get one room GET)
 --http://localhost:8080/rooms/1::(update room PUT)
@@ -36,6 +36,7 @@ http://localhost:8080/api/auth/login
 --http://localhost:8080/api/reclamation/send::(send reclamation POST)
 --http://localhost:8080/api/reclamation/getone::(getOne by (req.body.email)GET)
 --http://localhost:8080/api/reclamation/getall::(get all GET )
+--http://localhost:8080/api/reclamation/send/gmail::(send reclamation Gmail POST) 
 
 ------------------------payment-----------
 --http://localhost:8080/api/payments/create::(payment POST)
@@ -47,5 +48,9 @@ http://localhost:8080/api/auth/login
 ------------------------destination-------------------
 --http://localhost:8080/api/destination/adddestination::: (add destination POST)
 ---http://localhost:8080/api/destination/getall:: (get all )
+   ------------admin------------
+--http://localhost:8080/api/admin/get
 
-http://localhost:8080/api/admin/get
+-------------------notification---------------------
+--http://localhost:8080/api/notification (send notification)
+http://localhost:8080/api/notification/user/:userId

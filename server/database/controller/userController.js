@@ -128,7 +128,7 @@ getOneUser:(req, res) => {
   resetPassword:(req,res)=>{
     bcrypt.hash(req.body.newpassword, 10)
     .then((hashedNewPassword) => {
-      // Update the user's password in the database
+      
       db.user.update(
         { password: hashedNewPassword },
         { where: { email: req.body.email } }

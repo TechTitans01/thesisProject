@@ -43,18 +43,24 @@ module.exports = {
     }
   },
 
-  updateNotification: async (req, res) =>{
-  try {
-    await notification.update(
-      { isSeen: true },
-      { where: { isSeen: false } }
-    );
-    res.status(200).send('Notifications marked as seen');
-  } catch (error) {
-    console.error('Error marking notifications as seen:', error);
-    res.status(500).send('Internal Server Error');
-  }
-},
+  updateNotification: async (req, res) => {
+    const { id } = req.params; 
+    try {
+      const updatedNotification = await notification.update(
+        { isSeen: true },
+        { where: { id: id } }
+      );
+  
+      if (updatedNotification[0] === 0) { 
+        res.status(404).send('Notification not found');
+      } else {
+        res.status(200).send('Notification marked as seen');
+      }
+    } catch (error) {
+      console.error('Error marking notification as seen:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  },
 
   deleteNotification: async (req, res) => {
     const { id } = req.params;
