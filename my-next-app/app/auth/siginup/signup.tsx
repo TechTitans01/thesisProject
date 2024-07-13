@@ -3,6 +3,10 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useAuth } from '../../context/authcontex/Authcontex';
 import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle, faFacebook, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import "./signup.css"
+
 const SignupPage: React.FC = () => {
   const { signupAction } = useAuth();
   const router = useRouter();
@@ -39,10 +43,32 @@ const SignupPage: React.FC = () => {
     }
   };
 
+  // const handleSocialLogin = (platform: string) => {
+  //   // Placeholder for actual social login logic
+  //   alert(`Social login with ${platform} is not implemented yet.`);
+  // };
+
   return (
     <div className="form-container sign-up-container">
       <form onSubmit={handleOnSubmit}>
         <h1>Create Account</h1>
+        <div className="social-container">
+          <FontAwesomeIcon
+            icon={faGoogle}
+            className="social-icon"
+            // onClick={() => handleSocialLogin('Google')}
+          />
+          <FontAwesomeIcon
+            icon={faFacebook}
+            className="social-icon"
+            // onClick={() => handleSocialLogin('Facebook')}
+          />
+          <FontAwesomeIcon
+            icon={faLinkedin}
+            className="social-icon"
+            // onClick={() => handleSocialLogin('LinkedIn')}
+          />
+        </div>
         <span>or use your email for registration</span>
         <input
           type="text"
