@@ -52,24 +52,7 @@ const SignupPage: React.FC = () => {
     <div className="form-container sign-up-container">
       <form onSubmit={handleOnSubmit}>
         <h1>Create Account</h1>
-        <div className="social-container">
-          <FontAwesomeIcon
-            icon={faGoogle}
-            className="social-icon"
-            onClick={() => handleSocialLogin('google')}
-          />
-          <FontAwesomeIcon
-            icon={faFacebook}
-            className="social-icon"
-            onClick={() => handleSocialLogin('facebook')}
-          />
-          <FontAwesomeIcon
-            icon={faLinkedin}
-            className="social-icon"
-            onClick={() => handleSocialLogin('linkedin')}
-          />
-        </div>
-        <span>or use your email for registration</span>
+       
         <input
           type="text"
           name="username"
@@ -91,7 +74,27 @@ const SignupPage: React.FC = () => {
           onChange={handleChange}
           placeholder="Password"
         />
-        <button type="submit">Sign Up</button>
+                <button type="submit">Sign Up</button>
+                <br />
+                <span>or use your email for registration</span>
+
+        <div className="social-container">
+          <FontAwesomeIcon
+            icon={faGoogle}
+            className="social-icon"
+            onClick={() => handleSocialLogin('google')}
+          />
+          <FontAwesomeIcon
+            icon={faFacebook}
+            className="social-icon"
+            onClick={() => handleSocialLogin('facebook')}
+          />
+          <FontAwesomeIcon
+            icon={faLinkedin}
+            className="social-icon"
+            onClick={() => handleSocialLogin('linkedin')}
+          />
+        </div>
       </form>
     </div>
   );

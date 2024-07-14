@@ -53,7 +53,28 @@ const LoginPage: React.FC = () => {
   return (
     <div className="form-container sign-in-container">
       <form onSubmit={handleOnSubmit}>
-        <h1>Sign in</h1>
+      <h1>Sign in</h1>
+
+        
+        <input
+          type="email"
+          placeholder="Email"
+          name="email"
+          value={state.email}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={state.password}
+          onChange={handleChange}
+          required
+        />
+                    <button type="submit">Sign In</button>
+<br />
+        <span>or use your account</span>
         <div className="social-container">
           <FontAwesomeIcon
             icon={faGoogle}
@@ -71,25 +92,8 @@ const LoginPage: React.FC = () => {
             onClick={() => handleSocialLogin('linkedin')}
           />
         </div>
-        <span>or use your account</span>
-        <input
-          type="email"
-          placeholder="Email"
-          name="email"
-          value={state.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={state.password}
-          onChange={handleChange}
-          required
-        />
         <a href="/forgetpassword">Forgot your password?</a>
-        <button type="submit">Sign In</button>
+        
       </form>
     </div>
   );
