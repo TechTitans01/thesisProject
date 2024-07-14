@@ -18,23 +18,28 @@ export default NextAuth({
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
     }),
   ],
+  pages: {
+    signIn: '/auth/signin',
+    signOut: '/auth/signout',
+    error: '/auth/error',
+  },
   callbacks: {
-    async signIn(user, account, profile) {
-      // Handle sign in logic
+    async signIn({ user, account, profile }) {
       return true;
     },
-    async redirect(url, baseUrl) {
-      return url.startsWith(baseUrl) ? url : baseUrl
+    async redirect({ url, baseUrl }) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
     },
-    async session(session, token) {
+    async session({ session, token }) {
       session.user.id = token.id;
       return session;
     },
-    async jwt(token, user) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
       }
       return token;
     },
   },
+  debug: process.env.NODE_ENV === 'development',
 });
