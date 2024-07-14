@@ -15,7 +15,6 @@ const Map: React.FC<MapProps> = ({ location }) => {
   } else if (location === 'Bangalore') {
     position = [12.9716, 77.5946]; // Bangalore coordinates
   }
-  // More locations can be added as needed
 
   return (
     <MapContainer center={position} zoom={13} style={{ height: '300px', width: '100%' }}>

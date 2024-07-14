@@ -31,8 +31,6 @@ db.user.hasMany(db.reclamation);
 db.notification.belongsTo(db.user);
 db.user.hasMany(db.notification);
 
-db.notification.belongsTo(db.admin);
-db.admin.hasMany(db.notification);
 
 db.payment.belongsTo(db.user);
 db.user.hasMany(db.payment);
