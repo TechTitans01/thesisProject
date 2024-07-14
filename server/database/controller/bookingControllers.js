@@ -1,4 +1,4 @@
-const {booking} = require('../sequelize/index');
+const {booking,notification} = require('../sequelize/index');
 
 module.exports = {
   getAllBookings: async (req, res) => {
@@ -41,27 +41,42 @@ module.exports = {
   createBooking: async (req, res) => {
     
     try {
-      const newBooking = await booking.create(req.body);
+      console.log(req.body);
+      const newBooking = await booking.create(req.body.bookingDetails);
       res.status(201).json(newBooking);
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error: error.message });
     }
   },
   updateBooking: (req, res) => {
-    booking.findOne({ where: { id: req.params.id } })
-      .then(booking => {
-        if (!booking) {
-          return res.status(404).json({ error: 'Booking not found' });
-        }
-        return booking.update(req.body)
-          .then(updatedBooking => {
-            res.status(200).json(updatedBooking);
-          });
-      })
-      .catch(error => {
-        res.status(500).json({ error: error.message });
-      })
+    const { id } = req.params;
+    const { status } = req.body;
+    try {
+      const updatedBooking =  booking.findByPk(id);
+      if (!updatedBooking) {
+        return res.status(404).json({ error: 'Booking not found' });
+      }
+
+      // Update the booking status
+       updatedBooking.update({ status });
+
+      // Send notification to user if booking is confirmed
+      if (status === 'confirmed') {
+        const notificationContent = `Your booking (ID: ${id}) has been confirmed.`;
+        const newNotification =  notification.create({
+          content: notificationContent,
+          userId: updatedBooking.userId, // Assuming you have userId in your booking model
+        });
+      }
+
+      res.status(200).json(updatedBooking);
+    } catch (error) {
+      console.error('Error updating booking status:', error);
+      res.status(500).json({ error: error.message });
+    }
   },
+
   
   deleteBooking: (req, res) => {
     booking.findOne({ where: { id: req.params.id } })

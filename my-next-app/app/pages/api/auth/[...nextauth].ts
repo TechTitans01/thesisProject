@@ -19,9 +19,9 @@ export default NextAuth({
     }),
   ],
   pages: {
-    signIn: '/auth/signin',
-    signOut: '/auth/signout',
-    error: '/auth/error',
+    signIn: '/auth/signin', 
+    signOut: '/auth/signout', 
+    error: '/auth/error', 
   },
   callbacks: {
     async signIn({ user, account, profile }) {
@@ -31,15 +31,15 @@ export default NextAuth({
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
+      session.user.id = token.id; 
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = user.id; 
       }
       return token;
     },
   },
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === 'development', 
 });

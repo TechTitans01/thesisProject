@@ -1,19 +1,75 @@
 "use client"
-import { useState } from 'react';
-import { Box, CssBaseline, Drawer, List, ListItem, ListItemText, Typography, AppBar, Toolbar, IconButton } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
+import axios from 'axios';
+import {  Menu, MenuItem } from '@mui/material';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Box, CssBaseline, Drawer, List, ListItem, ListItemText, Typography, AppBar, Toolbar, IconButton ,Badge} from '@mui/material';
 import Logout from '@mui/icons-material/Logout';
 import { useRouter } from "next/navigation";
 import Booking from './booking';
 import Users from './user';
 import Charts from './chart';
 import Destinations from './destination';
-import './style/page.css';
 import Reclamation from './reclamation';
+import './style/page.css';
 
 const drawerWidth = 240;
+const socket = io('http://localhost:8080'); 
 
 const Dashboard = () => {
   const [selectedSection, setSelectedSection] = useState<string>('Dashboard');
+  const [notifications, setNotifications] = useState<any[]>([]); 
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    
+    socket.on('connection', () => {
+      console.log('Connected to server');
+    });
+    fetchNotifications();
+    
+    socket.on('newNotification', (notification: any) => {
+      console.log('socket New Notification:', notification);
+      setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+      setUnreadCount((prevCount) => prevCount + 1);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [notifications]);
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get<any[]>('http://localhost:8080/notifications');
+      setNotifications(response.data); 
+      setUnreadCount(response.data.filter(notification => !notification.isSeen).length);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+
+  const handleBellClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleNotificationClick = (notificationId: number) => {
+    console.log(`Clicked on notification with ID ${notificationId}`);
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) =>
+        notification.id === notificationId ? { ...notification, isSeen: true } : notification
+      )
+    );
+    setUnreadCount((prevCount) => Math.max(0, prevCount - 1));
+    handleClose();
+  };
+  
   const router = useRouter(); 
 
   const renderSection = () => {
@@ -24,6 +80,7 @@ const Dashboard = () => {
         return <Users />;
       case 'Destinations':
         return <Destinations />;
+      case 'Reclamation':
       case 'Reclamation':
         return <Reclamation />;
       default:
@@ -57,6 +114,23 @@ const Dashboard = () => {
             <Typography variant="h6" noWrap component="div">
               Dashboard
             </Typography>
+            <IconButton color="inherit" onClick={handleBellClick} sx={{ ml: 'auto' }}>
+              <Badge badgeContent={unreadCount} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+              onClick={handleClose}
+            >
+              {notifications.map((notification) => (
+                <MenuItem key={notification.id} onClick={() => handleNotificationClick(notification.id)}>
+                  <ListItemText primary={notification.content} />
+                </MenuItem>
+              ))}
+            </Menu>
             <IconButton color="inherit" onClick={logOut}>
               <Logout />
             </IconButton>
@@ -77,6 +151,7 @@ const Dashboard = () => {
                 <ListItem
                   button
                   key={text}
+                  selected={selectedSection === text}
                   onClick={() => setSelectedSection(text)}
                   sx={{
                     '&:hover': {

@@ -5,6 +5,7 @@ import { useAuth } from '../../context/authcontex/Authcontex';
 import { useRouter } from "next/navigation";
 import { faGoogle, faFacebook, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { signIn } from 'next-auth/react';
 
 const LoginPage: React.FC = () => {
   const { loginAction } = useAuth();
@@ -27,8 +28,8 @@ const LoginPage: React.FC = () => {
     const { email, password } = state;
 
     try {
-      const result:any = await loginAction({ email, password });
-      
+      const result: any = await loginAction({ email, password });
+
       setState({
         email: '',
         password: ''
@@ -45,6 +46,10 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const handleSocialLogin = (provider: string) => {
+    signIn(provider);
+  };
+
   return (
     <div className="form-container sign-in-container">
       <form onSubmit={handleOnSubmit}>
@@ -53,17 +58,17 @@ const LoginPage: React.FC = () => {
           <FontAwesomeIcon
             icon={faGoogle}
             className="social-icon"
-            // onClick={() => handleSocialLogin('Google')}
+            onClick={() => handleSocialLogin('google')}
           />
           <FontAwesomeIcon
             icon={faFacebook}
             className="social-icon"
-            // onClick={() => handleSocialLogin('Facebook')}
+            onClick={() => handleSocialLogin('facebook')}
           />
           <FontAwesomeIcon
             icon={faLinkedin}
             className="social-icon"
-            // onClick={() => handleSocialLogin('LinkedIn')}
+            onClick={() => handleSocialLogin('linkedin')}
           />
         </div>
         <span>or use your account</span>

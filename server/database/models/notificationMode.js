@@ -7,6 +7,10 @@ module.exports=(sequelize,DataTypes)=>{
             type: DataTypes.STRING,
             allowNull: true,
           },
+        isSeen: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true,
+        }
     })
  return  notification
 }

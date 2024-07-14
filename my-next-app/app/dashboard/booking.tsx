@@ -1,5 +1,6 @@
-import { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import {
   Card,
   CardContent,
@@ -15,10 +16,7 @@ import {
   IconButton,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Swal from 'sweetalert2';
-import './style/booking.css';
 import io from 'socket.io-client';
-
 
 const socket = io('http://localhost:8080');
 
@@ -29,116 +27,101 @@ const Booking: FC = () => {
   useEffect(() => {
     fetchBookings();
 
-    const adminId = 1;
-
+    // Subscribe to 'notification' event
     socket.on('notification', () => {
-      Swal.fire('Notification', 'info');
+      fetchBookings().then(() => {
+        Swal.fire('Notification', 'info');
+      });
     });
 
     return () => {
-      socket.off('notification');
+      socket.off('notification'); // Clean up socket subscription
     };
   }, []);
 
-  const fetchBookings = async () => {
-    try {
-      const response = await axios.get('http://localhost:8080/bookings');
-      setBookings(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error("There was an error fetching the bookings!", error);
-      setLoading(false);
-    }
+  const fetchBookings = () => {
+    setLoading(true);
+    axios
+      .get('http://localhost:8080/bookings')
+      .then((response) => {
+        setBookings(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching bookings:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
-  const sendNotification = async (userId: number, content: string) => {
-    try {
-      await axios.post('http://localhost:8080/api/notifications', { userId, content });
-    } catch (error) {
-      console.error('There was an error sending the notification!', error);
-    }
-  };
-
-  const updateBookingStatus = async (bookingId: number, status: string) => {
-    const action = status === 'confirmed' ? 'confirm' : 'cancel';
-    const actionPast = action === 'confirm' ? 'confirmed' : 'canceled';
+  const updateBookingStatus = (bookingId: number, status: string) => {
+    const actionPast = status === 'confirmed' ? 'confirmed' : 'canceled';
 
     Swal.fire({
-      title: `Are you sure you want to ${action} this booking?`,
+      title: `Are you sure you want to ${status} this booking?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: `Yes, ${action} it!`,
+      confirmButtonText: `Yes, ${status} it!`,
       cancelButtonText: 'No, cancel!',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          const response = await axios.put(`http://localhost:8080/bookings/${bookingId}/status`, { status });
-          
-          // Fetch the updated booking details
-          const updatedBooking = response.data;
-
-          if (status === 'confirmed') {
-            // Fetch the room details
-            const roomResponse = await axios.get(`http://localhost:8080/rooms/${updatedBooking.roomId}`);
-            const room = roomResponse.data;
-
-            // Calculate the total cost
-            const startDate = new Date(updatedBooking.start);
-            const endDate = new Date(updatedBooking.end);
-            const numberOfNights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-            const totalCost = numberOfNights * room.nightPrice;
-
-            // Send notification with total cost
-            sendNotification(updatedBooking.userId, `Your booking (ID: ${bookingId}) has been confirmed. The total cost is ${totalCost} USD.`);
-          } else {
-            // Send notification for canceled booking
-            sendNotification(updatedBooking.userId, `Your booking (ID: ${bookingId}) has been canceled.`);
-          }
-
-          fetchBookings();
-          Swal.fire(
-            `${action.charAt(0).toUpperCase() + action.slice(1)}d!`,
-            `The booking has been ${actionPast}.`,
-            'success'
-          );
-        } catch (error) {
-          console.error(`There was an error ${actionPast} the booking!`, error);
-          Swal.fire(
-            'Error!',
-            `There was an error ${actionPast} the booking.`,
-            'error'
-          );
-        }
+        axios
+          .put(`http://localhost:8080/bookings/${bookingId}/status`, { status })
+          .then(() => {
+            fetchBookings();
+            sendNotification(bookingId, status);
+            Swal.fire(
+              `${actionPast.charAt(0).toUpperCase() + actionPast.slice(1)}d!`,
+              `The booking has been ${actionPast}.`,
+              'success'
+            );
+          })
+          .catch((error) => {
+            console.error(`Error ${actionPast} booking:`, error);
+            Swal.fire('Error!', `There was an error ${actionPast} the booking.`, 'error');
+          });
       }
     });
   };
 
-  const deleteBooking = async (bookingId: number) => {
+  const sendNotification = (bookingId: number, status: string) => {
+    let notificationContent;
+    if (status === 'confirmed') {
+      notificationContent = `Your booking (ID: ${bookingId}) has been confirmed.`;
+    } else if (status === 'canceled') {
+      notificationContent = `Your booking (ID: ${bookingId}) has been canceled.`;
+    }
+
+    axios
+      .post('http://localhost:8080/notifications', {
+        userId: bookings.find((booking) => booking.id === bookingId)?.userId,
+        content: notificationContent,
+      })
+      .catch((error) => {
+        console.error('Error sending notification:', error);
+      });
+  };
+
+  const deleteBooking = (bookingId: number) => {
     Swal.fire({
       title: 'Are you sure you want to delete this booking?',
       text: 'This action cannot be undone!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, keep it'
-    }).then(async (result) => {
+      cancelButtonText: 'No, keep it',
+    }).then((result) => {
       if (result.isConfirmed) {
-        try {
-          await axios.delete(`http://localhost:8080/bookings/${bookingId}`);
-          fetchBookings();
-          Swal.fire(
-            'Deleted!',
-            'The booking has been deleted.',
-            'success'
-          );
-        } catch (error) {
-          console.error('There was an error deleting the booking!', error);
-          Swal.fire(
-            'Error!',
-            'There was an error deleting the booking.',
-            'error'
-          );
-        }
+        axios
+          .delete(`http://localhost:8080/bookings/${bookingId}`)
+          .then(() => {
+            fetchBookings();
+            Swal.fire('Deleted!', 'The booking has been deleted.', 'success');
+          })
+          .catch((error) => {
+            console.error('Error deleting booking:', error);
+            Swal.fire('Error!', 'There was an error deleting the booking.', 'error');
+          });
       }
     });
   };
@@ -160,7 +143,9 @@ const Booking: FC = () => {
                 <ListItem
                   key={index}
                   divider
-                  className={`${booking.status === 'canceled' ? 'cancelledBooking' : ''} ${booking.status === 'confirmed' ? 'confirmedBooking' : ''}`}
+                  className={`${booking.status === 'canceled' ? 'cancelledBooking' : ''} ${
+                    booking.status === 'confirmed' ? 'confirmedBooking' : ''
+                  }`}
                 >
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={8}>
