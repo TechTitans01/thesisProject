@@ -41,9 +41,11 @@ module.exports = {
   createBooking: async (req, res) => {
     
     try {
-      const newBooking = await booking.create(req.body);
+      console.log(req.body);
+      const newBooking = await booking.create(req.body.bookingDetails);
       res.status(201).json(newBooking);
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error: error.message });
     }
   },

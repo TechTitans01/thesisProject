@@ -14,11 +14,13 @@ export default function Chat  ( )  {
   const [messages, setMessages] = useState<any>([]);
   const pathname = usePathname();
   const [imageFreind, setImage] = useState<any>({});
-  const freindId = pathname.slice(pathname.length - 1);
+  const freindId = pathname.split("/")[2]
   const { user } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const {token}=useAuth()
   const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
+  const [ usee,  setuse] = useState<any>({});
+ 
   const { logOut } = useAuth();
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -31,6 +33,15 @@ export default function Chat  ( )  {
     .then((resp) => {
       console.log(resp.data);
       setImage(resp.data.image);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    axios.get(`http://localhost:8080/api/user/getone/${userr.id}`)
+    .then((resp) => {
+      console.log(resp.data);
+      setuse(resp.data);
     })
     .catch((err) => {
       console.log(err);
@@ -64,19 +75,30 @@ export default function Chat  ( )  {
     setMessageInput('');
   };
 
-  useEffect(() => {
-    axios.get(`http://localhost:8080/api/chat/messages/${userr.id}/${freindId}`)
-      .then((resp) => {
-        setMessages(resp.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  // useEffect(() => {
+  //   axios.get(`http://localhost:8080/api/chat/messages/${userr.id}/${freindId}`)
+  //     .then((resp) => {
+  //       setMessages(resp.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
 
     
 
 
-  }, [messages]); 
+  // },[messages] ); 
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/chat/messages/${userr.id}/${freindId}`)
+      .then((resp) => {
+        const sortedMessages = resp.data.sort((a:any, b:any) => a.id - b.id);
+        setMessages(sortedMessages);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [messages]);
 
   return (
 <><nav id="navBar" className='navbar-white'>
@@ -133,7 +155,7 @@ export default function Chat  ( )  {
       <div className="chat-messages">
         {messages.map((msg: any, index: number) => (
           <div key={index} className={`chat-message ${msg.senderId === userr.id ? 'user' : 'friend'}`}>
-            <img src={msg.senderId === userr.id ? userr.image : imageFreind} alt="User Profile" />
+            <img src={msg.senderId === userr.id ? usee.image : imageFreind} alt="User Profile" />
             <div className="message-content">
               {msg.content}
             </div>

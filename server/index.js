@@ -1,3 +1,4 @@
+
 const express = require("express")
 const db =require("../server/database/sequelize/index.js")
 const cors = require("cors")
@@ -10,8 +11,8 @@ const reviewRoutes = require('./database/routes/reviewRoutes.js')
 const roomRoutes = require('./database/routes/roomRoutes.js')
 const reclamationRoutes = require('./database/routes/reclamtion.js')
 const adminRoutes = require('./database/routes/adminRt.js')
-const notficationRoutes=require('./database/routes/notfication.js')
-
+const notficationRoutes=require('./database/routes/notificationRoutes.js')
+const storiesRoutes = require('./database/routes/storiesRoutes.js')
 const messagesRouter=require("./database/routes/messageRoute.js")
 
 const destinationRoutes = require('./database/routes/destinationRoutes.js')
@@ -20,11 +21,11 @@ const paymentRouter=require('./database/routes/paymentRoute.js')
 
 const {sendSMS} = require('./database/controller/sms.js');
 
+
 const PORT = 8080;
 const app = express();
 
-const server = require('http').createServer(app)
-
+const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',
@@ -32,14 +33,8 @@ const io = require('socket.io')(server, {
 });
 
 
-app.set('socketio', io); 
-
-
-
-
 app.use(express.json());
 app.use(cors());
-
 
 app.use("/api/user", routeruser);
 app.use("/api/hotels", routerhotel);
@@ -47,14 +42,17 @@ app.use("/api/auth", authRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/commentaires', reviewRoutes);
 app.use('/rooms', roomRoutes);
- 
+
+
 app.use('/api/destination', destinationRoutes);
 app.use('/api/reclamation', reclamationRoutes);
 app.use('/api/payments', paymentRouter);
-app.use('/api/chat',messagesRouter)
+app.use('/api/chat', messagesRouter);
 app.use('/api/admin', adminRoutes);
+app.use('/notifications', notficationRoutes); 
 
-app.use('/api', notficationRoutes);
+app.use('/api/stories',storiesRoutes)
+
 
 app.post('/send-sms', (req, res) => {
   const { to, text } = req.body;
@@ -63,14 +61,14 @@ app.post('/send-sms', (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello from the server!")
+  res.send("Hello from the server!");
 });
 
 
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  
+  // Handle sendMessage event
   socket.on('sendMessage', async (messageData) => {
     try {
       const message = await db.messages.create({
@@ -79,7 +77,6 @@ io.on('connection', (socket) => {
         receiverId: messageData.receiverId,
       });
 
-    
       io.to(messageData.senderId).emit('newMessage', message);
       io.to(messageData.receiverId).emit('newMessage', message);
     } catch (error) {
@@ -88,22 +85,25 @@ io.on('connection', (socket) => {
   });
 
 
-  // socket.on('notification', async (messageData) => {
-  //   try {
-  //     const notif = await db.notification.create({
-  //       content: notificationData.content,
-  //       userId: notificationData.userId,
-  //       adminId: notificationData.adminId,
-  //     });
+  // Handle sendNotification event
+  socket.on('sendNotification', async (notificationData) => {
   
-    
-  //     io.to(notificationData.userId).emit('newnotification', notif);
-  //     io.to(notificationData.adminId).emit('newnotification', notif);
-  //   } catch (error) {
-  //     console.error('Error saving notification:', error);
-  //   }
-  // });
-  
+    try {
+      const notification = await db.notification.create({
+        content: notificationData.content,
+        userId: notificationData.userId,
+        adminId: notificationData.adminId,
+        isSeen: notificationData.isSeen
+      });
+      io.emit('newNotification', notification);
+      // io.to(notificationData.userId).emit('newNotification', notification);
+ 
+    } catch (error) {
+      console.error('Error saving notification:', error);
+    }
+  });
+
+
   socket.on('joinRoom', (userId) => {
     socket.join(userId);
   });

@@ -1,4 +1,3 @@
-// const config = require("./config.js");
 const { Sequelize, DataTypes } = require("sequelize");
 
 const createAdmin=require('../../createAdmin.js')
@@ -23,7 +22,7 @@ db.destination=require("../models/destinationModel.js")(sequelize,DataTypes)
 db.admin=require("../models/adminModel.js")(sequelize,DataTypes)
 db.commentaire=require("../models/commentaireModel.js")(sequelize,DataTypes)
 db.reclamation=require("../models/reclamation.js")(sequelize,DataTypes)
-
+db.stories=require("../models/storiesModel.js")(sequelize,DataTypes)
 
 
 db.reclamation.belongsTo(db.user);
@@ -32,8 +31,6 @@ db.user.hasMany(db.reclamation);
 db.notification.belongsTo(db.user);
 db.user.hasMany(db.notification);
 
-db.notification.belongsTo(db.admin);
-db.admin.hasMany(db.notification);
 
 db.payment.belongsTo(db.user);
 db.user.hasMany(db.payment);

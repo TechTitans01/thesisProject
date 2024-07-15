@@ -39,5 +39,13 @@ module.exports={
             } catch (err) {
               res.status(500).send(err);
             }
+          },
+          getOneDestinationbyname: async (req, res) => {
+            try {
+              const data = await db.destination.findOne({ where: { name: req.params.name } });
+              res.send(data);
+            } catch (err) {
+              res.status(500).send(err);
+            }
           }
     }

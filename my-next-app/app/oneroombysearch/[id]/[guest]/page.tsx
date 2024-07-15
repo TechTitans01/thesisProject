@@ -1,9 +1,9 @@
 "use client"
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:8080'); 
-import axios from 'axios';
 import {
   Container,
   Grid,
@@ -25,9 +25,9 @@ import StarIcon from "@mui/icons-material/Star";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
-import Map from "../map";
-import "../../styles/oneroom.css";
-import Weather from "../weather";
+import Map from "../../../oneRoom/map";
+import "../../../styles/oneroom.css";
+import Weather from "../../../oneRoom/weather";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/context/authcontex/Authcontex";
 import { useRouter } from 'next/navigation';
@@ -67,16 +67,17 @@ const property = {
 };
 
 const Page: React.FC = () => {
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null] >([null, null]);
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [comments, setComments] = useState<any>([]);
   const [newComment, setNewComment] = useState('');
   const [data, setData] = useState<any>({});
+  const[idrooom,setidrooom] = useState<any>(localStorage.getItem("idroom"))
   const [use, setuser ] = useState<any>({});
   const [array, setArray] = useState<any>([]);
    const [ref,setref]=useState<any>(false)
   const { user } = useAuth();
   const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
-
+  
   const router = useRouter();
   
   const toChat = (id:number)=>{
@@ -103,7 +104,7 @@ const Page: React.FC = () => {
 
   const pathname = usePathname();
   const id = pathname.slice(pathname.length - 1);
-
+  const detail=pathname.split('/')[2];
  
   const [guests, setGuests] = useState('');
 
@@ -129,21 +130,31 @@ const Page: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
-      setData(res.data);
-      console.log(res.data)
+    console.log(detail)
+    
+    axios.post(`http://localhost:8080/rooms/rooms/hotel/${id}`,{
+        guests:detail
+    }).then((res) => {
+      setData(res.data[0]);
+ 
+      localStorage.setItem("idroom", JSON.stringify(res.data[0].id))
+    
+      console.log("na9a",res.data[0].id)
+
       // array.push(res.data.image1, res.data.image2, res.data.image3);
       
     }).catch(err => { console.log(err) });
   }, []);
-
-  useEffect(() => {
-    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
-      setComments(res.data);
-    }).catch(err => { console.log(err) });
-  }, []);
+  
+  // useEffect(() => {
+  //   console.log(id)
+  //   axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
+  //     setComments(res.data);
+  //   }).catch(err => { console.log(err) });
+  // }, []);
 
   const commenti = () => {
+
     axios.post(`http://localhost:8080/commentaires/${id}/${userr.id}`, {
       text: newComment,
       date: "12/10/2024",
@@ -159,14 +170,15 @@ const Page: React.FC = () => {
   };
 
 
+
   useEffect(() => {
-    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
+   
+    axios.get(`http://localhost:8080/commentaires/room/${idrooom}`).then((res) => {
       setComments(res.data);
     }).catch(err => { console.log(err) });
   }, [ref]);
 
-
-  const handleConfirmBooking = async () => {
+  const addBooking = async () => {
     const bookingDetails = {
       start: dateRange[0].toISOString().split('T')[0],
           end: dateRange[1].toISOString().split('T')[0],
@@ -216,6 +228,7 @@ console.log(response.data);
     }
   };
 
+ 
 
   return (
     <Container>
@@ -223,13 +236,13 @@ console.log(response.data);
 
       <div className="house-details">
 <div className="house-title">
-  <h1> <span className="stars">{"★".repeat(3)}</span>{data.description}</h1>
+  <h1>    <span className="stars">{"★".repeat(3)}</span> {data.description} </h1>
     <div className="row">
       <div>
-      
+   
       </div>
       <div>
-      
+        
       </div>
     </div>
 </div>
@@ -237,13 +250,54 @@ console.log(response.data);
   <div className="gallery-img-1">
     <img src={data.image1} alt="house" /></div>
   <div><img src={data.image2} alt="house" /></div>
-  <div><img src={data.image3} alt="house" /></div>
+  <div><img src={data.image3} alt="house" /> 
+  </div>
   <div><img src={data.image4} alt="house" /></div>
   <div><img src={data.image5} alt="house" /></div>
 </div>
 </div>
       <Box my={4}>
-   <Grid container spacing={2} my={2}>
+
+       
+
+
+
+
+
+
+        {/* <Typography variant="h4" gutterBottom>
+          {data.name}
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          color="textSecondary"
+          display="flex"
+          alignItems="center"
+          gutterBottom
+        >
+          <LocationOnIcon style={{ color: "#FF5733" }} /> {property.location}
+        </Typography>
+
+        <Grid container spacing={2} my={2}>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image1} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image2} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image3} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image4} alt="image" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <CardMedia component="img" height="200" image={data.image5} alt="image" />
+          </Grid>
+       
+        </Grid> */}
+
+        <Grid container spacing={2} my={2}>
           <Grid item xs={12} md={8}>
             <Box my={2}>
               <Typography variant="h6" gutterBottom>
@@ -418,7 +472,7 @@ console.log(response.data);
                 onChange={(e) => setGuests(e.target.value)}
                 InputLabelProps={{ shrink: true }}
               />
-              <Button onClick={handleConfirmBooking} variant="contained" color="primary" fullWidth>
+              <Button onClick={addBooking} variant="contained" color="primary" fullWidth>
                 Rent
               </Button>
               <Box my={2}>

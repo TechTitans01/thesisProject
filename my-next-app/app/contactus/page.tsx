@@ -5,6 +5,8 @@ import React, { useState } from "react";
 import Image from 'next/image';
 import "../styles/contactus.css"
 import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/authcontex/Authcontex";
@@ -37,6 +39,7 @@ const sendReclamation=()=>{
     lastName:last,
     firstName:first
   }).then((resp)=>{
+    toast.success("Reclamation sent successfully")
     console.log(resp)
   }).catch((err)=>{
     console.log(err)
@@ -140,7 +143,7 @@ const sendReclamation=()=>{
             </div>
            
           </div>
-        
+          <ToastContainer />
         </div>
         </>
       );

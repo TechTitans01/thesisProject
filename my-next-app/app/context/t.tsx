@@ -79,7 +79,7 @@ console.log("user auth  ",user);
 
     try {
       const response = await axios.get(`http://localhost:8080/api/admin/get/${adminId}`);
-      setAdmin(response.data);
+      setUser(response.data);
     } catch (error) {
       console.error("Error fetching user information", error);
     }
@@ -161,8 +161,6 @@ console.log("user auth  ",user);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("admin");
-    localStorage.removeItem("idroom");
-    
     router.push("/auth");
   };
 
