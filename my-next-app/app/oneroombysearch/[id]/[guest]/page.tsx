@@ -1,6 +1,9 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:8080'); 
 import {
   Container,
   Grid,
@@ -68,6 +71,7 @@ const Page: React.FC = () => {
   const [comments, setComments] = useState<any>([]);
   const [newComment, setNewComment] = useState('');
   const [data, setData] = useState<any>({});
+  const[idrooom,setidrooom] = useState<any>(localStorage.getItem("idroom"))
   const [use, setuser ] = useState<any>({});
   const [array, setArray] = useState<any>([]);
    const [ref,setref]=useState<any>(false)
@@ -132,19 +136,25 @@ const Page: React.FC = () => {
         guests:detail
     }).then((res) => {
       setData(res.data[0]);
-      console.log("na9a",res.data)
+ 
+      localStorage.setItem("idroom", JSON.stringify(res.data[0].id))
+    
+      console.log("na9a",res.data[0].id)
+
       // array.push(res.data.image1, res.data.image2, res.data.image3);
       
     }).catch(err => { console.log(err) });
   }, []);
-
-  useEffect(() => {
-    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
-      setComments(res.data);
-    }).catch(err => { console.log(err) });
-  }, []);
+  
+  // useEffect(() => {
+  //   console.log(id)
+  //   axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
+  //     setComments(res.data);
+  //   }).catch(err => { console.log(err) });
+  // }, []);
 
   const commenti = () => {
+
     axios.post(`http://localhost:8080/commentaires/${id}/${userr.id}`, {
       text: newComment,
       date: "12/10/2024",
@@ -162,47 +172,59 @@ const Page: React.FC = () => {
 
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
+   
+    axios.get(`http://localhost:8080/commentaires/room/${idrooom}`).then((res) => {
       setComments(res.data);
     }).catch(err => { console.log(err) });
   }, [ref]);
 
   const addBooking = async () => {
-    if (!dateRange[0] || !dateRange[1] || !guests) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Missing Information',
-        text: 'Please provide start date, end date, and number of guests.',
-      });
-      return;
-    }
-
     const bookingDetails = {
       start: dateRange[0].toISOString().split('T')[0],
-      end: dateRange[1].toISOString().split('T')[0],
-      guests: parseInt(guests, 10),
-      status: 'pending',
-      userId: user.id,
-      roomId:roomid
-    };
-
+          end: dateRange[1].toISOString().split('T')[0],
+          guests: parseInt(guests, 10),
+          status: 'pending',
+          userId: userr.id,
+          roomId:parseInt (roomid)
+        }
+        console.log(bookingDetails);
+        
     try {
-      const response = await axios.post('http://localhost:8080/bookings', bookingDetails);
-      Swal.fire({
-        icon: 'success',
-        title: 'Booking Created',
-        text: 'Your booking is created and awaiting confirmation.',
+      const response = await axios.post('http://localhost:8080/bookings/', {
+        bookingDetails,
       });
-      console.log('Booking added successfully:', response.data);
-      setDateRange([null, null]);
-      setGuests('');
+console.log(response.data);
+
+      if (response.data) {
+        console.log('Booking confirmed:', response.data.message);
+
+        socket.emit('sendNotification', {
+          content: `User ${userr.id} confirmed a booking: ${bookingDetails}`,
+          userId:userr.id,
+          adminId: 1, 
+        });
+        Swal.fire({
+          icon: 'success',
+          title: 'Booking Created',
+          text: 'Your booking is created and awaiting confirmation.',
+        });
+        console.log('Booking added successfully:', response.data);
+        setDateRange([null, null]);
+        setGuests('');
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'There was an error creating your booking. Please try again.',
+        });
+      }
     } catch (error) {
-      console.error('Error adding booking:', error);
+      console.error('Error confirming booking:', error);
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'There was an error creating your booking. Please try again.',
-      });
+        text: 'Please provide the missing informations before confirming the booking!',
+      })
     }
   };
 
@@ -214,13 +236,13 @@ const Page: React.FC = () => {
 
       <div className="house-details">
 <div className="house-title">
-  <h1>{data.description}</h1>
+  <h1>    <span className="stars">{"★".repeat(3)}</span> {data.description} </h1>
     <div className="row">
       <div>
-      <span className="stars">{"★".repeat(3)}</span>
+   
       </div>
       <div>
-        <p>Location:america</p>
+        
       </div>
     </div>
 </div>

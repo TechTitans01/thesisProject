@@ -7,12 +7,12 @@ import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/app/context/authcontex/Authcontex';
 
-export default function House() {
+export default function room() {
   const [data, setData] = useState<any>([]);
  
   const router = useRouter();
   const pathname = usePathname();
-  const id = pathname.slice(pathname.length - 1);
+  const id = pathname.split("/")[2];
 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const { token } = useAuth();
@@ -113,18 +113,18 @@ export default function House() {
             <p>{data.length}+ Options</p>
             <h1>Recommended Places </h1>
             {DataPerPage.map((el: any) => (
-              <div className='house' key={el.id} onClick={() => { toOneRoom(el.id) }} style={{ cursor: "pointer" }}>
-                <div className="house-img" onClick={() => handleImageClick(el.id)}>
-                  <img src={el.image2} width={330} height={200} alt="" />
+              <div className='room' key={el.id} onClick={() => { toOneRoom(el.id) }} style={{ cursor: "pointer" }}>
+                <div className="room-img" onClick={() => handleImageClick(el.id)}>
+                  <img src={el.image1} width={330} height={200} alt="" />
                 </div>
-                <div className="house-info">
+                <div className="room-info">
                 
                   <p> {el.name}</p>
                   <h3>{el.description}</h3>
                   <p>{el.bedroom} Bedroom / {el.baths} Bathroom / {el.beds} Beds / Wifi / Kitchen</p>
                   <br />
                   <i><Image src="/img/star.png" alt='star' width={20} height={20} /></i>
-                  <div className="house-price">
+                  <div className="room-price">
                     <p>{el.guests} Guest</p>
                     <h4>$ {el.nightPrice} <span>/ day</span></h4>
                   </div>
@@ -137,7 +137,7 @@ export default function House() {
               <h2>Select Filters</h2>
               <h3>Property type</h3>
               <div className="filter">
-                <input type="checkbox" /> <p>House</p><span>(0)</span>
+                <input type="checkbox" /> <p>room</p><span>(0)</span>
               </div>
               <div className="filter">
                 <input type="checkbox" /> <p>Hostel</p><span>(0)</span>

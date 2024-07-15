@@ -223,11 +223,10 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
         <div className="exclusives">
           {destination.map((el: any, index: number) => (
             <div key={index}>
-              <img src={el.flag} width={25} height={25} alt="" />
+              <img src={el.flag} width={25} height={25} alt="" /> 
               <img src={el.image} width={220} height={120} alt="place"  onClick={() => { toHotel(el.id) }} style={{ cursor: "pointer" , borderRadius: 10 }} />
               <span>
-                <h3>{el.name}</h3>
-                <p>$250</p>
+              
               </span>
             </div>
           ))}
@@ -250,8 +249,11 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
         <div className="stories">
           {Storie.map((el: any, index: number) => (
             <div className="estories" key={index}>
-              <h3>{el.userName}</h3>
-              <img src={el.userImage} width={250} height={300} style={{ borderRadius: 50, marginLeft: 10 }} alt="dtg" />
+              <div className="itmstory">
+              
+              <img src={el.userImage} width={50} height={40} style={{ borderRadius: 50, marginLeft: 10 }} alt="dtg" />
+              <h3> <b> {el.userName}</b></h3> 
+              </div>
               <img src={el.image} alt="dtg" />
               <p className="ps">{el.text}</p>
             </div>

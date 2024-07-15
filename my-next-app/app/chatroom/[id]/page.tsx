@@ -14,7 +14,7 @@ export default function Chat  ( )  {
   const [messages, setMessages] = useState<any>([]);
   const pathname = usePathname();
   const [imageFreind, setImage] = useState<any>({});
-  const freindId = pathname.slice(pathname.length - 1);
+  const freindId = pathname.split("/")[2]
   const { user } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const {token}=useAuth()
@@ -75,19 +75,30 @@ export default function Chat  ( )  {
     setMessageInput('');
   };
 
-  useEffect(() => {
-    axios.get(`http://localhost:8080/api/chat/messages/${userr.id}/${freindId}`)
-      .then((resp) => {
-        setMessages(resp.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  // useEffect(() => {
+  //   axios.get(`http://localhost:8080/api/chat/messages/${userr.id}/${freindId}`)
+  //     .then((resp) => {
+  //       setMessages(resp.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
 
     
 
 
-  }, [messages]); 
+  // },[messages] ); 
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/chat/messages/${userr.id}/${freindId}`)
+      .then((resp) => {
+        const sortedMessages = resp.data.sort((a:any, b:any) => a.id - b.id);
+        setMessages(sortedMessages);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [messages]);
 
   return (
 <><nav id="navBar" className='navbar-white'>

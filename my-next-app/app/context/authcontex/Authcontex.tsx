@@ -161,6 +161,8 @@ console.log("user auth  ",user);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("admin");
+    localStorage.removeItem("idroom");
+    
     router.push("/auth");
   };
 

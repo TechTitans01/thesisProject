@@ -2,8 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
-import { Box, CssBaseline, Drawer, List, ListItem, ListItemText, Typography, AppBar, Toolbar, Badge, IconButton, Menu, MenuItem } from '@mui/material';
+import {  Menu, MenuItem } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Box, CssBaseline, Drawer, List, ListItem, ListItemText, Typography, AppBar, Toolbar, IconButton ,Badge} from '@mui/material';
+import Logout from '@mui/icons-material/Logout';
+import { useRouter } from "next/navigation";
 import Booking from './booking';
 import Users from './user';
 import Charts from './chart';
@@ -67,6 +70,7 @@ const Dashboard = () => {
     handleClose();
   };
   
+  const router = useRouter(); 
 
   const renderSection = () => {
     switch (selectedSection) {
@@ -77,6 +81,7 @@ const Dashboard = () => {
       case 'Destinations':
         return <Destinations />;
       case 'Reclamation':
+      case 'Reclamation':
         return <Reclamation />;
       default:
         return (
@@ -85,6 +90,12 @@ const Dashboard = () => {
           </Typography>
         );
     }
+  };
+
+  const logOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("admin");
+    router.push("/auth");
   };
 
   return (
@@ -99,7 +110,7 @@ const Dashboard = () => {
             ml: `${drawerWidth}px`,
           }}
         >
-          <Toolbar>
+          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="h6" noWrap component="div">
               Dashboard
             </Typography>
@@ -120,6 +131,9 @@ const Dashboard = () => {
                 </MenuItem>
               ))}
             </Menu>
+            <IconButton color="inherit" onClick={logOut}>
+              <Logout />
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer
