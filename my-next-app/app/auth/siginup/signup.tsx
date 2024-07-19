@@ -3,11 +3,6 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useAuth } from '../../context/authcontex/Authcontex';
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle, faFacebook, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import { signIn } from 'next-auth/react';
-import "./signup.css"
-
 const SignupPage: React.FC = () => {
   const { signupAction } = useAuth();
   const router = useRouter();
@@ -44,15 +39,11 @@ const SignupPage: React.FC = () => {
     }
   };
 
-  const handleSocialLogin = (provider: string) => {
-    signIn(provider);
-  };
-
   return (
     <div className="form-container sign-up-container">
       <form onSubmit={handleOnSubmit}>
         <h1>Create Account</h1>
-       
+        <span>or use your email for registration</span>
         <input
           type="text"
           name="username"
@@ -74,27 +65,7 @@ const SignupPage: React.FC = () => {
           onChange={handleChange}
           placeholder="Password"
         />
-                <button type="submit">Sign Up</button>
-                <br />
-                <span>or use your email for registration</span>
-
-        <div className="social-container">
-          <FontAwesomeIcon
-            icon={faGoogle}
-            className="social-icon"
-            onClick={() => handleSocialLogin('google')}
-          />
-          <FontAwesomeIcon
-            icon={faFacebook}
-            className="social-icon"
-            onClick={() => handleSocialLogin('facebook')}
-          />
-          <FontAwesomeIcon
-            icon={faLinkedin}
-            className="social-icon"
-            onClick={() => handleSocialLogin('linkedin')}
-          />
-        </div>
+        <button type="submit">Sign Up</button>
       </form>
     </div>
   );

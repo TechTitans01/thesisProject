@@ -51,6 +51,7 @@ app.use('/api/chat', messagesRouter);
 app.use('/api/admin', adminRoutes);
 app.use('/notifications', notficationRoutes); 
 
+
 app.use('/api/stories',storiesRoutes)
 
 
@@ -87,7 +88,7 @@ io.on('connection', (socket) => {
 
   // Handle sendNotification event
   socket.on('sendNotification', async (notificationData) => {
-  
+  console.log('notificationData',notificationData)
     try {
       const notification = await db.notification.create({
         content: notificationData.content,

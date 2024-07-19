@@ -243,14 +243,18 @@ color: #fff;
 
 
 
-.tranding{
+.trending{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
     grid-gap: 30px;
     margin-bottom: 30px;
 }
+.trending div{
+  border-radius: 10px;
+  position: relative;
+}
 
-.tranding h3{
+.trending h3{
     font-weight: 600;
     margin-top: 10px;
 }
@@ -492,4 +496,10 @@ color: #fff;
 }
 .addProduct-file-input {
   display: none;
+}
+
+.itmstory{
+  display: flex;
+  align-items: center;
+
 }

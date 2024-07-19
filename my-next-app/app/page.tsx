@@ -6,16 +6,11 @@ import axios from "axios";
 import Image from 'next/image';
 import { useAuth } from "./context/authcontex/Authcontex";
 import { useRouter } from 'next/navigation';
-import io from 'socket.io-client';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-
-const socket = io('http://localhost:8080'); 
 
 export default function Home() {
   const { logOut } = useAuth();
-  const { user, token } = useAuth();
+  const { user } = useAuth();
+  const { token } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [destination, setDestination] = useState<any>([]);
   const router = useRouter();
@@ -24,39 +19,33 @@ export default function Home() {
   const [Storie, setStorie] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [file, setFile] = useState<File | any>(null);
-  const [refresh, setRefresh] = useState<boolean>(true)
+  const [refresh, setRefresh]= useState<boolean>(true)
   const [storyText, setStoryText] = useState('');
-  const [userr, setUserr] = useState<any>(JSON.parse(localStorage?.getItem("user") || "{}"))
-  const [use, setuser] = useState<any>({});
-  const [night, setnight] = useState<number>(0);
-  const [month, setmonth] = useState<number>(0);
+  const [userr, setUserr] = useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
+  const [use, setuser ] = useState<any>({});
+  const [night, setnight ] = useState<number>(0);
+  const [month, setmonth ] = useState<number>(0);
   const [guest, setguest] = useState<string>('');
-  const [desId, setdesid] = useState<string>('');
-  const [totalbooks, settotalbooks] = useState<string>('');
+  const [desId,setdesid] = useState<string>('');
+  const [totalbooks, settotalbooks] =useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [inn, setin] = useState<string>('');  
   const [out, setout] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>("");
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [unreadCount, setUnreadCount] = useState<number>(0);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [loading, setLoading] = useState(true);
-
   const handleAddStoryClick = () => {
     setShowForm(true);
   };
-
-  var x = "";
+ var x="";
 
   const toHotel = (id: number) => {
-    router.push(`/hotel/${id}`);
+    router.push(`/hotel/${id}`)
   }
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  const calculateDateDifference = (checkIn: string, checkOut: string) => {
+const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
     const startDate = new Date(checkIn);
     const endDate = new Date(checkOut);
 
@@ -64,85 +53,87 @@ export default function Home() {
     let days = endDate.getDate() - startDate.getDate();
 
     if (days < 0) {
-      months--;
-      const previousMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate();
-      days += previousMonth;
+        months--;
+        const previousMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate();
+        days += previousMonth;
     }
-    x = `${months}+months+${days}+days+with+${guest}+guest`;
+    x=`${months}+months+${days}+days+with+${guest}+guest` 
     axios.get(`http://localhost:8080/api/destination/getonebyname/${location}`).then((res) => {
-      setdesid(res.data.id);
-      router.push(`/search/${res.data.id}/${x}`);
-    }).catch((err) => {
+        setdesid(res.data.id) 
+        console.log(res.data);
+        router.push(`/search/${res.data.id}/${x}`)
+        
+      }).catch((err) => {
       console.log(err);
-    });
-  }
+      
+      })
+    console.log(x);
+    
+
+}
+// useEffect(() => {
+// axios.get('http://localhost:8080/api/destination/getonebyname',
+//   {name:location}).then((res) => {
+//     setdesid(res.data.id)
+//   }).catch((err) => {
+//   console.log(err);
+  
+//   })
+
+// },[])
+
 
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Connected to server');
-    });
-
-    fetchNotifications();
-
-    socket.on('newNotification', (notification: any) => {
-      console.log('socket New Notification:', notification);
-      setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-      setUnreadCount((prevCount) => prevCount + 1);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
-  const fetchNotifications = async () => {
-    try {
-      const response = await axios.get<any[]>('http://localhost:8080/notifications');
-      setNotifications(response.data);
-      setUnreadCount(response.data.filter(notification => !notification.isSeen).length);
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-    }
-  };
-
-  useEffect(() => {
+  
     axios.get(`http://localhost:8080/api/destination/getall`).then((res) => {
       setDestination(res.data);
       setTrending(res.data);
       const filtered = res.data.filter((dest: any) => dest.fame === "trending");
       setFilteredTrending(filtered);
-    }).catch(error => { console.error(error) });
+    }).catch(error => { console.error(error) })
     axios.get(`http://localhost:8080/api/user/getone/${userr.id}`)
-      .then((resp) => {
-        setuser(resp.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    .then((resp) => {
+      console.log("heyoad",resp.data);
+    setuser(resp.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}, [])
+  
 
   useEffect(() => {
     axios.get("http://localhost:8080/api/stories/getall").then((res) => {
+    
+      console.log(inn);
       setStorie(res.data);
     }).catch((err) => {
-      console.error(err);
+      console.error(err)
     });
-  }, [refresh]);
+  
+  }, [refresh])
 
-  const addstories = () => {
-    axios.post('http://localhost:8080/api/stories/addStory', {
-      text: storyText,
+  const addstories = () =>{
+    axios.post('http://localhost:8080/api/stories/addStory',{
+      text:storyText,
       image: imageUrl,
       userId: use.id,
       userName: use.username,
       userImage: use.image
-    }).then((res) => {
-      setRefresh(!refresh);
+    }).then((res) =>{
+      setRefresh(!refresh)
+
     }).catch(() => {
       console.error("Failed to add story");
+      console.log("gfch",userr);
+      
     });
   }
-
+  // const falter = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const value = parseInt(event.target.value);
+  //   const filtered = trending.filter((dest: any) => dest.fame === value);
+  //   setFilteredTrending(filtered);
+  // };
   const uploadImage = () => {
     const form = new FormData();
     form.append("file", file);
@@ -155,21 +146,6 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleNotificationClick = (event: React.MouseEvent<HTMLElement>, notificationId: number) => {
-    console.log(`Clicked on notification with ID ${notificationId}`);
-    setNotifications((prevNotifications) =>
-      prevNotifications.map((notification) =>
-        notification.id === notificationId ? { ...notification, isSeen: true } : notification
-      )
-    );
-    setUnreadCount((prevCount) => Math.max(0, prevCount - 1));
-    setAnchorEl(event.currentTarget);
   };
 
   return (
@@ -191,19 +167,7 @@ export default function Home() {
                   className="noti"
                   src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
                   alt="notification"
-                  onClick={(event) => setAnchorEl(event.currentTarget)}
                 />
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                >
-                  {notifications.map((notification) => (
-                    <MenuItem key={notification.id} onClick={(event) => handleNotificationClick(event, notification.id)}>
-                      <ListItemText primary={notification.content} />
-                    </MenuItem>
-                  ))}
-                </Menu>
               </div>
               <div className="toggle-option" onClick={toggleDropdown}>
                 <img
@@ -233,22 +197,22 @@ export default function Home() {
             <div id="for">
               <div className="location-input">
                 <label>Location</label>
-                <input type="text" placeholder="Where are you going?" onChange={(e) => { setLocation(e.target.value) }} />
+                <input type="text" placeholder="Where are you going?" onChange={(e)=>{setLocation(e.target.value)}}/>
               </div>
               <div>
                 <label>Check in</label>
-                <input type="date" placeholder="Add date" onChange={(e) => { setin(e.target.value) }} />
+                <input type="date" placeholder="Add date"onChange={(e)=>{setin(e.target.value)}} />
               </div>
               <div>
                 <label>Check out</label>
-                <input type="date" placeholder="Add date" onChange={(e) => { setout(e.target.value) }} />
+                <input type="date" placeholder="Add date" onChange={(e)=>{setout(e.target.value)}} />
               </div>
               <div>
                 <label>Guest</label>
-                <input type="text" placeholder="Add Guest" onChange={(e) => { setguest(e.target.value) }} />
+                <input type="text" placeholder="Add Guest"  onChange={(e)=>{setguest(e.target.value)}}/>
               </div>
               <button>
-                <Image src="/img/search.png" width={20} height={20} alt="dtg" style={{ marginTop: 5, marginLeft: 7 }} onClick={() => { calculateDateDifference(inn, out) }} />
+                <Image src="/img/search.png" width={20} height={20} alt="dtg" style={{ marginTop: 5, marginLeft: 7 }} onClick={()=>{calculateDateDifference(inn,out)}}/>
               </button>
             </div>
           </div>
@@ -259,11 +223,10 @@ export default function Home() {
         <div className="exclusives">
           {destination.map((el: any, index: number) => (
             <div key={index}>
-              <img src={el.flag} width={25} height={25} alt="" />
-              <img src={el.image} width={220} height={120} alt="place" onClick={() => { toHotel(el.id) }} style={{ cursor: "pointer", borderRadius: 10 }} />
+              <img src={el.flag} width={25} height={25} alt="" /> 
+              <img src={el.image} width={220} height={120} alt="place"  onClick={() => { toHotel(el.id) }} style={{ cursor: "pointer" , borderRadius: 10 }} />
               <span>
-                <h3>{el.name}</h3>
-                <p>$250</p>
+              
               </span>
             </div>
           ))}
@@ -286,8 +249,11 @@ export default function Home() {
         <div className="stories">
           {Storie.map((el: any, index: number) => (
             <div className="estories" key={index}>
-              <h3>{el.userName}</h3>
-              <img src={el.userImage} width={250} height={300} style={{ borderRadius: 50, marginLeft: 10 }} alt="dtg" />
+              <div className="itmstory">
+              
+              <img src={el.userImage} width={50} height={40} style={{ borderRadius: 50, marginLeft: 10 }} alt="dtg" />
+              <h3> <b> {el.userName}</b></h3> 
+              </div>
               <img src={el.image} alt="dtg" />
               <p className="ps">{el.text}</p>
             </div>
@@ -299,36 +265,37 @@ export default function Home() {
           {showForm && (
             <div className="story-form">
               <div className="atoui">
-                <div className="upload-photo">
-                  <input
-                    type="text"
-                    value={storyText}
-                    onChange={(e) => setStoryText(e.target.value)}
-                    placeholder="Story Text"
-                  />
-                  <div>
-                    <img src={imageUrl || "https://cdn-icons-png.flaticon.com/512/5904/5904483.png"} alt="story" width={50} height={30} />
-                  </div>
-                  <input
-                    id="fileInput"
-                    className="addProduct-file-input"
-                    type="file"
-                    onChange={(e: any) => {
-                      setFile(e.target.files[0]);
-                    }}
-                  />
-                  <button
-                    className="addProduct-button addProduct-upload-button"
-                    type="button"
-                    onClick={() => {
-                      document.getElementById("fileInput")?.click();
-                    }}
-                  >
-                    Select story
-                  </button>
-                  <button onClick={() => uploadImage()}>Upload New Photo</button>
-                </div>
-                <button type="submit" onClick={() => { addstories() }}>Submit</button>
+              <div className="upload-photo">
+                <input
+                  type="text"
+                  value={storyText}
+                  onChange={(e) => setStoryText(e.target.value)}
+                  placeholder="Story Text"
+                />
+                <div>
+            <img src={imageUrl||"https://cdn-icons-png.flaticon.com/512/5904/5904483.png"}  alt="story" width={50} height={30} />
+            </div>
+                 <input
+              id="fileInput"
+              className="addProduct-file-input"
+              type="file"
+              onChange={(e: any) => {
+                setFile(e.target.files[0]);
+              }}
+            />
+                 <button
+              className="addProduct-button addProduct-upload-button"
+              type="button"
+              onClick={() => {
+                document.getElementById("fileInput")?.click();
+              }}
+            >
+              Select story
+            </button>
+            <button onClick={() => uploadImage()}>Upload New Photo</button>
+            </div>
+               
+                <button type="submit" onClick={()=>{addstories()}}>Submit</button>
               </div>
             </div>
           )}
@@ -347,6 +314,6 @@ export default function Home() {
           </p>
         </div>
       </div>
-    </div>  
+    </div>
   );
 }

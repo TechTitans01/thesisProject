@@ -187,7 +187,7 @@ console.log(response.data);
         console.log('Booking confirmed:', response.data.message);
 
         socket.emit('sendNotification', {
-          content: `User ${userr.id} confirmed a booking: ${bookingDetails}`,
+          content: `User ${userr.id} confirmed a booking: ${JSON.stringify(bookingDetails)}`,
           userId:userr.id,
           adminId: 1, 
         });
@@ -223,13 +223,13 @@ console.log(response.data);
 
       <div className="house-details">
 <div className="house-title">
-  <h1>{data.description}</h1>
+  <h1> <span className="stars">{"★".repeat(3)}</span>{data.description}</h1>
     <div className="row">
       <div>
-      <span className="stars">{"★".repeat(3)}</span>
+      
       </div>
       <div>
-        <p>Location:america</p>
+      
       </div>
     </div>
 </div>

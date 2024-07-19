@@ -11,7 +11,7 @@ export default function Hotel() {
   const [data, setData] = useState<any>([]);
   const [allData, setAllData] = useState<any>([]); 
   const pathname = usePathname();
-  const id = pathname.slice(pathname.length - 1);
+  const id = pathname.split("/")[2];
   const router = useRouter();
   const [ref, setRef] = useState<boolean>(false);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -176,7 +176,7 @@ const toHotelRooms = (id: number) => {
               </div>
               <div className="filter">
                 <button title="Add New"
-  className="group cursor-pointer outline-none hover:rotate-90 duration-300" type="button" value={"flat"} onClick={() => falter("flat")}><svg
+  className="group cursor-pointer outline-none hover:rotate-90 duration-300" type="button" value={"hotel"} onClick={() => falter("hotel")}><svg
     xmlns="http://www.w3.org/2000/svg"
     width="20px"
     height="20px"
@@ -189,7 +189,7 @@ const toHotelRooms = (id: number) => {
     ></path>
     <path d="M8 12H16" stroke-width="1.5"></path>
     <path d="M12 16V8" stroke-width="1.5"></path>
-  </svg></button><span> flat</span>
+  </svg></button><span> hotel</span>
               </div>
               <div className="filter">
                 <button title="Add New"

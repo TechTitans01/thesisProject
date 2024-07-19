@@ -1,4 +1,5 @@
-const {notification} = require('../sequelize/index');
+const { notification } = require('../sequelize/index');
+const db = require('../sequelize/index');
 
 module.exports = {
   getAllNotifications: async (req, res) => {
@@ -18,7 +19,7 @@ module.exports = {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-},
+  },
 
   getNotificationById: async (req, res) => {
     const { id } = req.params;
@@ -34,9 +35,9 @@ module.exports = {
   },
 
   createNotification: async (req, res) => {
-    const { content, userId } = req.body;
+    const { content, userId, adminId } = req.body;
     try {
-      const newNotification = await notification.create({ content, userId });
+      const newNotification = await notification.create({ content, userId, adminId });
       res.status(201).json(newNotification);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -48,7 +49,7 @@ module.exports = {
     try {
       const updatedNotification = await notification.update(
         { isSeen: true },
-        { where: { id: id } }
+        { where: { id } }
       );
   
       if (updatedNotification[0] === 0) { 
@@ -75,4 +76,26 @@ module.exports = {
       res.status(500).json({ error: error.message });
     }
   },
+
+  sendNotification: async (req, res) => {
+    const { userId, adminId, content } = req.body;
+    try {
+      const client = await db.user.findByPk(userId);
+      if (!client) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      const notification = await db.notification.create({ userId, adminId, content });
+  
+      const io = req.app.get('socketio');
+      if (io) {
+        io.to(userId).emit('notification', notification);
+      }
+  
+      res.status(201).json(notification);
+    } catch (error) {
+      console.error('Error sending notification:', error); 
+      res.status(500).json({ error: 'Failed to send notification' });
+    }
+  }
 };

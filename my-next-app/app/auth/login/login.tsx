@@ -3,9 +3,6 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useAuth } from '../../context/authcontex/Authcontex';
 import { useRouter } from "next/navigation";
-import { faGoogle, faFacebook, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { signIn } from 'next-auth/react';
 
 const LoginPage: React.FC = () => {
   const { loginAction } = useAuth();
@@ -28,8 +25,8 @@ const LoginPage: React.FC = () => {
     const { email, password } = state;
 
     try {
-      const result: any = await loginAction({ email, password });
-
+      const result:any = await loginAction({ email, password });
+      
       setState({
         email: '',
         password: ''
@@ -46,16 +43,11 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handleSocialLogin = (provider: string) => {
-    signIn(provider);
-  };
-
   return (
     <div className="form-container sign-in-container">
       <form onSubmit={handleOnSubmit}>
-      <h1>Sign in</h1>
-
-        
+        <h1>Sign in</h1>
+        <span>or use your account</span>
         <input
           type="email"
           placeholder="Email"
@@ -72,28 +64,8 @@ const LoginPage: React.FC = () => {
           onChange={handleChange}
           required
         />
-                    <button type="submit">Sign In</button>
-<br />
-        <span>or use your account</span>
-        <div className="social-container">
-          <FontAwesomeIcon
-            icon={faGoogle}
-            className="social-icon"
-            onClick={() => handleSocialLogin('google')}
-          />
-          <FontAwesomeIcon
-            icon={faFacebook}
-            className="social-icon"
-            onClick={() => handleSocialLogin('facebook')}
-          />
-          <FontAwesomeIcon
-            icon={faLinkedin}
-            className="social-icon"
-            onClick={() => handleSocialLogin('linkedin')}
-          />
-        </div>
         <a href="/forgetpassword">Forgot your password?</a>
-        
+        <button type="submit">Sign In</button>
       </form>
     </div>
   );
