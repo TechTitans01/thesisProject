@@ -13,7 +13,7 @@ export default function Hotel() {
   const [data, setData] = useState<any>([]);
   const [allData, setAllData] = useState<any>([]); 
   const pathname = usePathname();
-  const id = pathname.slice(pathname.length - 1);
+  const id = pathname.split("/")[2];
   const router = useRouter();
   const [ref, setRef] = useState<boolean>(false);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -36,7 +36,8 @@ const startIndex = (current - 1) * items;
 const endIndex = startIndex + items;
 const DataPerPage = data.slice(startIndex, endIndex); 
 const toHotelRooms = (id: number) => {
-    router.push(`/rooms/${id}`);
+  localStorage.setItem("idhotel", JSON.stringify(id))
+  router.push(`/rooms/${id}`);
   };
 
   const toggleDropdown = () => {
@@ -64,47 +65,48 @@ const toHotelRooms = (id: number) => {
   return (
   
     <div>
-      <nav id="navBar" className='navbar-white'>
-        <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false} />
-        <ul className='nav-links'>
-          <li><a href="/" className="active">Home</a></li>
-          <li><a href="/contactus" className="active">Contact Us</a></li>
-        </ul>
-        {!token ? (
-          <a href="/auth" className="register-btn">
-            Register Now
-          </a>
-        ) : (
-          <div className="toggle-container">
-            <div className="toggle-option active">
-              <img
-                className="noti"
-                src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
-                alt="notification"
-              />
-            </div>
-            <div className="toggle-option" onClick={toggleDropdown}>
-              <img
-                className="usee"
-                src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
-                alt="User"
-              />
-            </div>
-            {dropdownOpen && (
-              <div className="dropdown-menu">
-                <ul>
-                  <li>
-                    <a href="/editprofile">Edit Profile</a>
-                  </li>
-                  <li>
-                    <a href="/auth" onClick={() => { logOut() }}>Logout</a>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-      </nav>
+     <nav id="mainNavigation" className='navbar-light'>
+  <Image className="brandLogo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false} />
+  <ul className='navigationLinks'>
+    <li><a href="/" className="linkActive">Home</a></li>
+    <li><a href="/contactus" className="linkActive">Contact Us</a></li>
+  </ul>
+  {!token ? (
+    <a href="/auth" className="signupButton">
+      Register Now
+    </a>
+  ) : (
+    <div className="toggleGroup">
+      <div className="toggleItem active">
+        <img
+          className="notificationIcon"
+          src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+          alt="notification"
+        />
+      </div>
+      <div className="toggleItem" onClick={toggleDropdown}>
+        <img
+          className="userIcon"
+          src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+          alt="User"
+        />
+      </div>
+      {dropdownOpen && (
+        <div className="dropdownContent">
+          <ul>
+            <li>
+              <a href="/editprofile">Edit Profile</a>
+            </li>
+            <li>
+              <a href="/auth" onClick={() => { logOut() }}>Logout</a>
+            </li>
+          </ul>
+        </div>
+      )}
+    </div>
+  )}
+</nav>
+
 
       <div className="container2">
         
@@ -179,7 +181,7 @@ const toHotelRooms = (id: number) => {
               </div>
               <div className="filter">
                 <button title="Add New"
-  className="group cursor-pointer outline-none hover:rotate-90 duration-300" type="button" value={"flat"} onClick={() => falter("flat")}><svg
+  className="group cursor-pointer outline-none hover:rotate-90 duration-300" type="button" value={"hotel"} onClick={() => falter("hotel")}><svg
     xmlns="http://www.w3.org/2000/svg"
     width="20px"
     height="20px"
@@ -192,7 +194,7 @@ const toHotelRooms = (id: number) => {
     ></path>
     <path d="M8 12H16" stroke-width="1.5"></path>
     <path d="M12 16V8" stroke-width="1.5"></path>
-  </svg></button><span> flat</span>
+  </svg></button><span> hotel</span>
               </div>
               <div className="filter">
                 <button title="Add New"

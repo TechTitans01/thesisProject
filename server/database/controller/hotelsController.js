@@ -49,6 +49,14 @@ module.exports={
           res.status(500).send(err);
         }
       },
+      getOneHotelbyid: async (req, res)=> {
+        try {
+          const data = await db.hotel.findOne({ where: {id: req.params.id } });
+          res.send(data);
+        } catch (err) {
+          res.status(500).send(err);
+        }
+      },
       
 
 }

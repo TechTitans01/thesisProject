@@ -5,10 +5,20 @@
   align-items: center;
   width: 100%;
   height: 100vh;
-  /* background: linear-gradient(to bottom, #0072c6, #00a1de); */
+
   overflow: hidden;
 }
+/* .video-background {
+  position: absolute;
+  top: 0%;
 
+  left: 0;
+  width: 150%;
+  
+  object-fit: cover;
+  z-index: -1;
+  
+} */
 /* Profile Card */
 .profile-card {
   background-color: #fff;
@@ -152,7 +162,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  
   object-fit: cover;
   z-index: -1;
   filter: brightness(60%);

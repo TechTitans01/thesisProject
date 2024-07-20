@@ -24,6 +24,7 @@ const Map: React.FC<MapProps> = ({ location, hotelId }) => {
   const [position, setPosition] = useState<[number, number]>([0, 0]);
 
   useEffect(() => {
+    console.log(hotelId)
     axios.get(`http://localhost:8080/api/hotels/getoneById/${hotelId}`)
       .then((res) => {
         console.log("res.data ==>", res.data);

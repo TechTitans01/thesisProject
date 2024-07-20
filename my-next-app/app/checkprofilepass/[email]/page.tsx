@@ -56,6 +56,7 @@ export default function CheckAccount() {
             <span className="email">{email}</span>
           </label>
         </div>
+        
         <div className="footer">
           <button type="button" className="btn-secondary">Close</button>
           <button type="submit" className="btn-primary" onClick={handleNextClick}>Next</button>

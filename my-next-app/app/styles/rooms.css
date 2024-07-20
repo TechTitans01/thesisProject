@@ -77,48 +77,48 @@ footer p{
   margin-bottom: 30px ;
 }
 
-.house{
+.room{
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   padding: 30px 0;
   border-top: 1px solid #ccc;
 }
-.house-img{
+.room-img{
   flex-basis: 40%;
 
 }
-.house-info{
+.room-info{
   flex-basis: 58%;
   color: #555;
 }
-.house-img img{
+.room-img img{
   border-radius:12px ;
 }
 
-.house-info h3{
+.room-info h3{
   font-weight: 600;
   color: #333;
   font-size: 22px;
   margin: 4px 0;
 
 }
-.house-price{
+.room-price{
   text-align: right;
 
 }
 
-.house-info i{
+.room-info i{
   color: #53b2ff;
   font-size:18px ;
   margin:10px 1px;
 }
 
 
-.house-price h4{
+.room-price h4{
   font-size: 20px;
 }
-.house-price h4 span{
+.room-price h4 span{
   font-size: 16px;
   font-weight: 500;
 }
@@ -238,17 +238,7 @@ margin-left: 150px;
 }
 
 
-.toggle-container {
-  display: flex;
-  align-items: center;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  padding: 5px;
-  width: 150px;
-  margin-left: 25%;
-  height: 45px;
-  
-}
+
 
 .toggle-option {
   display: flex;
@@ -273,7 +263,8 @@ nav{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 7%;
+  /* padding: 20px 7%; */
+
   }
   .logo{
     width: 140;
@@ -329,7 +320,7 @@ nav{
     border-radius: 20px;
     padding: 5px;
     width: 150px;
-    margin-left: 25%;
+    margin-right: 6%;
     height: 45px;
     
   }
@@ -356,8 +347,8 @@ nav{
   
 .dropdown-menu {
   position: absolute;
-  margin-top: 5%; /* Position it below the toggle */
-  right: 8%; /* Align it to the right of the toggle */
+  margin-top: 10%; /* Position it below the toggle */
+  right: 6%; /* Align it to the right of the toggle */
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;

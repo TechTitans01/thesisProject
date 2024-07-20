@@ -1,363 +1,338 @@
-*{
-    margin: 0;
-    padding: 0 ;
-    box-sizing: border-box;
-    font-family: 'poppins', sans-serif;
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brandLogo {
+  width: 140px;
+  cursor: pointer;
+}
+.nav .fa-bars {
+  display: none;
+}
+.navigationLinks li {
+  list-style: none;
+  display: inline-block;
+  margin: 10px 30px;
+}
+.navigationLinks li a {
+  text-decoration: none;
+  color: #fff;
+}
+.signupButton {
+  background: #fff;
+  color: #000;
+  padding: 8px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 14px;
+}
+.navbar-light {
+  background: #fff;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+}
+.navbar-light .navigationLinks li a {
+  color: #000;
+}
+.navbar-light .signupButton {
+  background: #53b2ff;
+  color: #fff;
+}
+.navbar-light .fa-bars {
+  color: #000;
 }
 
-
-
-.footer{
-    margin: 80px 0 10px;
-    text-align: center;
-
+.toggleGroup {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  padding: 5px;
+  width: 150px;
+  margin-right: 6%;
+  height: 45px;
 }
-.footer a{
-    text-decoration: none;
-    color: #999;
-    font-size: 22px;
-    margin:0 10px
+.toggleItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 20px;
 }
-.footer hr{
-    background: #999;
-    height: 1px;
-    width: 100%;
-    border: 0;
-    margin: 20px 0;
+.toggleItem.active {
+  background-color: #ffffff;
 }
-footer p{
-    padding-bottom: 15px;
-
+.toggleItem img {
+  width: 25px;
+  height: 25px;
 }
-
-.active{
-    position: relative;
-
+.dropdownContent {
+  position: absolute;
+  margin-top: 10%;
+  right: 6%;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 10px;
+  z-index: 1000;
 }
-.active::after{
-    content: '';
-    background: #fff;
-    width: 25px;
-    height: 2px;
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%);
-    bottom: -12px;
-    border-radius: 2px;
+.dropdownContent ul {
+  list-style: none;
+  padding: 0;
 }
-
-.container{
-    padding: 0 7%;
-
+.dropdownContent ul li {
+  margin-bottom: 5px;
 }
-
-
-
- 
-
- .list-container{
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
- }
-
- .left-col{
-    flex-basis: 70%;
-
- }
- .right-col{
-    flex-basis: 25%;
-    
- }
- .left-col h1{
-    color: #333;
-    font-weight: 600;
-    margin-bottom: 30px ;
- }
-
- .house{
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 30px 0;
-    border-top: 1px solid #ccc;
-    width: 140%;
- }
- .house-img{
-    flex-basis: 40%;
-
- }
- .house-info{
-    flex-basis: 58%;
-    color: #000000;
-    
- }
- .house-img img{
-    border-radius:12px ;
+.dropdownContent ul li a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+  padding: 8px 12px;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+.dropdownContent ul li a:hover {
+  background-color: #f0f0f0;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'poppins', sans-serif;
 }
 
-.house-info h3{
-    font-weight: 600;
-    color: #333;
-    font-size: 22px;
-    margin: 4px 0;
-
-}
-.house-price{
-    text-align: right;
-
+.footer {
+  margin: 80px 0 10px;
+  text-align: center;
 }
 
-.house-info i{
-    color: #53b2ff;
-    font-size:18px ;
-    margin:10px 1px;
+.footer a {
+  text-decoration: none;
+  color: #999;
+  font-size: 22px;
+  margin: 0 10px;
 }
 
-
-.house-price h4{
-    font-size: 20px;
-}
-.house-price h4 span{
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.sidebar{
-border: 1px solid #999;
-padding: 20px 30px;
-margin-top: 30px;
-
-
-}
-.sidebar h2{
-    font-weight: 500;
-}
-.sidebar h3{
-    font-weight: 500;
-    margin: 20px 0 10px;
-}
-.filter{
-    display: flex;
-    align-items: center;
-    color: #555;
-    margin-bottom: 10px;
-
+.footer hr {
+  background: #999;
+  height: 1px;
+  width: 100%;
+  border: 0;
+  margin: 20px 0;
 }
 
-.filter p{
-    flex:1;
-}
-.filter input{
-    margin-right:15px ;
-    cursor: pointer;
-}
-.pagination{
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    margin: 40px 0;
-}
-.pagination .arroo{
-    margin: 10px 20px;
-    cursor: pointer;
-}
-#rightarro{
-    transform: rotate(180deg);
+footer p {
+  padding-bottom: 15px;
 }
 
-.pagination span{
-    margin: 10px 8px;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    border-radius: 50%;
-    
+.active {
+  position: relative;
 }
 
-.pagination .curreent{
-    background: #333;
-    color: #fff;
-}
-.container2{
-    padding: 0 7%;
-    left: 30%;
-}
-
-#tx{
-    font-size: 4vw;
-    font-weight: 500;
-    color: #000000;
-    text-align: center ;
- 
-}
-.search-bar{
-    
-    background:#b8cfd8;
-    width: 70%;
-    margin: 30px;
-padding: 6px 10px 6px 30px;
-border-radius: 50px;
-margin-left: 17%;
-
+.active::after {
+  content: '';
+  background: #fff;
+  width: 25px;
+  height: 2px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  bottom: -12px;
+  border-radius: 2px;
 }
 
-.search-bar #for{
-    display: flex;
-    align-items:center ;
-    flex-wrap: wrap;
-}
-.search-bar #for input{
-    display: block;
-    border: 0;
-    outline: none;
-background: transparent;
-
-}
-.search-bar #for button{
-    background: #53b2ff;
-    width: 7%;
-    height: 55px;
-    border-radius: 50%;
-margin-left: 150px;
-    border: 0;
-    outline: none;
-    cursor: pointer;
-
-}
-.location-input{
-    flex: 2;
-}
-.search-bar #for label{
-    font-weight: 600;
+.container {
+  padding: 0 7%;
 }
 
-.search-bar #for #im{
-    margin-left:30%;
+.list-container {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
+.left-col {
+  flex-basis: 70%;
+}
 
-nav{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 7%;
-    }
-    .logo{
-      width: 140;
-      cursor: pointer;
-    }
-  
-    nav .fa-bars{
-      display: none;
-       
-    }
-    .nav-links li{
-      list-style: none;
-      display: inline-block;
-      margin: 10px 30px;
-    }
-    .nav-links li a{
-     text-decoration: none;
-     color: #fff;
-    }
-    
-    .register-btn{
-      background: #fff;
-      color:#000;
-      padding: 8px 20px;
-    
-      border-radius:20px ;
-      text-decoration: none;
-      font-size: 14px;
-    }
-    .navbar-white{
-      background: #fff;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.05);
-    }
-    
-    .navbar-white .nav-links li a{
-      
-      color: #000;
-    }
-    
-    .navbar-white .register-btn{
-      background:#53b2ff;
-      color: #fff;
-    }
-    .navbar-white .fa-bars{
-      color: #000;
-    }
-  
-  
-    .toggle-container {
-      display: flex;
-      align-items: center;
-      background-color: #f5f5f5;
-      border-radius: 20px;
-      padding: 5px;
-      width: 150px;
-      margin-left: 25%;
-      height: 45px;
-      
-    }
-    
-    .toggle-option {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex: 1;
-      padding: 5px;
-      cursor: pointer;
-      border-radius: 20px;
-    }
-    
-    .toggle-option.active {
-      background-color: #ffffff;
-    }
-    
-    .toggle-option img {
-      width: 25px;
-      height: 25px;
-    }
+.right-col {
+  flex-basis: 25%;
+}
 
-    
-  .dropdown-menu {
-    position: absolute;
-    margin-top: 5%;
-    right: 8%; /* Align it to the right of the toggle */
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    padding: 10px;
-    z-index: 1000; /* Ensure it's above other elements */
-  }
-  
-  .dropdown-menu ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .dropdown-menu ul li {
-    margin-bottom: 5px;
-  }
-  
-  .dropdown-menu ul li a {
-    text-decoration: none;
-    color: #333;
-    display: block;
-    padding: 8px 12px;
-    border-radius: 3px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .dropdown-menu ul li a:hover {
-    background-color: #f0f0f0;
-  }
+.left-col h1 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
 
+.house {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 30px 0;
+  border-top: 1px solid #ccc;
+  width: 140%;
+}
+
+.house-img {
+  flex-basis: 40%;
+}
+
+.house-info {
+  flex-basis: 58%;
+  color: #000000;
+}
+
+.house-img img {
+  border-radius: 12px;
+}
+
+.house-info h3 {
+  font-weight: 600;
+  color: #333;
+  font-size: 22px;
+  margin: 4px 0;
+}
+
+.house-price {
+  text-align: right;
+}
+
+.house-info i {
+  color: #53b2ff;
+  font-size: 18px;
+  margin: 10px 1px;
+}
+
+.house-price h4 {
+  font-size: 20px;
+}
+
+.house-price h4 span {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.sidebar {
+  border: 1px solid #999;
+  padding: 20px 30px;
+  margin-top: 30px;
+}
+
+.sidebar h2 {
+  font-weight: 500;
+}
+
+.sidebar h3 {
+  font-weight: 500;
+  margin: 20px 0 10px;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.filter p {
+  flex: 1;
+}
+
+.filter input {
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.pagination .arroo {
+  margin: 10px 20px;
+  cursor: pointer;
+}
+
+#rightarro {
+  transform: rotate(180deg);
+}
+
+.pagination span {
+  margin: 10px 8px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  border-radius: 50%;
+}
+
+.pagination .curreent {
+  background: #333;
+  color: #fff;
+}
+
+.container2 {
+  padding: 0 7%;
+  left: 30%;
+}
+
+#tx {
+  font-size: 4vw;
+  font-weight: 500;
+  color: #000000;
+  text-align: center;
+}
+
+.search-bar {
+  background: #b8cfd8;
+  width: 70%;
+  margin: 30px;
+  padding: 6px 10px 6px 30px;
+  border-radius: 50px;
+  margin-left: 17%;
+}
+
+.search-bar #for {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-bar #for input {
+  display: block;
+  border: 0;
+  outline: none;
+  background: transparent;
+}
+
+.search-bar #for button {
+  background: #53b2ff;
+  width: 7%;
+  height: 55px;
+  border-radius: 50%;
+  margin-left: 150px;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+}
+
+.location-input {
+  flex: 2;
+}
+
+.search-bar #for label {
+  font-weight: 600;
+}
+
+.search-bar #for #im {
+  margin-left: 30%;
+}
 
 .footer {
   background-color: #f8f8f8;
@@ -404,8 +379,6 @@ nav{
 .footer-info a:hover {
   text-decoration: underline;
 }
-
-
 
 .hotel-card {
   display: flex;

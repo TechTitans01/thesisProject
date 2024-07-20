@@ -40,6 +40,7 @@ export default function HotelSearch() {
   const endIndex = startIndex + items;
   const DataPerPage = data.slice(startIndex, endIndex); 
   const toOneRoom = (id: number) => {
+
     router.push(`/oneroombysearch/${guests}/${id}`);
   };
 
@@ -120,9 +121,9 @@ export default function HotelSearch() {
           <h1>Recommended Places</h1>
           {DataPerPage.map((el: any) => {
             const totalNights = months * 30 + days;
-            const totalPrice = totalNights * el.nightPrice;
+            const totalPrice = totalNights * el.nightPrice * guests;
             return (
-              <div onClick={() => { toOneRoom(el.id) }} className='house' key={el.id} style={{ cursor: "pointer" }}>
+              <div onClick={() => { localStorage.setItem("infosbook",JSON.stringify(totalPrice));localStorage.setItem("infosdate",JSON.stringify(totalNights)); toOneRoom(el.id) }} className='house' key={el.id} style={{ cursor: "pointer" }}>
                 <div className="hotel-card">
                   <div className="hotel-card-img">
                     <img src={el.image} alt={el.name} width={330} height={200} />

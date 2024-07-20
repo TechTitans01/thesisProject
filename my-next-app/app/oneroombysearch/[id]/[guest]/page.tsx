@@ -1,6 +1,9 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:8080'); 
 import {
   Container,
   Grid,
@@ -68,6 +71,12 @@ const Page: React.FC = () => {
   const [comments, setComments] = useState<any>([]);
   const [newComment, setNewComment] = useState('');
   const [data, setData] = useState<any>({});
+  const[idrooom,setidrooom] = useState<any>(localStorage.getItem("idroom"))
+  const[totPrice,settotPrice] = useState<any>(localStorage.getItem("infosbook"))
+  const[totnighty,settotnighty] = useState<any>(localStorage.getItem("infosdate"))
+  const [namedestination,setnamedestination] = useState<any>(localStorage.getItem("namedestinbyserch"))
+  const [onedestination,setonedestination] = useState<any>({});
+
   const [use, setuser ] = useState<any>({});
   const [array, setArray] = useState<any>([]);
    const [ref,setref]=useState<any>(false)
@@ -79,7 +88,12 @@ const Page: React.FC = () => {
   const toChat = (id:number)=>{
     router.push(`/chatroom/${id}`)
   }
-
+  useEffect(()=>{
+    axios.get(`http://localhost:8080/api/destination/getone/${namedestination}`).then((res)=>{
+      setonedestination(res.data)
+      console.log(res.data)
+    }).catch((err)=>console.log(err))
+   },[])
   const seeprofile = (id:number)=>{
     router.push(`/profilefreind/${id}`)
   }
@@ -101,7 +115,7 @@ const Page: React.FC = () => {
   const pathname = usePathname();
   const id = pathname.slice(pathname.length - 1);
   const detail=pathname.split('/')[2];
- 
+
   const [guests, setGuests] = useState('');
 
 
@@ -116,7 +130,7 @@ const Page: React.FC = () => {
     
     axios.get(`http://localhost:8080/api/user/getone/${userr.id}`)
       .then((resp) => {
-        console.log("heyoad",resp.data);
+        
       setuser(resp.data);
      
       })
@@ -126,25 +140,26 @@ const Page: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(detail)
+    console.log(totnighty,"atoui")
     
     axios.post(`http://localhost:8080/rooms/rooms/hotel/${id}`,{
         guests:detail
     }).then((res) => {
       setData(res.data[0]);
-      console.log("na9a",res.data)
+ 
+      localStorage.setItem("idroom", JSON.stringify(res.data[0].id))
+    
+      console.log("na9a",res.data[0].id)
+
       // array.push(res.data.image1, res.data.image2, res.data.image3);
       
     }).catch(err => { console.log(err) });
   }, []);
+  
 
-  useEffect(() => {
-    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
-      setComments(res.data);
-    }).catch(err => { console.log(err) });
-  }, []);
 
   const commenti = () => {
+
     axios.post(`http://localhost:8080/commentaires/${id}/${userr.id}`, {
       text: newComment,
       date: "12/10/2024",
@@ -162,47 +177,60 @@ const Page: React.FC = () => {
 
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
+   console.log( "boha",namedestination)
+    axios.get(`http://localhost:8080/commentaires/room/${idrooom}`).then((res) => {
       setComments(res.data);
     }).catch(err => { console.log(err) });
   }, [ref]);
 
   const addBooking = async () => {
-    if (!dateRange[0] || !dateRange[1] || !guests) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Missing Information',
-        text: 'Please provide start date, end date, and number of guests.',
-      });
-      return;
-    }
-
     const bookingDetails = {
-      start: dateRange[0].toISOString().split('T')[0],
-      end: dateRange[1].toISOString().split('T')[0],
-      guests: parseInt(guests, 10),
-      status: 'pending',
-      userId: user.id,
-      roomId:roomid
-    };
-
+      start: parseInt(totnighty),
+          end: parseInt(totnighty),
+          guests: parseInt(detail),
+          status: 'pending',
+          userId: userr.id,
+          roomId:parseInt (roomid),
+          totalPrice:parseInt(totPrice)
+        }
+        console.log(bookingDetails);
+        
     try {
-      const response = await axios.post('http://localhost:8080/bookings', bookingDetails);
-      Swal.fire({
-        icon: 'success',
-        title: 'Booking Created',
-        text: 'Your booking is created and awaiting confirmation.',
+      const response = await axios.post('http://localhost:8080/bookings/', {
+        bookingDetails,
       });
-      console.log('Booking added successfully:', response.data);
-      setDateRange([null, null]);
-      setGuests('');
+console.log(response.data);
+
+      if (response.data) {
+        console.log('Booking confirmed:', response.data.message);
+
+        socket.emit('sendNotification', {
+          content: `User ${userr.id} confirmed a booking: ${bookingDetails}`,
+          userId:userr.id,
+          adminId: 1, 
+        });
+        Swal.fire({
+          icon: 'success',
+          title: 'Booking Created',
+          text: 'Your booking is created and awaiting confirmation.',
+        });
+        console.log('Booking added successfully:', response.data);
+        setDateRange([null, null]);
+        setGuests('');
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'There was an error creating your booking. Please try again.',
+        });
+      }
     } catch (error) {
-      console.error('Error adding booking:', error);
+      console.error('Error confirming booking:', error);
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'There was an error creating your booking. Please try again.',
-      });
+        text: 'Please provide the missing informations before confirming the booking!',
+      })
     }
   };
 
@@ -214,13 +242,13 @@ const Page: React.FC = () => {
 
       <div className="house-details">
 <div className="house-title">
-  <h1>{data.description}</h1>
+  <h1>  <span className="stars">{"★".repeat(3)}</span> {data.description} <br /> Location: {onedestination.name} </h1>
     <div className="row">
       <div>
-      <span className="stars">{"★".repeat(3)}</span>
+   
       </div>
       <div>
-        <p>Location:america</p>
+        
       </div>
     </div>
 </div>
@@ -235,46 +263,6 @@ const Page: React.FC = () => {
 </div>
 </div>
       <Box my={4}>
-
-       
-
-
-
-
-
-
-        {/* <Typography variant="h4" gutterBottom>
-          {data.name}
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          color="textSecondary"
-          display="flex"
-          alignItems="center"
-          gutterBottom
-        >
-          <LocationOnIcon style={{ color: "#FF5733" }} /> {property.location}
-        </Typography>
-
-        <Grid container spacing={2} my={2}>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image1} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image2} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image3} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image4} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image5} alt="image" />
-          </Grid>
-       
-        </Grid> */}
-
         <Grid container spacing={2} my={2}>
           <Grid item xs={12} md={8}>
             <Box my={2}>
@@ -441,20 +429,12 @@ const Page: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 Booking
               </Typography>
-              <TextField
-                fullWidth
-                label="Guests"
-                margin="normal"
-                type="number"
-                value={guests}
-                onChange={(e) => setGuests(e.target.value)}
-                InputLabelProps={{ shrink: true }}
-              />
+             
               <Button onClick={addBooking} variant="contained" color="primary" fullWidth>
                 Rent
               </Button>
               <Box my={2}>
-                <Typography variant="body1">Price: ${data.nightPrice} per night</Typography>
+                <Typography variant="body1">Price: ${totPrice} in total</Typography>
                 <Typography variant="body2" color="textSecondary">
                   Taxes and fees are included
                 </Typography>
@@ -465,14 +445,14 @@ const Page: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 Location
               </Typography>
-              <Map location={property.location} />
+              <Map location={onedestination.name} />
             </Box>
 
             <Box my={2}>
               <Typography variant="h6" gutterBottom>
                 Weather
               </Typography>
-              <Weather location={property.location} />
+              <Weather location={onedestination.name} />
             </Box>
           </Grid>
         </Grid>

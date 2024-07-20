@@ -39,6 +39,7 @@ export default function Home() {
 
   const toHotel = (id: number) => {
     router.push(`/hotel/${id}`)
+    localStorage.setItem("iddestin",JSON.stringify(id))
   }
 
   const toggleDropdown = () => {
@@ -62,7 +63,7 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
         setdesid(res.data.id) 
         console.log(res.data);
         router.push(`/search/${res.data.id}/${x}`)
-        
+        localStorage.setItem("namedestinbyserch",JSON.stringify(res.data.id))
       }).catch((err) => {
       console.log(err);
       
@@ -71,16 +72,6 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
     
 
 }
-// useEffect(() => {
-// axios.get('http://localhost:8080/api/destination/getonebyname',
-//   {name:location}).then((res) => {
-//     setdesid(res.data.id)
-//   }).catch((err) => {
-//   console.log(err);
-  
-//   })
-
-// },[])
 
 
   useEffect(() => {
@@ -151,46 +142,47 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
   return (
     <div>
       <div className="header">
-        <nav id="navBar" className='navbar-white'>
-          <ul className='nav-links'>
-            <li><a href="/" className="active">Home</a></li>
-            <li><a href="/contactus" className="active">Contact Us</a></li>
+      <nav id="navBar" className='custom-navbar'>
+  <ul className='nav-links'>
+    <li><a href="/" className="active">Home</a></li>
+    <li><a href="/contactus" className="active">Contact Us</a></li>
+  </ul>
+  {!token ? (
+    <a href="/auth" className="register-btn">
+      Register Now
+    </a>
+  ) : (
+    <div className="toggle-container">
+      <div className="toggle-option active">
+        <img
+          className="noti"
+          src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+          alt="notification"
+        />
+      </div>
+      <div className="toggle-option" onClick={toggleDropdown}>
+        <img
+          className="usee"
+          src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+          alt="User"
+        />
+      </div>
+      {dropdownOpen && (
+        <div className="dropdown-menu">
+          <ul>
+            <li>
+              <a href="/editprofile">Edit Profile</a>
+            </li>
+            <li>
+              <a href="/auth" onClick={() => { logOut() }}>Logout</a>
+            </li>
           </ul>
-          {!token ? (
-            <a href="/auth" className="register-btn">
-              Register Now
-            </a>
-          ) : (
-            <div className="toggle-container">
-              <div className="toggle-option active">
-                <img
-                  className="noti"
-                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
-                  alt="notification"
-                />
-              </div>
-              <div className="toggle-option" onClick={toggleDropdown}>
-                <img
-                  className="usee"
-                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
-                  alt="User"
-                />
-              </div>
-              {dropdownOpen && (
-                <div className="dropdown-menu">
-                  <ul>
-                    <li>
-                      <a href="/editprofile">Edit Profile</a>
-                    </li>
-                    <li>
-                      <a href="/auth" onClick={() => { logOut() }}>Logout</a>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-        </nav>
+        </div>
+      )}
+    </div>
+  )}
+</nav>
+
         <div className="container">
           <h1>Find Your Next Stay</h1>
           <div className="search-bar">
@@ -223,11 +215,10 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
         <div className="exclusives">
           {destination.map((el: any, index: number) => (
             <div key={index}>
-              <img src={el.flag} width={25} height={25} alt="" />
+              <img src={el.flag} width={25} height={25} alt="" /> 
               <img src={el.image} width={220} height={120} alt="place"  onClick={() => { toHotel(el.id) }} style={{ cursor: "pointer" , borderRadius: 10 }} />
               <span>
-                <h3>{el.name}</h3>
-                <p>$250</p>
+              
               </span>
             </div>
           ))}
@@ -250,8 +241,11 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
         <div className="stories">
           {Storie.map((el: any, index: number) => (
             <div className="estories" key={index}>
-              <h3>{el.userName}</h3>
-              <img src={el.userImage} width={250} height={300} style={{ borderRadius: 50, marginLeft: 10 }} alt="dtg" />
+              <div className="itmstory">
+              
+              <img src={el.userImage} width={50} height={40} style={{ borderRadius: 50, marginLeft: 10 }} alt="dtg" />
+              <h3> <b> {el.userName}</b></h3> 
+              </div>
               <img src={el.image} alt="dtg" />
               <p className="ps">{el.text}</p>
             </div>

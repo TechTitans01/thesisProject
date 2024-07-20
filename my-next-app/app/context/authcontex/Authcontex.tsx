@@ -60,14 +60,16 @@ console.log("user auth  ",user);
   const router = useRouter();
 
   useEffect(() => {
+
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       try {
         const decoded: any = jwtDecode(storedToken);
-        if (decoded && decoded.id) {
-          fetchUser(decoded.id);
+        console.log(decoded);
+        
+        if (decoded && decoded.id && localStorage.getItem("admin")) {
           fetchAdmin(decoded.id);
-        }
+        }else fetchUser(decoded.id);
         
       } catch (error) {
         console.error("Error decoding token:", error);
@@ -161,6 +163,9 @@ console.log("user auth  ",user);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("admin");
+    localStorage.removeItem("idroom");
+    localStorage.removeItem("idhotel");
+    
     router.push("/auth");
   };
 
