@@ -26,9 +26,9 @@ const Dashboard = () => {
   useEffect(() => {
     
     socket.on('connection', () => {
-      console.log('Connected to server');
+      console.log('Connected to server'); 
     });
-    fetchNotifications();
+    
     
     socket.on('newNotification', (notification: any) => {
       console.log('socket New Notification:', notification);
@@ -36,10 +36,10 @@ const Dashboard = () => {
       setUnreadCount((prevCount) => prevCount + 1);
     });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [notifications]);
+    // return () => {
+    //   socket.disconnect();
+    // };
+  }, [socket]);
 
   const fetchNotifications = async () => {
     try {

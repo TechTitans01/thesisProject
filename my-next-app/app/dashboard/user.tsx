@@ -1,4 +1,3 @@
-
 import { FC, useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -6,24 +5,35 @@ import {
   Card,
   CardContent,
   Typography,
-  List,
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
   CircularProgress,
   Box,
   IconButton,
-  ListItemSecondaryAction,
-  Snackbar
+  Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Avatar,
 } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import './style/user.css';
 
 interface User {
   id: number;
-  username: string;
+  fullname: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
   image: string;
+  password: string;
+  username: string;
+  cardNumber: number;
+  CIN: number;
+  birthday: string;
+  gender: string;
 }
 
 const Users: FC = () => {
@@ -62,7 +72,7 @@ const Users: FC = () => {
           .then(() => {
             setSnackbarMessage('User deleted successfully');
             setSnackbarOpen(true);
-            fetchUsers(); 
+            fetchUsers();
           })
           .catch(error => {
             console.error("There was an error deleting the user!", error);
@@ -78,8 +88,8 @@ const Users: FC = () => {
   };
 
   return (
-    <Box className="users" display="flex" justifyContent="center" alignItems="center" height="10vh">
-      <Card className="card" sx={{ maxWidth: 600, width: '100%' }}>
+    <Box className="users" display="flex" justifyContent="center" alignItems="center" padding={2}>
+      <Card className="card" sx={{ maxWidth: 1200, width: '100%' }}>
         <CardContent>
           <Typography variant="h4" component="div" gutterBottom>
             Users
@@ -89,21 +99,50 @@ const Users: FC = () => {
               <CircularProgress />
             </Box>
           ) : (
-            <List>
-              {users.map((user) => (
-                <ListItem key={user.id} divider>
-                  <ListItemAvatar>
-                    <Avatar src={user.image} />
-                  </ListItemAvatar>
-                  <ListItemText primary={user.username} />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(user.id)}>
-                      <Delete />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Avatar</TableCell>
+                    <TableCell>ID</TableCell>
+                    <TableCell>Full Name</TableCell>
+                    <TableCell>Address</TableCell>
+                    <TableCell>Phone Number</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Username</TableCell>
+                    <TableCell>Card Number</TableCell>
+                    <TableCell>CIN</TableCell>
+                    <TableCell>Birthday</TableCell>
+                    <TableCell>Gender</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {users.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell>
+                        <Avatar src={user.image} />
+                      </TableCell>
+                      <TableCell>{user.id}</TableCell>
+                      <TableCell>{user.fullname}</TableCell>
+                      <TableCell>{user.address}</TableCell>
+                      <TableCell>{user.phoneNumber}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.username}</TableCell>
+                      <TableCell>{user.cardNumber}</TableCell>
+                      <TableCell>{user.CIN}</TableCell>
+                      <TableCell>{user.birthday}</TableCell>
+                      <TableCell>{user.gender}</TableCell>
+                      <TableCell>
+                        <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(user.id)}>
+                          <Delete />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           )}
         </CardContent>
       </Card>

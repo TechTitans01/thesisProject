@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import io from 'socket.io-client';
-
+import Image from 'next/image';
 const socket = io('http://localhost:8080'); 
 import axios from 'axios';
 import {
@@ -73,12 +73,20 @@ const Page: React.FC = () => {
   const [data, setData] = useState<any>({});
   const [use, setuser ] = useState<any>({});
   const [array, setArray] = useState<any>([]);
+  const [oneHotel,setonehotel] = useState<any>({});
+  const [idhotel,setidhotel] = useState<any>(localStorage.getItem("idhotel"))
    const [ref,setref]=useState<any>(false)
   const { user } = useAuth();
+  const { token } = useAuth();
   const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
-
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const router = useRouter();
   
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+
   const toChat = (id:number)=>{
     router.push(`/chatroom/${id}`)
   }
@@ -88,7 +96,8 @@ const Page: React.FC = () => {
   }
 
 
-
+ var x=""
+ var y=0
   const [anchorEl, setAnchorEl] = useState<number>(-1);
 
   const handleClick = (id:number) => {
@@ -102,8 +111,8 @@ const Page: React.FC = () => {
   };
 
   const pathname = usePathname();
-  const id = pathname.slice(pathname.length - 1);
-
+  const id = pathname.split('/')[2]
+  const { logOut } = useAuth();
  
   const [guests, setGuests] = useState('');
 
@@ -119,7 +128,7 @@ const Page: React.FC = () => {
     
     axios.get(`http://localhost:8080/api/user/getone/${userr.id}`)
       .then((resp) => {
-        console.log("heyoad",resp.data);
+        
       setuser(resp.data);
      
       })
@@ -131,11 +140,16 @@ const Page: React.FC = () => {
   useEffect(() => {
     axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
       setData(res.data);
-      console.log(res.data)
-      // array.push(res.data.image1, res.data.image2, res.data.image3);
       
     }).catch(err => { console.log(err) });
   }, []);
+
+  useEffect(()=>{
+   axios.get(`http://localhost:8080/api/hotels/getonehotel/${idhotel}`).then((res)=>{
+    console.log(res.data)
+    setonehotel(res.data)
+   }).catch((err)=>{console.log(err)})
+  },[])
 
   useEffect(() => {
     axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
@@ -160,20 +174,47 @@ const Page: React.FC = () => {
 
 
   useEffect(() => {
+    console.log('neww',roomid)
     axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
+      
       setComments(res.data);
     }).catch(err => { console.log(err) });
   }, [ref]);
 
 
+  const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
+    const startDate = new Date(checkIn);
+    const endDate = new Date(checkOut);
+
+    let months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+    let days = endDate.getDate() - startDate.getDate();
+
+    if (days < 0) {
+        months--;
+        const previousMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate();
+        days += previousMonth;
+    }
+    if (months>=1) {
+      days=days+months*30
+    }
+    if (months===0) {
+      months=1
+    }
+     x=`${months}/${days+1}`
+     y=days+(months*30)+1
+     return x
+  }
+
   const handleConfirmBooking = async () => {
+    
     const bookingDetails = {
-      start: dateRange[0].toISOString().split('T')[0],
+      start:calculateDateDifference(dateRange[0].toISOString().split('T')[0],dateRange[1].toISOString().split('T')[0]) ,
           end: dateRange[1].toISOString().split('T')[0],
           guests: parseInt(guests, 10),
           status: 'pending',
           userId: userr.id,
-          roomId:parseInt (roomid)
+          roomId:parseInt (roomid),
+          totalPrice:parseInt(oneHotel.nightPrice)*y
         }
         console.log(bookingDetails);
         
@@ -217,7 +258,51 @@ console.log(response.data);
   };
 
 
-  return (
+  return (<>
+ <nav id="navBar" className='navbar-white'>
+        <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false} />
+        <ul className='nav-links'>
+          <li><a href="/"  className="active">Home</a></li>
+          <li><a href="/contactus"  className="active">Contact Us</a></li>
+        </ul>
+        {!token ? (
+          <a href="/auth" className="register-btn">
+            Register Now
+          </a>
+        ) : (
+          <div className="toggle-container">
+            <div className="toggle-option active">
+              <img
+                className="noti"
+                src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                alt="notification"
+              />
+            </div>
+            <div className="toggle-option" onClick={toggleDropdown}>
+              <img
+                className="usee"
+                src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                alt="User"
+              />
+            </div>
+            {dropdownOpen && (
+              <div className="dropdown-menu">
+                <ul>
+                  <li>
+                    <a href="/editprofile" >Edit Profile</a>
+                  </li>
+                  <li>
+                    <a href="/auth" onClick={() => { logOut() }}>Logout</a>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </nav>
+
+
+
     <Container>
 
 
@@ -249,9 +334,9 @@ console.log(response.data);
               <Typography variant="h6" gutterBottom>
                 Entire rental unit
               </Typography>
-              <Typography variant="body1" gutterBottom>
+              {/* <Typography variant="body1" gutterBottom>
                 {data.guests} Guest · {data.beds} Beds · {data.baths} Baths
-              </Typography>
+              </Typography> */}
             </Box>
 
             <Box my={2}>
@@ -422,7 +507,7 @@ console.log(response.data);
                 Rent
               </Button>
               <Box my={2}>
-                <Typography variant="body1">Price: ${data.nightPrice} per night</Typography>
+                <Typography variant="body1">Price: ${oneHotel.nightPrice} per night</Typography>
                 <Typography variant="body2" color="textSecondary">
                   Taxes and fees are included
                 </Typography>
@@ -446,6 +531,7 @@ console.log(response.data);
         </Grid>
       </Box>
     </Container>
+    </>
   );
 };
 

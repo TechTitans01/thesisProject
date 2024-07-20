@@ -151,46 +151,47 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
   return (
     <div>
       <div className="header">
-        <nav id="navBar" className='navbar-white'>
-          <ul className='nav-links'>
-            <li><a href="/" className="active">Home</a></li>
-            <li><a href="/contactus" className="active">Contact Us</a></li>
+      <nav id="navBar" className='custom-navbar'>
+  <ul className='nav-links'>
+    <li><a href="/" className="active">Home</a></li>
+    <li><a href="/contactus" className="active">Contact Us</a></li>
+  </ul>
+  {!token ? (
+    <a href="/auth" className="register-btn">
+      Register Now
+    </a>
+  ) : (
+    <div className="toggle-container">
+      <div className="toggle-option active">
+        <img
+          className="noti"
+          src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+          alt="notification"
+        />
+      </div>
+      <div className="toggle-option" onClick={toggleDropdown}>
+        <img
+          className="usee"
+          src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+          alt="User"
+        />
+      </div>
+      {dropdownOpen && (
+        <div className="dropdown-menu">
+          <ul>
+            <li>
+              <a href="/editprofile">Edit Profile</a>
+            </li>
+            <li>
+              <a href="/auth" onClick={() => { logOut() }}>Logout</a>
+            </li>
           </ul>
-          {!token ? (
-            <a href="/auth" className="register-btn">
-              Register Now
-            </a>
-          ) : (
-            <div className="toggle-container">
-              <div className="toggle-option active">
-                <img
-                  className="noti"
-                  src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
-                  alt="notification"
-                />
-              </div>
-              <div className="toggle-option" onClick={toggleDropdown}>
-                <img
-                  className="usee"
-                  src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
-                  alt="User"
-                />
-              </div>
-              {dropdownOpen && (
-                <div className="dropdown-menu">
-                  <ul>
-                    <li>
-                      <a href="/editprofile">Edit Profile</a>
-                    </li>
-                    <li>
-                      <a href="/auth" onClick={() => { logOut() }}>Logout</a>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-        </nav>
+        </div>
+      )}
+    </div>
+  )}
+</nav>
+
         <div className="container">
           <h1>Find Your Next Stay</h1>
           <div className="search-bar">

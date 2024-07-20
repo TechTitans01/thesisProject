@@ -72,6 +72,8 @@ const Page: React.FC = () => {
   const [newComment, setNewComment] = useState('');
   const [data, setData] = useState<any>({});
   const[idrooom,setidrooom] = useState<any>(localStorage.getItem("idroom"))
+  const[totPrice,settotPrice] = useState<any>(localStorage.getItem("infosbook"))
+  const[totnighty,settotnighty] = useState<any>(localStorage.getItem("infosdate"))
   const [use, setuser ] = useState<any>({});
   const [array, setArray] = useState<any>([]);
    const [ref,setref]=useState<any>(false)
@@ -105,7 +107,7 @@ const Page: React.FC = () => {
   const pathname = usePathname();
   const id = pathname.slice(pathname.length - 1);
   const detail=pathname.split('/')[2];
- 
+
   const [guests, setGuests] = useState('');
 
 
@@ -120,7 +122,7 @@ const Page: React.FC = () => {
     
     axios.get(`http://localhost:8080/api/user/getone/${userr.id}`)
       .then((resp) => {
-        console.log("heyoad",resp.data);
+        
       setuser(resp.data);
      
       })
@@ -130,7 +132,7 @@ const Page: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(detail)
+    console.log(totnighty,"atoui")
     
     axios.post(`http://localhost:8080/rooms/rooms/hotel/${id}`,{
         guests:detail
@@ -146,12 +148,7 @@ const Page: React.FC = () => {
     }).catch(err => { console.log(err) });
   }, []);
   
-  // useEffect(() => {
-  //   console.log(id)
-  //   axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
-  //     setComments(res.data);
-  //   }).catch(err => { console.log(err) });
-  // }, []);
+
 
   const commenti = () => {
 
@@ -180,12 +177,13 @@ const Page: React.FC = () => {
 
   const addBooking = async () => {
     const bookingDetails = {
-      start: dateRange[0].toISOString().split('T')[0],
-          end: dateRange[1].toISOString().split('T')[0],
-          guests: parseInt(guests, 10),
+      start: parseInt(totnighty),
+          end: parseInt(totnighty),
+          guests: parseInt(detail),
           status: 'pending',
           userId: userr.id,
-          roomId:parseInt (roomid)
+          roomId:parseInt (roomid),
+          totalPrice:parseInt(totPrice)
         }
         console.log(bookingDetails);
         
@@ -257,46 +255,6 @@ console.log(response.data);
 </div>
 </div>
       <Box my={4}>
-
-       
-
-
-
-
-
-
-        {/* <Typography variant="h4" gutterBottom>
-          {data.name}
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          color="textSecondary"
-          display="flex"
-          alignItems="center"
-          gutterBottom
-        >
-          <LocationOnIcon style={{ color: "#FF5733" }} /> {property.location}
-        </Typography>
-
-        <Grid container spacing={2} my={2}>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image1} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image2} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image3} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image4} alt="image" />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardMedia component="img" height="200" image={data.image5} alt="image" />
-          </Grid>
-       
-        </Grid> */}
-
         <Grid container spacing={2} my={2}>
           <Grid item xs={12} md={8}>
             <Box my={2}>
@@ -463,20 +421,12 @@ console.log(response.data);
               <Typography variant="h6" gutterBottom>
                 Booking
               </Typography>
-              <TextField
-                fullWidth
-                label="Guests"
-                margin="normal"
-                type="number"
-                value={guests}
-                onChange={(e) => setGuests(e.target.value)}
-                InputLabelProps={{ shrink: true }}
-              />
+             
               <Button onClick={addBooking} variant="contained" color="primary" fullWidth>
                 Rent
               </Button>
               <Box my={2}>
-                <Typography variant="body1">Price: ${data.nightPrice} per night</Typography>
+                <Typography variant="body1">Price: ${totPrice} in total</Typography>
                 <Typography variant="body2" color="textSecondary">
                   Taxes and fees are included
                 </Typography>

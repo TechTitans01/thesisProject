@@ -125,9 +125,7 @@ export default function room() {
                   <br />
                   <i><Image src="/img/star.png" alt='star' width={20} height={20} /></i>
                   <div className="room-price">
-                    <p>{el.guests} Guest</p>
-                    <h4>$ {el.nightPrice} <span>/ day</span></h4>
-                  </div>
+                    </div>
                 </div>
               </div>
             ))}
