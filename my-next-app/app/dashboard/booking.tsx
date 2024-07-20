@@ -4,58 +4,72 @@ import {
   Card,
   CardContent,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   CircularProgress,
   Box,
-  Grid,
   Select,
   MenuItem,
   IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Swal from 'sweetalert2';
 import './style/booking.css';
-import io from 'socket.io-client';
 
-const socket = io('http://localhost:8080');
+interface Booking {
+  id: number;
+  start: string;
+  end: string;
+  guests: number;
+  status: string;
+  user: {
+    email: string;
+  };
+}
 
 const Booking: FC = () => {
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+
+
+  
 
   useEffect(() => {
     fetchBookings();
-
-    const adminId = 1;
-    socket.emit('join', adminId);
-
-    socket.on('notification', (notification) => {
-      Swal.fire('Notification', notification.content, 'info');
-    });
-
-    return () => {
-      socket.off('notification');
-    };
-  }, []);
+  }, [currentPage]); // Update bookings whenever currentPage changes
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/bookings');
-      setBookings(response.data);
+      const response = await axios.get(`http://localhost:8080/bookings?page=${currentPage}`);
+      const fetchedBookings = response.data;
+      // Sort fetched bookings by ID in descending order to show latest booking first
+      fetchedBookings.sort((a: Booking, b: Booking) => b.id - a.id);
+      setBookings(fetchedBookings);
       setLoading(false);
     } catch (error) {
-      console.error("There was an error fetching the bookings!", error);
+      console.error('There was an error fetching the bookings!', error);
       setLoading(false);
     }
   };
 
-  const sendNotification = async (userId: number, content: string) => {
+  const sendEmail = async (email: string, subject: string, text: string) => {
     try {
-      await axios.post('http://localhost:8080/api/notifications', { userId, content });
+      const response = await axios.post('http://localhost:8080/api/reclamation/send/gmail', {
+        to: email,
+        subject,
+        text,
+      });
+      console.log('Email sent successfully:', response.data);
     } catch (error) {
-      console.error('There was an error sending the notification!', error);
+      console.error('There was an error sending the email!', error);
+      throw error;
     }
   };
 
@@ -73,8 +87,19 @@ const Booking: FC = () => {
       if (result.isConfirmed) {
         try {
           const response = await axios.put(`http://localhost:8080/bookings/${bookingId}/status`, { status });
-          fetchBookings();
-          sendNotification(response.data.userId, `Your booking (ID: ${bookingId}) has been ${actionPast}.`);
+
+          console.log('Response data:', response.data);
+
+          const bookingToUpdate = bookings.find((booking) => booking.id === bookingId);
+
+          if (bookingToUpdate && bookingToUpdate.user.email) {
+            const emailContent = `Your booking (ID: ${bookingId}) has been ${actionPast}.`;
+            await sendEmail(bookingToUpdate.user.email, `Congratulations on your confirmation! We are pleased to inform you that you can now proceed with the payment. Please follow this link to complete your payment: http://localhost:3000/payment/${bookingToUpdate.user.email}/${bookingToUpdate.totalPrice} Thank you and best regards,`, emailContent);
+          } else {
+            console.error('User email not found in the response data');
+          }
+
+          fetchBookings(); // Reload bookings after update
           Swal.fire(
             `${action.charAt(0).toUpperCase() + action.slice(1)}d!`,
             `The booking has been ${actionPast}.`,
@@ -104,7 +129,7 @@ const Booking: FC = () => {
       if (result.isConfirmed) {
         try {
           await axios.delete(`http://localhost:8080/bookings/${bookingId}`);
-          fetchBookings();
+          fetchBookings(); // Reload bookings after delete
           Swal.fire(
             'Deleted!',
             'The booking has been deleted.',
@@ -122,9 +147,20 @@ const Booking: FC = () => {
     });
   };
 
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(currentPage + 1);
+  };
+
   return (
     <Box className="booking" display="flex" justifyContent="center" alignItems="center" padding={2}>
-      <Card className="card" sx={{ maxWidth: 800, width: '100%' }}>
+     
+      <Card className="card" sx={{ maxWidth: 1200, width: '100%' }}>
         <CardContent>
           <Typography variant="h4" component="div" gutterBottom>
             Bookings
@@ -134,60 +170,56 @@ const Booking: FC = () => {
               <CircularProgress />
             </Box>
           ) : (
-            <List>
-              {bookings.map((booking, index) => (
-                <ListItem
-                  key={index}
-                  divider
-                  className={`${booking.status === 'canceled' ? 'cancelledBooking' : ''} ${booking.status === 'confirmed' ? 'confirmedBooking' : ''}`}
-                >
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} md={8}>
-                      <ListItemText
-                        primary={`Booking ID: ${booking.id}`}
-                        secondary={
-                          <>
-                            <Typography component="span" variant="body2" color="textPrimary">
-                              Start: {new Date(booking.start).toLocaleDateString()}
-                            </Typography>
-                            <br />
-                            <Typography component="span" variant="body2" color="textPrimary">
-                              End: {new Date(booking.end).toLocaleDateString()}
-                            </Typography>
-                            <br />
-                            <Typography component="span" variant="body2" color="textPrimary">
-                              Guests Number: {booking.guests}
-                            </Typography>
-                            <br />
-                            <Typography component="span" variant="body2" color="textPrimary">
-                              Status: {booking.status}
-                            </Typography>
-                          </>
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={4} display="flex" alignItems="center" justifyContent="flex-end">
-                      <Select
-                        value={booking.status}
-                        onChange={(e) => updateBookingStatus(booking.id, e.target.value as string)}
-                        displayEmpty
-                        inputProps={{ 'aria-label': 'Select status' }}
-                      >
-                        <MenuItem value="confirmed" disabled={booking.status === 'confirmed'}>
-                          Confirm
-                        </MenuItem>
-                        <MenuItem value="canceled" disabled={booking.status === 'canceled'}>
-                          Cancel
-                        </MenuItem>
-                      </Select>
-                      <IconButton color="secondary" onClick={() => deleteBooking(booking.id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Grid>
-                  </Grid>
-                </ListItem>
-              ))}
-            </List>
+            <>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Booking ID</TableCell>
+                      <TableCell>Start Date</TableCell>
+                      <TableCell>End Date</TableCell>
+                      <TableCell>Guests Number</TableCell>
+                      <TableCell>User Email</TableCell>
+                      <TableCell>Status</TableCell>
+           
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {bookings.map((booking) => (
+                      <TableRow key={booking.id} className={`${booking.status === 'canceled' ? 'cancelledBooking' : ''} ${booking.status === 'confirmed' ? 'confirmedBooking' : ''}`}>
+                        <TableCell>{booking.id}</TableCell>
+                        <TableCell>{new Date(booking.start).toLocaleDateString()}</TableCell>
+                        <TableCell>{new Date(booking.end).toLocaleDateString()}</TableCell>
+                        <TableCell>{booking.guests}</TableCell>
+                        <TableCell>{booking.user.email}</TableCell>
+                        <TableCell>
+                          <Select
+                            value={booking.status}
+                            onChange={(e) => updateBookingStatus(booking.id, e.target.value as string)}
+                            displayEmpty
+                            inputProps={{ 'aria-label': 'Select status' }}
+                          >
+                            <MenuItem value="pending" disabled={booking.status === 'pending'}>
+                              pending
+                            </MenuItem>
+                            <MenuItem value="confirmed" disabled={booking.status === 'confirmed'}>
+                              Confirm
+                            </MenuItem>
+                            <MenuItem value="canceled" disabled={booking.status === 'canceled'}>
+                              Cancel
+                            </MenuItem>
+                          </Select>
+                          <IconButton color="secondary" onClick={() => deleteBooking(booking.id)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+             
+            </>
           )}
         </CardContent>
       </Card>

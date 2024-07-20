@@ -3,11 +3,12 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import '../styles/payment.css';
+import '../../../styles/payment.css';
 import { loadStripe } from '@stripe/stripe-js';
+import { usePathname } from "next/navigation";
 import axios from 'axios';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { useAuth } from '../context/authcontex/Authcontex';
+import { useAuth } from '../../../context/authcontex/Authcontex';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
 
@@ -19,10 +20,11 @@ const PaymentForm = ( { userId, bookingId }:any) => {
   const [cardNumber, setCardNumber] = useState('');
   const [expirationDate, setExpirationDate] = useState('');
   const [cvv, setCvv] = useState('');
-  const [email, setEmail] = useState('');
+ 
   const [name, setName] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const pathname = usePathname();
   const [country, setCountry] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
@@ -31,6 +33,9 @@ const PaymentForm = ( { userId, bookingId }:any) => {
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
 };
+
+const email=pathname.split('/')[2]
+const amount=pathname.split('/')[3]
 
 
   const handleSendSMS = async () => {
@@ -57,7 +62,7 @@ const PaymentForm = ( { userId, bookingId }:any) => {
   
     axios
       .post('http://localhost:8080/api/payments/create', {
-        amount: 1000,
+        amount: amount,
         currency: 'usd',
         userId: userr.id,
         bookingId: bookingId,
@@ -150,20 +155,7 @@ const PaymentForm = ( { userId, bookingId }:any) => {
       <div className="payment-card">
         <h2 className="payment-title">Payment</h2>
         <div className="payment-form" >
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="form-input"
-              placeholder="email@mail.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+          
           <div className="form-group">
             <label htmlFor="cardNumber" className="form-label">
               Card Number

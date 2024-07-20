@@ -34,7 +34,8 @@ const Reclamation: React.FC = () => {
   const fetchReclamations = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/reclamation/getall');
-      setReclamations(response.data);
+      const sortedReclamations = response.data.sort((a:any, b:any) => b.id - a.id);
+      setReclamations(sortedReclamations);
       setLoading(false);
     } catch (error) {
       console.error('There was an error fetching the reclamations!', error);
@@ -42,44 +43,24 @@ const Reclamation: React.FC = () => {
     }
   };
 
-  const sendMessage=(select:string)=>{
-   
-    axios.post("http://localhost:8080/api/reclamation/send/gmail",{
-      to:select,  
-      subject:"reponse Recalamtion",
-      html:`<p>${message}</p>`
-
-    }).then((res)=>{
-      console.log(res)
-      setSnackbarMessage(`Message sent to ${select}`);
+  const sendMessage = async (receiverEmail: string) => {
+    try {
+      const response = await axios.post("http://localhost:8080/api/reclamation/send/gmail", {
+        to: receiverEmail,
+        subject: "Reponse Reclamation",
+        html: `<p>${message}</p>`
+      });
+      console.log(response);
+      setSnackbarMessage(`Message sent to ${receiverEmail}`);
       setSnackbarOpen(true);
-    }).catch((err)=>{console.log(err)})  }
-
-
-  // const sendMessage = async () => {
-  //   try {
-  //     if (!selectedReclamation) {
-  //       return;
-  //     }
-
-  //     const { id: senderId, email: receiverId } = selectedReclamation;
-  //     const payload = {
-  //       senderId,
-  //       receiverId,
-  //       message
-  //     };
-
-  //     await axios.post(`http://localhost:8080/api/chat/messages/${senderId}/${receiverId}`, payload);
-
-  //     setSnackbarMessage(`Message sent to ${selectedReclamation.email}`);
-  //     setSnackbarOpen(true);
-  //     setOpenDialog(false);
-  //   } catch (error) {
-  //     console.error('There was an error sending the message!', error);
-  //     setSnackbarMessage('Failed to send message');
-  //     setSnackbarOpen(true);
-  //   }
-  // };
+      setOpenDialog(false);
+      setMessage('');
+    } catch (error) {
+      console.error('There was an error sending the message!', error);
+      setSnackbarMessage('Failed to send message');
+      setSnackbarOpen(true);
+    }
+  };
 
   const handleOpenDialog = (reclamation: any) => {
     setSelectedReclamation(reclamation);
@@ -164,7 +145,7 @@ const Reclamation: React.FC = () => {
           <Button onClick={handleCloseDialog} color="secondary">
             Cancel
           </Button>
-          <Button onClick={()=>sendMessage(selectedReclamation.email)} color="primary" variant="contained">
+          <Button onClick={() => sendMessage(selectedReclamation.email)} color="primary" variant="contained">
             Send
           </Button>
         </DialogActions>
