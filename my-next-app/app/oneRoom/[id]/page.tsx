@@ -35,12 +35,7 @@ import Swal from 'sweetalert2';
 
 const property = {
   title: "india Getaway",
-  location: "Delhi, IN",
-  images: [
-    "https://via.placeholder.com/800x400",
-    "https://via.placeholder.com/800x400",
-    "https://via.placeholder.com/800x400",
-  ],
+  location: "Paris, FR",
   details: {
     guests: "4-6 guests",
     type: "Entire Home",
@@ -74,12 +69,14 @@ const Page: React.FC = () => {
   const [use, setuser ] = useState<any>({});
   const [array, setArray] = useState<any>([]);
   const [oneHotel,setonehotel] = useState<any>({});
+  const [onedestination,setonedestination] = useState<any>({});
   const [idhotel,setidhotel] = useState<any>(localStorage.getItem("idhotel"))
    const [ref,setref]=useState<any>(false)
   const { user } = useAuth();
   const { token } = useAuth();
   const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
-  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);  const [hotelId,setHotelId] = useState<any>(null)
+  const [iddestination,setiddestination] = useState<any>(localStorage.getItem("iddestin"))
   const router = useRouter();
   
   const toggleDropdown = () => {
@@ -110,6 +107,13 @@ const Page: React.FC = () => {
     setAnchorEl(-1);
   };
 
+ useEffect(()=>{
+  axios.get(`http://localhost:8080/api/destination/getone/${iddestination}`).then((res)=>{
+    setonedestination(res.data)
+    console.log(res.data)
+  }).catch((err)=>console.log(err))
+ },[])
+
   const pathname = usePathname();
   const id = pathname.split('/')[2]
   const { logOut } = useAuth();
@@ -124,8 +128,7 @@ const Page: React.FC = () => {
   };
 
   useEffect(() => {
-
-    
+   
     axios.get(`http://localhost:8080/api/user/getone/${userr.id}`)
       .then((resp) => {
         
@@ -137,30 +140,29 @@ const Page: React.FC = () => {
       });
   }, []);
 
+
   useEffect(() => {
     axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
       setData(res.data);
-      
+     
+      setHotelId(res.data.hotelId);
+     
     }).catch(err => { console.log(err) });
   }, []);
 
   useEffect(()=>{
    axios.get(`http://localhost:8080/api/hotels/getonehotel/${idhotel}`).then((res)=>{
-    console.log(res.data)
+   
     setonehotel(res.data)
    }).catch((err)=>{console.log(err)})
   },[])
 
-  useEffect(() => {
-    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
-      setComments(res.data);
-    }).catch(err => { console.log(err) });
-  }, []);
+ 
 
   const commenti = () => {
     axios.post(`http://localhost:8080/commentaires/${id}/${userr.id}`, {
       text: newComment,
-      date: "12/10/2024",
+      date: new Date(),
       name:use.username,
       image:use.image
     }).then((res) => {
@@ -304,8 +306,6 @@ console.log(response.data);
 
 
     <Container>
-
-
       <div className="house-details">
 <div className="house-title">
   <h1> <span className="stars">{"★".repeat(3)}</span>{data.description}</h1>
@@ -314,7 +314,7 @@ console.log(response.data);
       
       </div>
       <div>
-      
+        <p>Location: {onedestination.name}</p>
       </div>
     </div>
 </div>
@@ -518,14 +518,14 @@ console.log(response.data);
               <Typography variant="h6" gutterBottom>
                 Location
               </Typography>
-              <Map location={property.location} />
+              {hotelId &&<Map hotelId={hotelId} location={onedestination.name} />}
             </Box>
-
+            
             <Box my={2}>
               <Typography variant="h6" gutterBottom>
                 Weather
               </Typography>
-              <Weather location={property.location} />
+              <Weather location={onedestination.name} />
             </Box>
           </Grid>
         </Grid>

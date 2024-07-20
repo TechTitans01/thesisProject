@@ -39,6 +39,7 @@ export default function Home() {
 
   const toHotel = (id: number) => {
     router.push(`/hotel/${id}`)
+    localStorage.setItem("iddestin",JSON.stringify(id))
   }
 
   const toggleDropdown = () => {
@@ -62,7 +63,7 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
         setdesid(res.data.id) 
         console.log(res.data);
         router.push(`/search/${res.data.id}/${x}`)
-        
+        localStorage.setItem("namedestinbyserch",JSON.stringify(res.data.id))
       }).catch((err) => {
       console.log(err);
       
@@ -71,16 +72,6 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
     
 
 }
-// useEffect(() => {
-// axios.get('http://localhost:8080/api/destination/getonebyname',
-//   {name:location}).then((res) => {
-//     setdesid(res.data.id)
-//   }).catch((err) => {
-//   console.log(err);
-  
-//   })
-
-// },[])
 
 
   useEffect(() => {

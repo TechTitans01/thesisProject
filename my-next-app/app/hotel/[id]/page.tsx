@@ -7,6 +7,8 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/authcontex/Authcontex';
 
+
+
 export default function Hotel() {
   const [data, setData] = useState<any>([]);
   const [allData, setAllData] = useState<any>([]); 
@@ -61,6 +63,7 @@ const toHotelRooms = (id: number) => {
   }, [ref]);
 
   return (
+  
     <div>
      <nav id="mainNavigation" className='navbar-light'>
   <Image className="brandLogo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false} />

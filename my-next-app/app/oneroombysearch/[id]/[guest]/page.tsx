@@ -74,6 +74,9 @@ const Page: React.FC = () => {
   const[idrooom,setidrooom] = useState<any>(localStorage.getItem("idroom"))
   const[totPrice,settotPrice] = useState<any>(localStorage.getItem("infosbook"))
   const[totnighty,settotnighty] = useState<any>(localStorage.getItem("infosdate"))
+  const [namedestination,setnamedestination] = useState<any>(localStorage.getItem("namedestinbyserch"))
+  const [onedestination,setonedestination] = useState<any>({});
+
   const [use, setuser ] = useState<any>({});
   const [array, setArray] = useState<any>([]);
    const [ref,setref]=useState<any>(false)
@@ -85,7 +88,12 @@ const Page: React.FC = () => {
   const toChat = (id:number)=>{
     router.push(`/chatroom/${id}`)
   }
-
+  useEffect(()=>{
+    axios.get(`http://localhost:8080/api/destination/getone/${namedestination}`).then((res)=>{
+      setonedestination(res.data)
+      console.log(res.data)
+    }).catch((err)=>console.log(err))
+   },[])
   const seeprofile = (id:number)=>{
     router.push(`/profilefreind/${id}`)
   }
@@ -169,7 +177,7 @@ const Page: React.FC = () => {
 
 
   useEffect(() => {
-   
+   console.log( "boha",namedestination)
     axios.get(`http://localhost:8080/commentaires/room/${idrooom}`).then((res) => {
       setComments(res.data);
     }).catch(err => { console.log(err) });
@@ -234,7 +242,7 @@ console.log(response.data);
 
       <div className="house-details">
 <div className="house-title">
-  <h1>    <span className="stars">{"★".repeat(3)}</span> {data.description} </h1>
+  <h1>  <span className="stars">{"★".repeat(3)}</span> {data.description} <br /> Location: {onedestination.name} </h1>
     <div className="row">
       <div>
    
@@ -437,14 +445,14 @@ console.log(response.data);
               <Typography variant="h6" gutterBottom>
                 Location
               </Typography>
-              <Map location={property.location} />
+              <Map location={onedestination.name} />
             </Box>
 
             <Box my={2}>
               <Typography variant="h6" gutterBottom>
                 Weather
               </Typography>
-              <Weather location={property.location} />
+              <Weather location={onedestination.name} />
             </Box>
           </Grid>
         </Grid>
