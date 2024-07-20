@@ -10,7 +10,7 @@ interface WeatherData {
 
 
 const Weather: React.FC<{ location: string }> = ({ location }) => {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
+const [weather, setWeather] = useState<WeatherData | null>(null);
 
   useEffect(() => {
     const fetchWeather = async () => {

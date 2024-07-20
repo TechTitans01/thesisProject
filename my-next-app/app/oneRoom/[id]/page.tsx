@@ -35,12 +35,7 @@ import Swal from 'sweetalert2';
 
 const property = {
   title: "india Getaway",
-  location: "Delhi, IN",
-  images: [
-    "https://via.placeholder.com/800x400",
-    "https://via.placeholder.com/800x400",
-    "https://via.placeholder.com/800x400",
-  ],
+  location: "Paris, FR",
   details: {
     guests: "4-6 guests",
     type: "Entire Home",
@@ -73,12 +68,12 @@ const Page: React.FC = () => {
   const [data, setData] = useState<any>({});
   const [use, setuser ] = useState<any>({});
   const [array, setArray] = useState<any>([]);
-   const [ref,setref]=useState<any>(false)
+  const [ref,setref]=useState<any>(false)
   const { user } = useAuth();
   const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
+  const [hotelId,setHotelId] = useState<any>(null)
 
   const router = useRouter();
-  
   const toChat = (id:number)=>{
     router.push(`/chatroom/${id}`)
   }
@@ -86,8 +81,6 @@ const Page: React.FC = () => {
   const seeprofile = (id:number)=>{
     router.push(`/profilefreind/${id}`)
   }
-
-
 
   const [anchorEl, setAnchorEl] = useState<number>(-1);
 
@@ -128,25 +121,21 @@ const Page: React.FC = () => {
       });
   }, []);
 
+
   useEffect(() => {
     axios.get(`http://localhost:8080/rooms/${id}`).then((res) => {
       setData(res.data);
-      console.log(res.data)
-      // array.push(res.data.image1, res.data.image2, res.data.image3);
-      
+      console.log(res.data, "hello");
+      setHotelId(res.data.hotelId);
+      console.log(res.data.hotelId);
     }).catch(err => { console.log(err) });
   }, []);
 
-  useEffect(() => {
-    axios.get(`http://localhost:8080/commentaires/room/${id}`).then((res) => {
-      setComments(res.data);
-    }).catch(err => { console.log(err) });
-  }, []);
 
   const commenti = () => {
     axios.post(`http://localhost:8080/commentaires/${id}/${userr.id}`, {
       text: newComment,
-      date: "12/10/2024",
+      date: new Date(),
       name:use.username,
       image:use.image
     }).then((res) => {
@@ -164,7 +153,6 @@ const Page: React.FC = () => {
       setComments(res.data);
     }).catch(err => { console.log(err) });
   }, [ref]);
-
 
   const handleConfirmBooking = async () => {
     const bookingDetails = {
@@ -219,8 +207,6 @@ console.log(response.data);
 
   return (
     <Container>
-
-
       <div className="house-details">
 <div className="house-title">
   <h1>{data.description}</h1>
@@ -229,7 +215,7 @@ console.log(response.data);
       <span className="stars">{"★".repeat(3)}</span>
       </div>
       <div>
-        <p>Location:america</p>
+        <p>Location:</p>
       </div>
     </div>
 </div>
@@ -433,9 +419,9 @@ console.log(response.data);
               <Typography variant="h6" gutterBottom>
                 Location
               </Typography>
-              <Map location={property.location} />
+              {hotelId &&<Map hotelId={hotelId} location={property.location} />}
             </Box>
-
+            
             <Box my={2}>
               <Typography variant="h6" gutterBottom>
                 Weather

@@ -54,8 +54,8 @@ export default function House() {
     
       .then((res) => {
         console.log(res.data);
-        
-        setData(res.data);
+        const availableRooms = res.data.filter((room: any) => room.status === 'true');
+        setData(availableRooms);
        
       })
       .catch(error => {
@@ -169,6 +169,11 @@ export default function House() {
           <a href="https://www.youtube.com/"><i className='fab fa-facebook-f'></i></a>
           <hr />
           <p>Copyright 2021</p>
+          <div className="footer-info">
+            <p>Contact us: <a href="mailto:info@bookingagency.com">info@bookingagency.com</a></p>
+            <p>Phone: +123 456 7890</p>
+            <p>Address: 123 Booking St., City, Country</p>
+          </div>
         </div>
       </div>
     </body>

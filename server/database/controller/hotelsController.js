@@ -24,6 +24,14 @@ module.exports={
           res.status(500).send(err);
         }
       },
+      getOneHotelById: async (req, res)=> {
+        try {
+          const data = await db.hotel.findOne({ where: { id: req.params.id } });
+          res.send(data);
+        } catch (err) {
+          res.status(500).send(err);
+        }
+      },
       deleteHotel: async (req, res) => {
         try {
           const data = await db.hotel.destroy({ where: { id: req.params.id } });
