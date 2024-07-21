@@ -75,10 +75,11 @@ const Page: React.FC = () => {
   const { user } = useAuth();
   const { token } = useAuth();
   const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
-  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);  const [hotelId,setHotelId] = useState<any>(null)
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+    const [hotelId,setHotelId] = useState<any>(null)
   const [iddestination,setiddestination] = useState<any>(localStorage.getItem("iddestin"))
   const router = useRouter();
-  
+  const { logOut } = useAuth();
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
@@ -116,7 +117,7 @@ const Page: React.FC = () => {
 
   const pathname = usePathname();
   const id = pathname.split('/')[2]
-  const { logOut } = useAuth();
+  
  
   const [guests, setGuests] = useState('');
 

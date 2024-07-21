@@ -132,8 +132,9 @@ const toHotelRooms = (id: number) => {
                     <span className="stars">{"★".repeat(el.stars)}</span>
                   </div>
                   <div className="hotel-description">
-                    Situé à Paris, dans le 12ème arrondissement, le Motel One Paris-Porte Dorée dispose d'un bar et d'un jardin.
+                    {el.description}
                   </div>
+                  <h3> <b>{el.nightPrice} dt</b></h3>
                 </div>
               </div>
             </div>
@@ -238,9 +239,7 @@ const toHotelRooms = (id: number) => {
           
           <Image className='arroo' src="/img/arrow.png" alt='arrow' width={15} height={20} onClick={handlePrevPage} style={{ cursor: 'pointer' }} />
          
-          {/* {Array.from({length: NbPage},(_, i)=>i+1).map((page)=>{
-            return <button onClick={()=>setCurrent(page)} >{page}</button>
-          })} */}
+        
          <span className='curreent'>{current}</span>
          
           <Image id='rightarro' className='arroo' src="/img/arrow.png" alt='arrow' width={15} height={20} onClick={handleNextPage} style={{ cursor: 'pointer' }}/>
