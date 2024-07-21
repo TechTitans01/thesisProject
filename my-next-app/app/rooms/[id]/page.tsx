@@ -123,7 +123,7 @@ export default function room() {
                   <h3>{el.description}</h3>
                   <p>{el.bedroom} Bedroom / {el.baths} Bathroom / {el.beds} Beds / Wifi / Kitchen</p>
                   <br />
-                  <i><Image src="/img/star.png" alt='star' width={20} height={20} /></i>
+                  
                   <div className="room-price">
                     </div>
                 </div>

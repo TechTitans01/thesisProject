@@ -6,6 +6,24 @@ import axios from "axios";
 import Image from 'next/image';
 import { useAuth } from "./context/authcontex/Authcontex";
 import { useRouter } from 'next/navigation';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
+
+  const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+  }));
 
 export default function Home() {
   const { logOut } = useAuth();
@@ -32,6 +50,20 @@ export default function Home() {
   const [inn, setin] = useState<string>('');  
   const [out, setout] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [open, setOpen] = useState(false);
+  const [selectedStory, setSelectedStory] = useState<any>(null);
+
+  const handleClickOpen = (story: any) => {
+    setSelectedStory(story);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedStory(null);
+  };
+
+  
   const handleAddStoryClick = () => {
     setShowForm(true);
   };
@@ -240,14 +272,15 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
         <h2 className="sub-title">Travellers Stories</h2>
         <div className="stories">
           {Storie.map((el: any, index: number) => (
-            <div className="estories" key={index}>
-              <div className="itmstory">
-              
-              <img src={el.userImage} width={50} height={40} style={{ borderRadius: 50, marginLeft: 10 }} alt="dtg" />
-              <h3> <b> {el.userName}</b></h3> 
+            <div className="user-container" key={index}>
+              <div className="image-container">
+                <img className="user-image" src={el.image} alt="No photo available" />
+                <div className="button-overlay">
+                  <button className="see-story-button" onClick={() => handleClickOpen(el)}>
+                    See Story
+                  </button>
+                </div>
               </div>
-              <img src={el.image} alt="dtg" />
-              <p className="ps">{el.text}</p>
             </div>
           ))}
           <div className="estories" onClick={handleAddStoryClick} style={{ cursor: 'pointer' }}>
@@ -256,43 +289,42 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
           </div>
           {showForm && (
             <div className="story-form">
-              <div className="atoui">
-              <div className="upload-photo">
-                <input
-                  type="text"
-                  value={storyText}
-                  onChange={(e) => setStoryText(e.target.value)}
-                  placeholder="Story Text"
-                />
-                <div>
-            <img src={imageUrl||"https://cdn-icons-png.flaticon.com/512/5904/5904483.png"}  alt="story" width={50} height={30} />
-            </div>
-                 <input
-              id="fileInput"
-              className="addProduct-file-input"
-              type="file"
-              onChange={(e: any) => {
-                setFile(e.target.files[0]);
-              }}
-            />
-                 <button
-              className="addProduct-button addProduct-upload-button"
-              type="button"
-              onClick={() => {
-                document.getElementById("fileInput")?.click();
-              }}
-            >
-              Select story
-            </button>
-            <button onClick={() => uploadImage()}>Upload New Photo</button>
-            </div>
-               
-                <button type="submit" onClick={()=>{addstories()}}>Submit</button>
+              <div className="att">
+                <div className="upload-photo">
+                  <input
+                    type="text"
+                    value={storyText}
+                    onChange={(e) => setStoryText(e.target.value)}
+                    placeholder="Story Text"
+                  />
+                  <div>
+                    <img src={imageUrl || "https://cdn-icons-png.flaticon.com/512/5904/5904483.png"} alt="story" width={50} height={30} />
+                  </div>
+                  <input
+                    id="fileInput"
+                    className="addProduct-file-input"
+                    type="file"
+                    onChange={(e: any) => {
+                      setFile(e.target.files[0]);
+                    }}
+                  />
+                  <button
+                    className="addProduct-button addProduct-upload-button"
+                    type="button"
+                    onClick={() => {
+                      document.getElementById("fileInput")?.click();
+                    }}
+                  >
+                    Select story
+                  </button>
+                  <button onClick={() => uploadImage()}>Upload New Photo</button>
+                </div>
+                <button type="submit" onClick={() => { addstories() }}>Submit</button>
               </div>
             </div>
           )}
         </div>
-        <a href="#" className="start-btn">Start Now</a>
+        
         <div className="about-msg">
           <h2>About my website</h2>
           <p>
@@ -306,6 +338,39 @@ const  calculateDateDifference=(checkIn:string, checkOut:string) =>{
           </p>
         </div>
       </div>
+       {selectedStory && (
+        <BootstrapDialog
+          onClose={handleClose}
+          aria-labelledby="customized-dialog-title"
+          open={open}
+        >
+          <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+            {selectedStory.userName}
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent dividers>
+            <Typography gutterBottom>
+              {selectedStory.text}
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleClose}>
+              Close
+            </Button>
+          </DialogActions>
+        </BootstrapDialog>
+      )}
     </div>
   );
 }

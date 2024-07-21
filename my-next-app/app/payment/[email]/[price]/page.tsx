@@ -4,6 +4,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import '../../../styles/payment.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { loadStripe } from '@stripe/stripe-js';
 import { usePathname } from "next/navigation";
 import axios from 'axios';
@@ -44,10 +46,10 @@ const amount=pathname.split('/')[3]
         to: "+21655600939",
         text: `payment has been successfully with name: ${userr.username} email:${userr.email}`
       });
-      alert('SMS sent successfully!');
+      
     } catch (error) {
       console.error('Failed to send SMS:', error);
-      alert('Failed to send SMS');
+      toast.error('Failed to send SMS');
     }
   };
   
@@ -92,7 +94,7 @@ const amount=pathname.split('/')[3]
           setLoading(false);
         } else {
           if (result.paymentIntent.status === 'succeeded') {
-            alert('Payment successful!');
+            toast.success('Payment successful!');
             handleSendSMS()
             console.log(result)
           }
@@ -194,11 +196,12 @@ const amount=pathname.split('/')[3]
             </select>
           </div>
           <button type="submit" className="payment-button" disabled={!stripe || loading} onClick={()=>{handleSubmit()}}>
-            {loading ? 'Processing...' : 'Pay Now'}
+            {loading ? 'Processing...' : `Pay ${amount}Dt `}
           </button>
           {error && <div className="error-message">{error}</div>}
         </div>
       </div>
+      <ToastContainer />
     </div>
     </> );
 };

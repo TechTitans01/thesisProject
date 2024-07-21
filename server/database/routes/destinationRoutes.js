@@ -5,6 +5,6 @@ router.get("/getone/:id", getOneDestination);
 router.get("/getonebyname/:name", getOneDestinationbyname);
 router.get("/getall",getDestination);
 router.post("/adddestination",addDestination);
-router.put("/updatedestination",updateDestination);
+router.put("/updatedestination/:id",updateDestination);
 router.delete("/remove/:id",removeDestination)
 module.exports=router

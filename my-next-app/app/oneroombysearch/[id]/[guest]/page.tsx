@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import io from 'socket.io-client';
-
+import Image from 'next/image';
 const socket = io('http://localhost:8080'); 
 import {
   Container,
@@ -67,6 +67,7 @@ const property = {
 };
 
 const Page: React.FC = () => {
+  const { token } = useAuth();
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [comments, setComments] = useState<any>([]);
   const [newComment, setNewComment] = useState('');
@@ -75,16 +76,21 @@ const Page: React.FC = () => {
   const[totPrice,settotPrice] = useState<any>(localStorage.getItem("infosbook"))
   const[totnighty,settotnighty] = useState<any>(localStorage.getItem("infosdate"))
   const [namedestination,setnamedestination] = useState<any>(localStorage.getItem("namedestinbyserch"))
+  const [hotelId,setHotelId] = useState<any>(null)
   const [onedestination,setonedestination] = useState<any>({});
-
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [use, setuser ] = useState<any>({});
   const [array, setArray] = useState<any>([]);
    const [ref,setref]=useState<any>(false)
   const { user } = useAuth();
   const [userr,set]=useState<any>(JSON.parse(localStorage?.getItem("user")||"{}"))
-  
+  const { logOut } = useAuth();
   const router = useRouter();
   
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
   const toChat = (id:number)=>{
     router.push(`/chatroom/${id}`)
   }
@@ -99,7 +105,7 @@ const Page: React.FC = () => {
   }
 
 
-
+  
   const [anchorEl, setAnchorEl] = useState<number>(-1);
 
   const handleClick = (id:number) => {
@@ -140,7 +146,7 @@ const Page: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(totnighty,"atoui")
+    
     
     axios.post(`http://localhost:8080/rooms/rooms/hotel/${id}`,{
         guests:detail
@@ -148,8 +154,8 @@ const Page: React.FC = () => {
       setData(res.data[0]);
  
       localStorage.setItem("idroom", JSON.stringify(res.data[0].id))
-    
-      console.log("na9a",res.data[0].id)
+      setHotelId(res.data[0].hotelId);
+      console.log("na9a",res.data[0])
 
       // array.push(res.data.image1, res.data.image2, res.data.image3);
       
@@ -188,9 +194,9 @@ const Page: React.FC = () => {
       start: parseInt(totnighty),
           end: parseInt(totnighty),
           guests: parseInt(detail),
-          status: 'pending',
+          status:'pending',
           userId: userr.id,
-          roomId:parseInt (roomid),
+          
           totalPrice:parseInt(totPrice)
         }
         console.log(bookingDetails);
@@ -236,7 +242,49 @@ console.log(response.data);
 
  
 
-  return (
+  return (<>
+  <nav id="navBar" className='navbar-white'>
+        <Image className="logo" src="/img/logotr.png" width={120} height={120} alt="dtg" quality={75} priority={false} />
+        <ul className='nav-links'>
+          <li><a href="/"  className="active">Home</a></li>
+          <li><a href="/contactus"  className="active">Contact Us</a></li>
+        </ul>
+        {!token ? (
+          <a href="/auth" className="register-btn">
+            Register Now
+          </a>
+        ) : (
+          <div className="toggle-container">
+            <div className="toggle-option active">
+              <img
+                className="noti"
+                src="https://th.bing.com/th/id/OIP.EkL3E_EYbt08OV84-Dm2GwAAAA?rs=1&pid=ImgDetMain"
+                alt="notification"
+              />
+            </div>
+            <div className="toggle-option" onClick={toggleDropdown}>
+              <img
+                className="usee"
+                src="https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                alt="User"
+              />
+            </div>
+            {dropdownOpen && (
+              <div className="dropdown-menu">
+                <ul>
+                  <li>
+                    <a href="/editprofile" >Edit Profile</a>
+                  </li>
+                  <li>
+                    <a href="/auth" onClick={() => { logOut() }}>Logout</a>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </nav>
+ 
     <Container>
 
 
@@ -445,7 +493,7 @@ console.log(response.data);
               <Typography variant="h6" gutterBottom>
                 Location
               </Typography>
-              <Map location={onedestination.name} />
+              {hotelId &&<Map hotelId={hotelId}location={onedestination.name} />}
             </Box>
 
             <Box my={2}>
@@ -458,6 +506,7 @@ console.log(response.data);
         </Grid>
       </Box>
     </Container>
+    </>
   );
 };
 
